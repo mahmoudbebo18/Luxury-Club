@@ -13,7 +13,6 @@ $('.fancybox').click(function(e) {
 })
 
 $('.fancybox').click(function(e) {
-    e.preventDefault();
 
     $('body, html').animate({
 
