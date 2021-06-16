@@ -25,8 +25,6 @@ $('.fancybox').click(function(e) {
 
 $(document).ready(function() {
     $(".navbar-nav .nav-item .nav-link, .dropdown-item").click(function(e) {
-        console.log('g;kkdfgkjgldfgldf')
-        e.preventDefault();
         //$(this).parent().addClass("act").siblings().removeClass("act");
         $("body, html").animate({
                 // scrollTop = divId.offset().top
