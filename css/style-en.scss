@@ -774,7 +774,7 @@ footer {
  .wa-chat-box-brand-text{
      margin-left: 15px !important;
  }
- .wa-chat-box-brand-subtitle{
+ .wa-chat-box-brand-subtitle{ 
      font-size: 10px !important;
  }
  .wa-chat-box-poweredby{
@@ -782,5 +782,8 @@ footer {
  }
 
  .wa-chat-box-content-send-btn-text{
+     text-decoration: none !important;
+ }
+ a:hover{
      text-decoration: none !important;
  }
