@@ -283,6 +283,48 @@
 
         </div>
     </footer>
+
+
+
+    <!-- whatsapp -->
+    <script>
+        var url = 'https://wati-integration-service.clare.ai/ShopifyWidget/shopifyWidget.js?22485';
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = url;
+        var options = {
+      "enabled":true,
+      "chatButtonSetting":{
+          "backgroundColor":"#4dc247",
+          "ctaText":"اترك رسالة",
+          "borderRadius":"5",
+          "marginRight":"0",
+          "marginBottom":"40",
+          "marginLeft":"40",
+          "position":"left"
+      },
+      "brandSetting":{
+          "brandName":"Luxury Club",
+          "brandSubTitle":"Typically replies within a day",
+          "brandImg":"https://i.ibb.co/3dQNSj4/logo.png",
+          "welcomeText":"مرحبا!\nكيف يمكنني مساعدتك؟",
+          "messageText":"مرحبا, لدي استفسار بشأن {{page_title}}",
+          "backgroundColor":"#0a5f54",
+          "ctaText":"ابدأ المحادثة",
+          "borderRadius":"25",
+          "autoShow":false,
+          "phoneNumber":"9660558103228"
+      }
+    };
+        s.onload = function() {
+            CreateWhatsappChatWidget(options);
+        };
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s, x);
+    </script>
+
+
     <a class="join-us" href="join-us.html">انضم لنا </a>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/popper.min.js"></script>
