@@ -592,4 +592,31 @@ footer {
   border-color: #4a5644;
   transition: .3s; }
 
+#wa-widget-send-button {
+  background-color: #4a5644 !important;
+  right: 20px !important; }
+  #wa-widget-send-button div {
+    text-decoration: none;
+    font-size: 16px !important; }
+  #wa-widget-send-button .wa-messenger-svg-whatsapp {
+    width: 35px !important; }
+
+.wa-chat-box-header {
+  background-color: #4a5644 !important; }
+
+.wa-chat-box-brand {
+  margin-left: 20px;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 7px !important; }
+
+.wa-chat-box-brand-text {
+  margin-left: 15px !important; }
+
+.wa-chat-box-brand-subtitle {
+  font-size: 10px !important; }
+
+.wa-chat-box-poweredby {
+  display: none !important; }
+
 /*# sourceMappingURL=style-en.css.map */
