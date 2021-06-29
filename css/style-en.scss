@@ -787,3 +787,11 @@ footer {
  a:hover{
      text-decoration: none !important;
  }
+ #wa-widget-send-button{
+    div{
+        display: none !important;
+    }
+}
+.wa-chat-box-content-send-btn{
+    background-color: $darkBg !important;
+}

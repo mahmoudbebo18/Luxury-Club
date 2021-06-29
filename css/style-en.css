@@ -625,4 +625,10 @@ footer {
 a:hover {
   text-decoration: none !important; }
 
+#wa-widget-send-button div {
+  display: none !important; }
+
+.wa-chat-box-content-send-btn {
+  background-color: #4a5644 !important; }
+
 /*# sourceMappingURL=style-en.css.map */

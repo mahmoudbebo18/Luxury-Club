@@ -766,3 +766,42 @@ footer {
 .wa-chat-box-content-chat{
     text-align: right;
 }
+
+#wa-widget-send-button{
+    div{
+        display: none !important;
+    }
+}
+.wa-chat-box-header{
+    background-color: $darkBg !important;
+}
+#wa-widget-send-button{
+    background-color: $darkBg !important;
+    left:20px !important;
+    div{
+        text-decoration: none;
+        font-size: 16px !important;
+    }
+    .wa-messenger-svg-whatsapp{
+        width:35px !important
+    }
+}
+
+.wa-chat-box-content-send-btn{
+    background-color: $darkBg !important;
+}
+
+.wa-chat-box-brand {
+    margin-left: 20px;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 7px !important;
+}
+
+.wa-chat-box-content-send-btn-text {
+    text-decoration: none !important;
+}
+
+a:hover{
+    text-decoration: none !important;
+}
