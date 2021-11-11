@@ -460,7 +460,8 @@ footer {
       margin-top: 25px;
       padding: 10px;
       box-shadow: 0 0 5px #c3c3c3;
-      border-radius: 5px; }
+      border-radius: 5px;
+      background-color: rgba(151, 116, 71, 0.3); }
       .ser-page .main-img .image-grid.from-ser-page .service h6 {
         font-weight: bold;
         font-size: 18px;
@@ -501,16 +502,66 @@ footer {
   padding-top: 20px !important; }
 
 .join {
-  padding: 50px 0; }
+  text-align: center;
+  padding: 50px 0;
+  padding-top: 120px; }
+  .join h2 {
+    color: #4a5644;
+    font-size: 36px; }
+  .join p {
+    font-size: 18px;
+    color: #a29061; }
   .join form {
     padding: 20px;
     background: rgba(162, 144, 97, 0.3);
-    border-radius: 5px; }
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 500px;
+    flex-wrap: wrap;
+    margin: auto; }
+    .join form .form-group {
+      flex-basis: 100%;
+      max-width: 100%;
+      position: relative; }
+      .join form .form-group svg {
+        position: absolute;
+        height: 46px;
+        top: 0;
+        background-color: #4a5644;
+        left: 0;
+        width: 46px;
+        padding: 10px;
+        border-radius: 5px 0px 0px 5px; }
+      .join form .form-group input {
+        padding: 10px;
+        background-color: #eae8e5;
+        padding-inline-start: 55px;
+        border-radius: 5px; }
+        .join form .form-group input:focus {
+          box-shadow: none;
+          outline: none; }
+        .join form .form-group input::placeholder {
+          color: #a29061;
+          font-size: 15px; }
+    .join form .message svg {
+      background-color: transparent; }
+    .join form .message textarea {
+      padding-inline-start: 45px;
+      background-color: #eae8e5; }
+      .join form .message textarea::placeholder {
+        color: #a29061;
+        font-size: 15px; }
     .join form label {
       color: #4a5644; }
     .join form button {
       background-color: #4a5644;
-      border-color: #4a5644; }
+      border-color: #4a5644;
+      transition: 0.3s; }
+      .join form button:hover {
+        border-color: #4a5644;
+        background-color: transparent;
+        color: #4a5644; }
 
 .service-nav {
   background-color: #4a5644; }
@@ -595,6 +646,8 @@ footer {
 #wa-widget-send-button {
   background-color: #4a5644 !important;
   right: 20px !important; }
+  #wa-widget-send-button svg {
+    stroke: #a29061; }
   #wa-widget-send-button div {
     text-decoration: none;
     font-size: 16px !important; }
@@ -630,5 +683,22 @@ a:hover {
 
 .wa-chat-box-content-send-btn {
   background-color: #4a5644 !important; }
+
+/*qr-cpde */
+.qr-code {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4a5644;
+  color: #a29061;
+  border-radius: 0px 10px 10px 0px;
+  font-size: 28px;
+  position: fixed;
+  bottom: 50%;
+  left: 0;
+  cursor: pointer;
+  z-index: 999; }
 
 /*# sourceMappingURL=style-en.css.map */
