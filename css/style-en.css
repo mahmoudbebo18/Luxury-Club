@@ -647,7 +647,8 @@ footer {
   background-color: #4a5644 !important;
   right: 20px !important; }
   #wa-widget-send-button svg {
-    stroke: #a29061; }
+    stroke: #a29061;
+    fill: #a29061; }
   #wa-widget-send-button div {
     text-decoration: none;
     font-size: 16px !important; }
