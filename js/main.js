@@ -37,4 +37,9 @@ $(document).ready(function() {
     $(".navbar-nav .nav-item .nav-link, .dropdown-item").click(function() {
         $(".navbar-collapse").removeClass("show");
     })
+
+
+    $('.show_coupon').on('click', function(){
+        $('.coupon').slideToggle()
+    })
 })
