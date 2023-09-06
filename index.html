@@ -10,8 +10,6 @@
   <title>Luxury Club</title>
   <link rel="stylesheet" href="css/bootstrap.min.css" />
   <link rel="stylesheet" href="css/all.min.css" />
-  <link rel="stylesheet" href="css/aos.css" />
-  <link rel="stylesheet" href="css/hamburgers.min.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -79,8 +77,8 @@
   <!-- Start slider -->
 
   <section class="slider">
-    <div class="shape-left"></div>
-    <div class="shape-right"></div>
+    <!-- <div class="shape-left"></div>
+    <div class="shape-right"></div> -->
     <div class="luxury">
       <h1 class="text-uppercase">the luxury club</h1>
       <div class="gold-link">
@@ -92,11 +90,11 @@
   <!-- // end slider -->
 
   <!-- start about us  -->
-  <section class="about d-flex" id="ab">
+  <section class="about  d-flex" id="ab">
     <!-- Large image container-->
     <div class="main-img aos-init aos-animate" data-aos="fade-left">
-      <img src="imgs/new2.jpg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
+      <!-- <img src="imgs/new2.jpg" /> -->
+      <div class="image-grid main">
         <h2>نبذة عنا</h2>
         <p>
           تطبيق (club luxury The (هو مفهوم جديد كلي
@@ -112,34 +110,24 @@
       </div>
     </div>
     <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
+    <!-- <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
       <div class="first-img">
         <img src="imgs/new3.jpg" />
       </div>
       <div class="second-img">
         <img src="imgs/new4.jpg" />
       </div>
-    </div>
+    </div> -->
   </section>
   <!--  // end about us  -->
 
   <!-- start our message -->
   <section class="about message d-flex" id="ms">
     <!-- large images container-->
-    <div class="main-img aos-init aos-animate" data-aos="fade-right">
-      <img src="imgs/new2.jpg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
+    <div class="main-img">
+      <div class="image-grid -text-text-container">
         <h2>رسالتنا</h2>
         <p>توفير حلول وجودة عالية لتقديم أفضل العروض والخدمات لأعضائنا.</p>
-      </div>
-    </div>
-    <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-      <div class="first-img">
-        <img src="imgs/new3.jpg" />
-      </div>
-      <div class="second-img">
-        <img src="imgs/new4.jpg" />
       </div>
     </div>
   </section>
@@ -149,11 +137,10 @@
 
   <section class="vision about d-flex" id="vi">
     <!-- Large image container-->
-    <div class="main-img aos-init aos-animate" data-aos="fade-left">
-      <img src="imgs/new2.jpg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
+    <div class="main-img ">
+      <div class="image-grid -text-text-container">
         <h2>رؤيتنا</h2>
-        <ul>
+        <ul class="list-unstyled p-0">
           <li>
             العمل على زيادة الخدمات من خلال عقد اتفاقيات وشراكات مع مقدمين
             خدمة مميزين.
@@ -173,24 +160,14 @@
         </ul>
       </div>
     </div>
-    <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
-      <div class="first-img">
-        <img src="imgs/new4.jpg" />
-      </div>
-      <div class="second-img">
-        <img src="imgs/new5.jpg" />
-      </div>
-    </div>
   </section>
   <!--//// end vision-->
 
   <!--  start why us  -->
-  <section class="about why-us d-flex" id="wu">
+  <section class="about our_services d-flex" id="wu">
     <!-- Large image container-->
-    <div class="main-img aos-init aos-animate" data-aos="fade-right">
-      <img src="imgs/pic1.jpeg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
+    <div class="main-img">
+      <div class="image-grid main">
         <h2>لماذا تختار The Luxury Club</h2>
         <p>
           يتميز تطبيق ( The Luxury Club )بتصميم سهل الاستخدام يقدم تجربة فريدة
@@ -198,41 +175,49 @@
           أفضل العلامات التجارية بشكل مستمر ، كما يقدم التطبيق كثيرا من
           الخدمات المميزة منها :
         </p>
-        <ul>
-          <li>خدمة مساعدة على الطريق</li>
-          <li>استشارات قانونية خاصة</li>
-        </ul>
       </div>
-    </div>
-    <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-      <div class="first-img">
-        <img src="imgs/pic2.jpeg" />
+      <div class="row">
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic.jpeg" />
+          <h3> خدمة مساعدة على الطريق </h3>
+        </div>
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic1.jpeg" />
+          <h3> استشارات قانونية خاصة </h3>
+        </div>
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic2.jpeg" />
+          <h3> المساعد الشخصي </h3>
+        </div>
       </div>
-      <div class="second-img">
-        <img src="imgs/ser.jpg" />
-      </div>
+      <a href="services.html">
+        عرض المزيد <i class="fas fa-arrow-left"></i>
+      </a>
     </div>
   </section>
   <!-- End Why Us-->
 
   <!-- start members club -->
-  <section class="about club why-us d-flex" id="mc">
+  <section class="about departments club" id="mc">
     <!-- Large image container-->
-    <div class="main-img aos-init aos-animate" data-aos="fade-right">
-      <img src="imgs/new2.jpg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
-        <h2>نادي الاعضاء</h2>
-
-        <!-- <ul>
-                    <li>مطاعم ومقاهي </li>
-                    <li>براند سعودي</li>
-                    <li> أزياء وعطور</li>
-                    <li> فنادق ومنتجعات</li>
-                    <li> صحة وتجميل</li>
-                    <li>سيارات ومتفرقات</li>
-                </ul> -->
-
+    <h2> الأقسام </h2>
+    <div class="main-img">
+      <div class="image-grid">
+        <div class="icon_container">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-estate" width="28"
+            height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 21h18" />
+            <path d="M19 21v-4" />
+            <path d="M19 17a2 2 0 0 0 2 -2v-2a2 2 0 1 0 -4 0v2a2 2 0 0 0 2 2z" />
+            <path d="M14 21v-14a3 3 0 0 0 -3 -3h-4a3 3 0 0 0 -3 3v14" />
+            <path d="M9 17v4" />
+            <path d="M8 13h2" />
+            <path d="M8 9h2" />
+          </svg>
+        </div>
+        <h4>نادي الاعضاء</h4>
         <p>
           تمنحك عضويتنا الى جانب الخدمات المقدمة من خلالها عروضاَ ومكافاًت
           وخصومات قيًمة لا محدودة طوال فترة الاشتراك لدى شركاءنا التجاريين من
@@ -240,51 +225,35 @@
           باٍزدياد اسبوعياً لتغطي جميع اٍحتياجات الأعضاء واهتماماتهم .
         </p>
       </div>
-    </div>
-    <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-      <div class="first-img">
-        <img src="imgs/new4.jpg" />
-      </div>
-      <div class="second-img">
-        <img src="imgs/new5.jpg" />
+      <div class="image-grid">
+        <div class="icon_container">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users-group" width="28"
+            height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+            <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+            <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+          </svg>
+        </div>
+        <h4>خدمات الاعضاء</h4>
+        <p class="ser-caption">
+          يعتبر (The Luxury Club ) النادي الوحيد في المملكة العربية السعودية
+          والشرق الاوسط الذي يقدم خدمات حصرية رفيعة للعضوية الخاصة إضافة
+          للخصومات والمكافآت الخاصة جدا طوال العام التي يتمتع بها أعضاؤنا من
+          خلال النادي فإن العضوية الخاصة للنادي تمنحكم كثيرا من المميزات
+          وذلك عند إبرازها لدى شركاؤنا ومن أبرز هذه الخدمات.....
+        </p>
+        <!-- <a href="services.html">
+            عرض المزيد <i class="fas fa-arrow-left"></i>
+          </a> -->
       </div>
     </div>
   </section>
   <!-- //// end members club -->
-
-  <!-- start legal -->
-  <section class="about legal why-us d-flex" id="ss">
-    <!-- Large image container-->
-    <div class="main-img aos-init aos-animate" data-aos="fade-right">
-      <img src="imgs/pic1.jpeg" />
-      <div class="image-grid -text-text-container aos-init aos-animate" data-aos="fade-up">
-        <div class="legal-assist">
-          <h2>خدمات الاعضاء</h2>
-          <p class="ser-caption">
-            يعتبر (The Luxury Club ) النادي الوحيد في المملكة العربية السعودية
-            والشرق الاوسط الذي يقدم خدمات حصرية رفيعة للعضوية الخاصة إضافة
-            للخصومات والمكافآت الخاصة جدا طوال العام التي يتمتع بها أعضاؤنا من
-            خلال النادي فإن العضوية الخاصة للنادي تمنحكم كثيرا من المميزات
-            وذلك عند إبرازها لدى شركاؤنا ومن أبرز هذه الخدمات.....
-          </p>
-          <a href="services.html">
-            عرض المزيد <i class="fas fa-arrow-left"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    <!-- small images container-->
-    <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-      <div class="first-img">
-        <img src="imgs/ser1111.jpg" />
-      </div>
-      <div class="second-img">
-        <img src="imgs/pic.jpeg" />
-      </div>
-    </div>
-  </section>
-  <!-- // end legal -->
 
   <!-- QR Code  -->
 
@@ -382,11 +351,7 @@
   <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/aos.js"></script>
   <script src="js/main.js"></script>
-  <script>
-    AOS.init();
-  </script>
 </body>
 
 </html>
