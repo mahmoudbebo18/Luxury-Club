@@ -1,473 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Meta for chorom inspect -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, minimum-scale=1"
-    />
-    <title>Luxury Club</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/all.min.css" />
-    <link rel="stylesheet" href="css/style-en.css" />
-  </head>
 
-  <body>
-    <!-- start Nav -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <a class="navbar-brand" href="index.html">
-        <img
-          src="imgs/logo.svg"
-          width="120px"
-          height="50px"
-          style="object-fit: cover"
-        />
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Meta for chorom inspect -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <title>SANAD</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/all.min.css" />
+  <link rel="stylesheet" href="css/style-en.css" />
+</head>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a data-target="ab" class="nav-link" href="#">
-              About Us <span class="sr-only">(current)</span></a
-            >
-          </li>
+<body>
+  <!-- start Nav -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="index-en.html">
+      <img src="imgs/logo.svg" width="120px" height="50px" style="object-fit: cover" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
 
-          <li class="nav-item">
-            <a data-target="ms" class="nav-link" href="#">Our Message</a>
-          </li>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a data-target="ab" class="nav-link" href="#"> About Us  <span class="sr-only">(current)</span></a>
+        </li>
 
-          <li class="nav-item">
-            <a data-target="vi" class="nav-link" href="#">Our Vesion</a>
-          </li>
-          <li class="nav-item logo-holder" style="padding: 0 !important">
-            <a class="nav-link logo" href="#">
-              <img
-                src="imgs/logo.svg"
-                width="150px"
-                height="80px"
-                style="object-fit: cover"
-              />
+        <li class="nav-item">
+          <a data-target="ms" class="nav-link" href="#">Our Message</a>
+        </li>
+
+        <li class="nav-item">
+          <a data-target="vi" class="nav-link" href="#">Our Vision</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link logo" href="#">
+            <img src="imgs/logo.svg" width="120px" height="50px" style="object-fit: cover" />
+          </a>
+        </li>
+        <li class="nav-item">
+          <a data-target="wu" class="nav-link" href="#"> Why Us  </a>
+        </li>
+        <li class="nav-item">
+          <a data-target="mc" class="nav-link" href="#"> Departments  </a>
+        </li>
+
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            الاقسام
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a data-target="mc" class="dropdown-item" href="#">نادي الاعضاء</a>
+            <a data-target="ss" class="dropdown-item" href="#">
+              خدمات الاعضاء</a>
+          </div>
+        </li> -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <img src="imgs/england.png" width="20px" height="20px" />English
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="index.html">
+              <img src="imgs/arabic-flag.png" width="20px" height="20px" />Arabic
             </a>
-          </li>
-          <li class="nav-item">
-            <a data-target="wu" class="nav-link" href="#">Why Us </a>
-          </li>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Devisions
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a data-target="mc" class="dropdown-item" href="#"
-                >Members Club
-              </a>
-              <a data-target="ss" class="dropdown-item" href="services-en.html">
-                Members Services</a
-              >
-            </div>
+  <!--// End nav-->
+
+  <!-- Start slider -->
+
+  <section class="slider">
+    <!-- <div class="shape-left"></div>
+    <div class="shape-right"></div> -->
+    <div class="luxury">
+      <h1 class="text-uppercase"> SANAD APP  </h1>
+      <div class="gold-link">
+        <span class="gold-line gold-left"></span><a class="fancybox lsb-text-overlay-link" href="#"> Show More   </a><span
+          class="gold-line gold-right"></span>
+      </div>
+    </div>
+  </section>
+  <!-- // end slider -->
+
+  <!-- start about us  -->
+  <section class="about  d-flex" id="ab">
+    <!-- Large image container-->
+    <div class="main-img aos-init aos-animate" data-aos="fade-left">
+      <!-- <img src="imgs/new2.jpg" /> -->
+      <div class="image-grid main">
+        <h2> About Us </h2>
+        <p>
+          anad is a completely new concept in the world of technology, as it is an
+          electronic club that is considered one of the most important applications for services and offers that
+          support smart phone devices, both
+          Android and iOS. Sanad is distinguished by serving subscribers by
+          providing the best offers from international stores, hotels, and restaurants in exchange for subscription.
+          Sanad itself also provides services.
+          Especially in the legal field, where it provides lawyers and a legal team
+          to subscribers to serve them, in addition to roadside assistance service
+          in the event of a member’s vehicle breakdown, as well as a personal
+          assistant to meet the members’ needs and satisfy them by saving effort
+          and money
+        </p>
+      </div>
+    </div>
+    <!-- small images container-->
+    <!-- <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
+      <div class="first-img">
+        <img src="imgs/new3.jpg" />
+      </div>
+      <div class="second-img">
+        <img src="imgs/new4.jpg" />
+      </div>
+    </div> -->
+  </section>
+  <!--  // end about us  -->
+
+  <!-- start our message -->
+  <section class="about message d-flex" id="ms">
+    <!-- large images container-->
+    <div class="main-img">
+      <div class="image-grid -text-text-container">
+        <h2>Our Message </h2>
+        <p>
+          Provision of high-quality solutions and services to provide our customers with the best deals and services.
+        </p>
+      </div>
+    </div>
+  </section>
+  <!---/// End about us -->
+
+  <!-- start visiion -->
+
+  <section class="vision about d-flex" id="vi">
+    <!-- Large image container-->
+    <div class="main-img ">
+      <div class="image-grid -text-text-container">
+        <h2>Our Vision </h2>
+        <ul class="list-unstyled p-0">
+          <li>
+            Seeking the increase of services by concluding agreements and building partnerships with distinguished
+            service providers.
           </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <img src="imgs/england.png" width="20px" height="20px" />English
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="index.html">
-                <img
-                  src="imgs/arabic-flag.png"
-                  width="20px"
-                  height="20px"
-                />Arabic
-              </a>
-            </div>
+          <li>
+            Reaching leadership and becoming the first choice in Kuwait.
+
+          </li>
+          <li>
+            Working to attract the best international companies as partners in order to provide the best offers and
+            rewards to subscribers.
+
+          </li>
+          <li>
+            Hiring the best highly skilled staff to provide the best quality services to subscribers.
+
           </li>
         </ul>
       </div>
-    </nav>
+    </div>
+  </section>
+  <!--//// end vision-->
 
-    <!--// End nav-->
-
-    <!-- Start slider -->
-
-    <section class="slider">
-      <!-- <div class="shape-left"></div>
-      <div class="shape-right"></div> -->
-      <div class="luxury">
-        <h1 class="text-uppercase">the luxury club</h1>
-        <div class="gold-link">
-          <span class="gold-line gold-left"></span
-          ><a class="fancybox lsb-text-overlay-link" href="#"> Show More </a
-          ><span class="gold-line gold-right"></span>
+  <!--  start why us  -->
+  <section class="about our_services d-flex" id="wu">
+    <!-- Large image container-->
+    <div class="main-img">
+      <div class="image-grid main">
+        <h2> Why SANAD? </h2>
+        <p>
+          SANAD is distinguished by an easy-to-use interface that provides Subscribers with a unique experience in
+          providing anything that is
+          distinctive and unique and consistently offering the latest deals and services of the best brands, and the
+          application also offers many
+          distinctive services, including:
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic.jpeg" />
+          <h3>Roadside Assistance </h3>
+        </div>
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic1.jpeg" />
+          <h3>Legal Advice </h3>
+        </div>
+        <div class="col-md-4">
+          <img class="w-100" src="imgs/pic2.jpeg" />
+          <h3> Offers and rewards </h3>
         </div>
       </div>
-    </section>
-    <!-- // end slider -->
+      <a href="services-en.html">
+        Show More<i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+  <!-- End Why Us-->
 
-    <!-- start about us  -->
-    <section class="about d-flex" id="ab">
-      <!-- Large image container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-left">
-        <!-- <img src="imgs/new2.jpg" /> -->
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>About Us</h2>
-          <p>
-            In the world of technology, the Luxury Club App is a new and
-            emerging concept, as it is an electronic club and one of the most
-            popular services, offers, and deals apps that support both Android
-            and IOS smartphone devices. The club is distinguished by serving
-            members by offering the best deals from global markets, hotels, and
-            restaurants in return for club membership. The club also offers
-            special services even in the legal field as it can provide lawyers
-            and a legal team for its members to help them, in addition to
-            roadside assistance in case of members' cars breaking down and the
-            personal assistant to meet all the needs of members and spare them
-            money and effort.
-          </p>
+  <!-- start members club -->
+  <section class="about departments club" id="mc">
+    <!-- Large image container-->
+    <h2> Departments </h2>
+    <div class="main-img">
+      <div class="image-grid">
+        <div class="icon_container">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-award" width="28" height="28"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 9m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0" />
+            <path d="M12 15l3.4 5.89l1.598 -3.233l3.598 .232l-3.4 -5.889" />
+            <path d="M6.802 12l-3.4 5.89l3.598 -.233l1.598 3.232l3.4 -5.889" />
+          </svg>
         </div>
+        <h4> Offers and Rewards  </h4>
+        <p>
+          Our membership, in addition to the services provided through it, 
+          gives you unlimited valuable offers, rewards and discounts 
+          throughout the subscription period with our trading partners 
+          through their points of sale, with an emphasis on updating the list 
+          of partners with increasing weekly to cover all Subscribers needs 
+          and interests.
+        </p>
       </div>
-      <!-- small images container-->
-      <!-- <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
-        <div class="first-img">
-          <img src="imgs/new3.jpg" />
+      <div class="image-grid">
+        <div class="icon_container">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users-group" width="28"
+            height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+            <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+            <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+            <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+          </svg>
         </div>
-        <div class="second-img">
-          <img src="imgs/new4.jpg" />
-        </div>
-      </div> -->
-    </section>
-    <!--  // end about us  -->
-
-    <!-- start our message -->
-    <section class="about message d-flex" id="ms">
-      <!-- large images container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-right">
-        <img src="imgs//new2.jpg" />
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>Our Message</h2>
-          <p>
-            Provision of high-quality solutions and services to provide our
-            customers with the best deals and services
-          </p>
-        </div>
-      </div>
-      <!-- small images container-->
-      <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-        <div class="first-img">
-          <img src="imgs/new3.jpg" />
-        </div>
-        <div class="second-img">
-          <img src="imgs/new4.jpg" />
-        </div>
-      </div>
-    </section>
-    <!---/// End about us -->
-
-    <!-- start visiion -->
-
-    <section class="vision about d-flex" id="vi">
-      <!-- Large image container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-left">
-        <img src="imgs/new2.jpg" />
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>Our Vision</h2>
-          <ul>
-            <li>
-              Seeking the increase of services by concluding agreements and
-              building partnerships with distinguished service providers.
-            </li>
-            <li>
-              Reaching leadership and becoming the first choice in the Kingdom
-              of Saudi Arabia.
-            </li>
-            <li>
-              Attracting the best worldwide enterprises as partners to offer the
-              best deals and rewards for the club members.
-            </li>
-            <li>
-              Hiring the best highly skilled staff to provide club members with
-              the best quality services.
-            </li>
-          </ul>
-        </div>
-      </div>
-      <!-- small images container-->
-      <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
-        <div class="first-img">
-          <img src="imgs/new4.jpg" />
-        </div>
-        <div class="second-img">
-          <img src="imgs/new5.jpg" />
-        </div>
-      </div>
-    </section>
-    <!--//// end vision-->
-
-    <!--  start why us  -->
-    <section class="about why-us d-flex" id="wu">
-      <!-- Large image container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-right">
-        <img src="imgs/pic1.jpeg" />
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>Why Luxury Club ?</h2>
-          <p>
-            The luxury club app is distinguished by an easy-to-use interface
-            that provides members with a unique experience in providing anything
-            that is distinctive and unique and consistently offering the latest
-            deals and services of the best brands, and the application also
-            offers many distinctive services, including:
-          </p>
-          <ul>
-            <li>Roadside Assistance</li>
-            <li>Legal aid and advice.</li>
-            
-          </ul>
-        </div>
-      </div>
-      <!-- small images container-->
-      <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-        <div class="first-img">
-          <img src="imgs/pic2.jpeg" />
-        </div>
-        <div class="second-img">
-          <img src="imgs/ser.jpg" />
-        </div>
-      </div>
-    </section>
-    <!-- End Why Us-->
-    <!-- start members club -->
-    <section class="about club why-us d-flex" id="mc">
-      <!-- Large image container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-right">
-        <img src="imgs/new2.jpg" />
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>Members Club</h2>
-
-          <!-- <ul>
-            <li>Restaurants and Cafes</li>
-            <li>Saudi Brands</li>
-            <li>Fashion and PerfumesHotels and Resorts</li>
-            <li>Hotels and Resorts</li>
-            <li>Health and Beauty</li>
-            <li>Cars and other services</li>
-          </ul> -->
-          <p>
-            Our membership, in addition to the services provided through it,
-            gives you unlimited valuable offers, rewards and discounts
-            throughout the subscription period with our trading partners through
-            its points of sale, with an emphasis on updating the list of
-            partners with increasing weekly to cover all members’ needs and
-            interests.
-          </p>
-        </div>
-      </div>
-      <!-- small images container-->
-      <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-left">
-        <div class="first-img">
-          <img src="imgs/new4.jpg" />
-        </div>
-        <div class="second-img">
-          <img src="imgs/new5.jpg" />
-        </div>
-      </div>
-    </section>
-    <!-- //// end members club -->
-    <!-- member services -->
-
-    <section class="vision services about d-flex" id="ss">
-      <!-- Large image container-->
-      <div class="main-img aos-init aos-animate" data-aos="fade-left">
-        <img src="imgs/pic1.jpeg" />
-        <div
-          class="image-grid -text-text-container aos-init aos-animate"
-          data-aos="fade-up"
-        >
-          <h2>Members Services</h2>
-          <p>
-            The Luxury club is the only application in the Kingdom of Saudi
-            Arabia and the Middle East that offers unique premium membership
-            services in addition to very exclusive discounts and rewards during
-            the year that our members enjoy through the club. The premium
-            membership of the club gives you many advantages when you present
-            the club membership to our partners and the most prominent of these
-            services:
-          </p>
-          <a href="services-en.html">
+        <h4> Subscribers Services  </h4>
+        <p class="ser-caption">
+          Sanad is considered the only one in Kuwait and the Middle East that 
+          provides exclusive, high-end services for private membership, in 
+          addition to the very special discounts and rewards throughout the 
+          year that subscribers enjoy. It gives you many advantages when you 
+          present Sanad membership with our partners, and the most prominent of these services are ... 
+        </p>
+        <a class="more_services" href="services-en.html">
             Show More <i class="fas fa-arrow-right"></i>
           </a>
-        </div>
       </div>
-      <!-- small images container-->
-      <div class="sub-img d-flex aos-init aos-animate" data-aos="fade-right">
-        <div class="first-img">
-          <img src="imgs/ser1111.jpg" />
+    </div>
+  </section>
+  <!-- //// end members club -->
+
+  <!-- QR Code  -->
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">امسح الكود </h5>
+          <button type="button" class="close m-0 p-0" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="second-img">
-          <img src="imgs/pic.jpeg" />
+        <div class="modal-body text-center" style="background-color: #f1f1f1;">
+          <img width="250" height="250" src="imgs/QR.png" alt="">
         </div>
-      </div>
-    </section>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            اغلاق
+          </button>
 
-    <!--/// End member services -->
-
-    <!-- QR Code  -->
-
-    <span class="qr-code" data-toggle="modal" data-target="#qrModal">
-      <i class="fas fa-qrcode"></i>
-    </span>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="qrModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="qrModalTitle"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Scan The Code  </h5>
-            <button
-              type="button"
-              class="close m-0 p-0"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body text-center" style="background-color: #f1f1f1;">
-            <img width="250" height="250" src="imgs/QR.png" alt="">
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-
-          </div>
         </div>
       </div>
     </div>
-    <!-- footer-->
-    <footer>
-      <div class="footer-cont">
-        <h3>Download The App </h3>
-        <div class="download d-flex">
-          <img src="imgs/app.svg" width="200px" height="60px" />
-          <img src="imgs/google.png" width="200px" height="60px" />
-        </div>
-        <h2 class="h1 text-uppercase">the <span>luxury club</span></h2>
+  </div>
 
-        <div class="social">
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="my-qr " data-toggle="modal" data-target="#qrModal">
-            <i class="fas fa-qrcode"></i>
-          </a>
-          luxuryclub_sa
-        </div>
-        <div class="site-url">
-          <a href="terms .html"> Terms And Conditions </a> -
-          <a href="club-rules.html">Club Rules</a>
-        </div>
-        <div class="site-url">
-          <a href="mailto:info@the-luxury-club.com"> info@the-luxury-club.com </a> -
-          <a target="_blank" href="www.the-luxury-club.com"> www.the-luxury-club.com</a>
-        </div>
+  <!-- footer-->
+  <footer>
+    <div class="footer-cont">
+      <h2 class="h1 text-uppercase">By <br> the <span>luxury</span> club </h2>
+      <div class="site-url">
+        <span> +965 98 584 312 </span>
+        <a href="mailto:info@the-luxury-club.com"> info@the-luxury-club.com </a> -
+        <a target="_blank" href="www.the-luxury-club.com"> www.the-luxury-club.com</a>
       </div>
-    </footer>
+    </div>
+  </footer>
+  <!-- whatsapp -->
+  <script>
+    var url =
+      "https://wati-integration-service.clare.ai/ShopifyWidget/shopifyWidget.js?22485";
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = url;
+    var options = {
+      enabled: true,
+      chatButtonSetting: {
+        backgroundColor: "#4dc247",
+        ctaText: "اترك رسالة",
+        borderRadius: "5",
+        marginRight: "0",
+        marginBottom: "40",
+        marginLeft: "40",
+        position: "left",
+      },
+      brandSetting: {
+        brandName: "سنـــد",
+        brandSubTitle: "Typically replies within a day",
+        brandImg: "https://i.ibb.co/3dQNSj4/logo.png",
+        welcomeText: "مرحبا!\nكيف يمكنني مساعدتك؟",
+        messageText: "مرحبا, لدي استفسار بشأن {{page_title}}",
+        backgroundColor: "#0a5f54",
+        ctaText: "ابدأ المحادثة",
+        borderRadius: "25",
+        autoShow: false,
+        phoneNumber: "966508039835",
+      },
+    };
+    s.onload = function () {
+      CreateWhatsappChatWidget(options);
+    };
+    var x = document.getElementsByTagName("script")[0];
+    x.parentNode.insertBefore(s, x);
+  </script>
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
 
-    <!-- End Footer -->
-
-    <script>
-      var url =
-        "https://wati-integration-service.clare.ai/ShopifyWidget/shopifyWidget.js?22485";
-      var s = document.createElement("script");
-      s.type = "text/javascript";
-      s.async = true;
-      s.src = url;
-      var options = {
-        enabled: true,
-        chatButtonSetting: {
-          backgroundColor: "#4dc247",
-          ctaText: "Send A Message",
-          borderRadius: "5",
-          marginLeft: "0",
-          marginBottom: "40",
-          marginRight: "40",
-          position: "right",
-        },
-        brandSetting: {
-          brandName: "Luxury Club",
-          brandSubTitle: "Typically replies within a day",
-          brandImg: "https://i.ibb.co/3dQNSj4/logo.png",
-          welcomeText: "Hi there!\nHow can I help you?",
-          messageText: "Hello, I have a question about {{page_title}}",
-          backgroundColor: "#0a5f54",
-          ctaText: "Start Chat",
-          borderRadius: "25",
-          autoShow: false,
-          phoneNumber: "966508039835",
-        },
-      };
-      s.onload = function () {
-        CreateWhatsappChatWidget(options);
-      };
-      var x = document.getElementsByTagName("script")[0];
-      x.parentNode.insertBefore(s, x);
-    </script>
-
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
-  </body>
 </html>

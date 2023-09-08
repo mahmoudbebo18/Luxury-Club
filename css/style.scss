@@ -17,14 +17,15 @@
 }
 
 // global vars
-$main: #782f3e;
-$mainHead: #a29061;
-$darkBg: #4a5644;
+$luxury: #a29061;
 
+$mainHead: #8fb4c2;
+$darkBg: #1e4c5e;
+$mutedText: #59595b;
 
-$semi:"Cairo-SemiBold";
-$bold:"Cairo-Bold";
-$regular:"Cairo-Regular";
+$semi: "Cairo-SemiBold";
+$bold: "Cairo-Bold";
+$regular: "Cairo-Regular";
 
 body {
   font-family: $regular !important;
@@ -33,6 +34,7 @@ body {
   scroll-behavior: smooth;
   direction: rtl;
   text-align: start;
+  color: $mutedText;
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -127,7 +129,7 @@ body {
         .dropdown-item {
           color: #fff;
           transition: 0.3s;
-          text-align: right;
+          text-align: start;
           margin-bottom: 8px;
 
           &:hover {
@@ -140,7 +142,7 @@ body {
 
     .nav-item.dropdown {
       img {
-        margin-left: 5px;
+        margin-inline-end: 5px;
         object-fit: cover;
       }
     }
@@ -265,7 +267,7 @@ body {
 
       a.lsb-text-overlay-link {
         font-weight: bold;
-        color: #a29061;
+        color: $mainHead;
         letter-spacing: 1.25px;
         text-transform: uppercase;
         font-size: 18px;
@@ -296,7 +298,7 @@ body {
       background: #eae8e5;
 
       h2 {
-        color: $mainHead;
+        color: $darkBg;
         font-size: 45px;
         margin-bottom: 0;
 
@@ -347,6 +349,10 @@ body {
       background-color: transparent;
       text-align: center;
 
+      h2 {
+        color: $mainHead;
+      }
+
       p {
         color: #fff;
       }
@@ -385,6 +391,7 @@ body {
         align-items: center;
         color: rgb(74, 86, 68);
         font-family: $semi;
+
         @media (max-width: 767px) {
           font-size: 18px;
           flex-basis: 100%;
@@ -400,9 +407,10 @@ body {
 
   h2 {
     font-size: 45px;
-    color: $mainHead;
+    color: $darkBg;
     text-align: center;
     margin-bottom: 50px;
+
     @media (max-width: 1200px) {
       font-size: 36px;
     }
@@ -425,15 +433,18 @@ body {
       border-top: 1px solid #ccc;
       position: relative;
       padding: 50px 16px;
-      @media(max-width:767px){
+
+      @media(max-width:767px) {
         flex-basis: 100%;
         margin-bottom: 55px;
       }
-      &:last-child{
-        @media(max-width:767px){
+
+      &:last-child {
+        @media(max-width:767px) {
           margin: 0;
         }
       }
+
       .icon_container {
         width: 60px;
         height: 60px;
@@ -446,38 +457,55 @@ body {
         top: -30px;
         right: 50%;
         transform: translateX(50%);
-       
+
       }
-      h4{
+
+      h4 {
         font-size: 24px;
         font-family: $bold;
         color: $mainHead;
         margin-bottom: 24px;
-       
+
       }
-      p{
+
+      p {
         font-size: 18px;
       }
     }
   }
+  .more_services {
+    background-color: $darkBg;
+    color: $mainHead;
+    padding: 6px 16px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 16px;
+    font-weight: 600;
+
+    i {
+        margin-inline-start: 6px;
+    }
+}
 }
 
-.our_services{
-  background-color: #fff  !important;
-  .main-img{
-    .image-grid{
+.our_services {
+  background-color: #fff !important;
+
+  .main-img {
+    .image-grid {
       background-color: #fff;
       margin-bottom: 50px;
     }
   }
+
   a {
     color: $darkBg;
     display: inline-block;
     margin-top: 40px;
     text-decoration: none;
     padding: 10px 25px;
-    background-color: #4a5644;
-    color: #a29061;
+    background-color: $darkBg;
+    color: $mainHead;
     transition: 0.3s;
     display: block;
     width: fit-content;
@@ -496,28 +524,33 @@ body {
     }
 
     i {
-      margin-right: 5px;
+      margin-inline-start: 5px;
     }
   }
-  .row{
-    .col-md-4{
-      @media(max-width:767px){
+
+  .row {
+    .col-md-4 {
+      @media(max-width:767px) {
         margin-bottom: 24px;
       }
     }
-    img{
+
+    img {
       height: 420px;
       object-fit: cover;
-      @media(max-width:991px){
+
+      @media(max-width:991px) {
         height: 250px;
       }
     }
-    h3{
+
+    h3 {
       font-family: $bold;
       color: $darkBg;
       margin-top: 16px;
       font-size: 24px;
-      @media(max-width:767px){
+
+      @media(max-width:767px) {
         font-size: 20px;
       }
     }
@@ -629,15 +662,12 @@ footer {
     }
 
     h2 {
-      color: #fff;
-      margin-top: 16px;
-
-      @media (max-width: 575px) {
-        font-size: 24px;
-      }
+      color: $mainHead;
+      text-align: center;
+      font-size: 24px;
 
       span {
-        color: $mainHead;
+        font-weight: bold;
       }
     }
 
@@ -660,8 +690,12 @@ footer {
     }
 
     .site-url {
-      margin-top: 16px;
       color: $mainHead;
+      text-align: center;
+
+      span {
+        display: block;
+      }
 
       a {
         color: $mainHead;
@@ -723,9 +757,10 @@ footer {
       h4 {
         margin-top: 24px;
         font-size: 32px;
-        font-family: cairo;
+        font-family: $bold;
         font-weight: bold;
         margin-bottom: 0;
+        color: $darkBg;
 
         @media(max-width:767px) {
           font-size: 24px;
@@ -742,9 +777,9 @@ footer {
       .service {
         margin-top: 25px;
         padding: 10px;
-        box-shadow: 0 0 5px #c3c3c3;
+        box-shadow: 0 0 5px $mainHead;
         border-radius: 5px;
-        background-color: rgba(151, 116, 71, 30%);
+        background-color: $darkBg;
 
         .coupon {
           display: flex;
@@ -753,7 +788,7 @@ footer {
           display: none;
 
           input {
-            border: 1px solid $darkBg;
+            border: 1px solid $mainHead;
             border-radius: 0 8px 8px 0;
             padding: 6px;
             height: 40px;
@@ -763,8 +798,8 @@ footer {
 
           button {
             border: none;
-            background-color: $darkBg;
-            color: #fff;
+            background-color: $mainHead;
+            color: $darkBg;
             padding: 6px;
             outline: none;
             height: 40px;
@@ -785,11 +820,12 @@ footer {
         p {
           font-size: 14px;
           margin: 0;
+          color: #fff;
         }
 
         .pay {
-          background-color: $darkBg;
-          color: #fff;
+          background-color: $mainHead;
+          color: $darkBg;
           border: none;
           margin-top: 16px;
           padding: 12px 64px;
@@ -825,6 +861,27 @@ footer {
       right: 0;
       box-shadow: 0 0 5px #aba9a9;
       margin-bottom: 24px;
+
+      .service {
+        ul {
+          padding: 0;
+          display: block;
+          margin-top: 16px;
+          li {
+            padding: 0;
+            border-radius: 0;
+            background-color: transparent;
+            text-align: start;
+            font-size: 20px;
+            flex-basis: 49%;
+            margin-bottom: 12px;
+            box-shadow: none;
+            display: block;
+            color: #8fb4c2;
+            font-family: "Cairo-SemiBold";
+          }
+        }
+      }
 
       &::after {
         display: none;
