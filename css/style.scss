@@ -80,7 +80,7 @@ body {
     justify-content: space-around;
 
     @media (max-width: 991px) {
-      background-color: $darkBg;
+      background-color: $mainHead;
 
       .nav-item {
         padding: 10px !important;
@@ -173,10 +173,11 @@ body {
   }
 
   .navbar-toggler {
-    border-color: $mainHead;
+    border-color: $darkBg;
+    outline: none !important;
 
     i {
-      color: $mainHead;
+      color: $darkBg;
     }
   }
 }
@@ -184,7 +185,7 @@ body {
 .logo {
   img {
     width: 150px !important;
-    height: 60px !important;
+    height: 80px !important;
   }
 }
 
@@ -248,6 +249,7 @@ body {
   }
 
   .luxury {
+    text-align: center;
     z-index: 234;
     color: $mainHead;
     letter-spacing: 1.25px;
@@ -695,6 +697,8 @@ footer {
 
       span {
         display: block;
+        direction: ltr;
+        margin-bottom: 6px;
       }
 
       a {
@@ -720,6 +724,11 @@ footer {
   }
 }
 
+.logo-holder{
+  @media(max-width:991px){
+    display: none !important;
+  }
+}
 // services page
 .ser-page {
   .main-img {
@@ -739,11 +748,19 @@ footer {
       right: 0;
       direction: rtl;
       text-align: right;
-
+      @media(max-width:767px){
+        width: 100%;
+        padding: 0 0 16px 0;
+        box-shadow: none;
+      }
       &::after {
         display: none;
       }
-
+      h2{
+        @media(max-width:767px){
+            margin-bottom: 32px !important;
+        }
+    }
       .ser-caption {
         font-size: 15px;
         line-height: 28px;

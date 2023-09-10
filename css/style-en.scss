@@ -80,7 +80,7 @@ body {
         justify-content: space-around;
 
         @media (max-width: 991px) {
-            background-color: $darkBg;
+            background-color: $mainHead;
 
             .nav-item {
                 padding: 10px !important;
@@ -173,10 +173,11 @@ body {
     }
 
     .navbar-toggler {
-        border-color: $mainHead;
+        border-color: $darkBg;
+        outline: none !important;
 
         i {
-            color: $mainHead;
+            color: $darkBg;
         }
     }
 }
@@ -184,7 +185,7 @@ body {
 .logo {
     img {
         width: 150px !important;
-        height: 60px !important;
+        height: 80px !important;
     }
 }
 
@@ -248,6 +249,7 @@ body {
     }
 
     .luxury {
+        text-align: center;
         z-index: 234;
         color: $mainHead;
         letter-spacing: 1.25px;
@@ -656,6 +658,7 @@ footer {
         align-items: center;
         justify-content: center;
         flex-direction: column;
+
         h3 {
             color: #fff;
             margin-bottom: 32px;
@@ -665,6 +668,7 @@ footer {
             color: $mainHead;
             text-align: center;
             font-size: 24px;
+
             span {
                 font-weight: bold;
             }
@@ -694,6 +698,7 @@ footer {
 
             span {
                 display: block;
+                margin-bottom: 6px;
             }
 
             a {
@@ -718,10 +723,15 @@ footer {
         }
     }
 }
-
+.logo-holder{
+    @media(max-width:991px){
+      display: none !important;
+    }
+  }
 // services page
 .ser-page {
     text-align: start;
+
     .main-img {
         flex-basis: 100% !important;
         height: auto !important;
@@ -740,14 +750,25 @@ footer {
             direction: rtl;
             text-align: right;
 
+            @media(max-width:767px) {
+                width: 100%;
+                padding: 0 0 16px 0;
+                box-shadow: none;
+            }
+
             &::after {
                 display: none;
             }
-
+            h2{
+                @media(max-width:767px){
+                    margin-bottom: 32px !important;
+                }
+            }
             .ser-caption {
                 font-size: 18px;
                 line-height: 28px;
                 text-align: center;
+
                 @media (max-width: 425px) {
                     font-size: 15px;
                     line-height: 25px;
@@ -761,6 +782,7 @@ footer {
                 font-weight: bold;
                 margin-bottom: 0;
                 color: $darkBg;
+
                 @media(max-width:767px) {
                     font-size: 24px;
                 }
@@ -788,7 +810,7 @@ footer {
 
                     input {
                         border: 1px solid $mainHead;
-                        border-radius: 8px 0 0  8px;
+                        border-radius: 8px 0 0 8px;
                         padding: 6px;
                         height: 40px;
                         outline: none;
@@ -803,7 +825,7 @@ footer {
                         outline: none;
                         height: 40px;
                         font-family: $semi;
-                        border-radius: 0px  8px 8px 0;
+                        border-radius: 0px 8px 8px 0;
                         margin-inline-start: -4px;
                         cursor: pointer;
 
@@ -834,13 +856,15 @@ footer {
                 }
             }
         }
-        .image-grid{
-            .service{
-                ul{
+
+        .image-grid {
+            .service {
+                ul {
                     padding: 0;
                     display: block;
                     margin-top: 16px;
-                    li{
+
+                    li {
                         padding: 0;
                         border-radius: 0;
                         background-color: transparent;
