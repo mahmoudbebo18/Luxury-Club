@@ -81,7 +81,7 @@ body::-webkit-scrollbar-thumb {
   right: 7px;
   width: 0px;
   height: 2px;
-  background-color: #8fb4c2;
+  background-color: #1e4c5e;
   transition: 0.3s;
 }
 @media (max-width: 991px) {
@@ -90,7 +90,7 @@ body::-webkit-scrollbar-thumb {
   }
 }
 .navbar .navbar-nav .nav-item .nav-link:hover {
-  color: #8fb4c2;
+  color: #1e4c5e;
 }
 .navbar .navbar-nav .nav-item .nav-link:hover::before {
   width: 95%;
@@ -119,7 +119,7 @@ body::-webkit-scrollbar-thumb {
      object-fit: cover;
 }
 .navbar .navbar-nav .nav-item.active .nav-link {
-  color: #8fb4c2;
+  color: #1e4c5e;
 }
 .navbar .navbar-nav .nav-item.active .nav-link::before {
   width: 95%;
@@ -177,7 +177,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .navbar.navBg {
-  background-color: #1e4c5e;
+  background-color: #8fb4c2;
   color: #000;
 }
 
@@ -647,6 +647,7 @@ footer .footer-cont .site-url a {
 .ser-page .main-img .image-grid.from-ser-page .ser-caption {
   font-size: 15px;
   line-height: 28px;
+  text-align: center;
 }
 @media (max-width: 425px) {
   .ser-page .main-img .image-grid.from-ser-page .ser-caption {

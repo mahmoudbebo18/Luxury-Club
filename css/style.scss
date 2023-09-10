@@ -102,7 +102,7 @@ body {
           right: 7px;
           width: 0px;
           height: 2px;
-          background-color: $mainHead;
+          background-color: $darkBg;
           transition: 0.3s;
 
           @media (max-width: 991px) {
@@ -111,7 +111,7 @@ body {
         }
 
         &:hover {
-          color: $mainHead;
+          color: $darkBg;
 
           &::before {
             width: 95%;
@@ -148,7 +148,7 @@ body {
     }
 
     .nav-item.active .nav-link {
-      color: $mainHead;
+      color: $darkBg;
 
       &::before {
         width: 95%;
@@ -221,7 +221,7 @@ body {
 
 // the active class
 .navbar.navBg {
-  background-color: $darkBg;
+  background-color: $mainHead;
   color: #000;
 }
 
@@ -747,7 +747,7 @@ footer {
       .ser-caption {
         font-size: 15px;
         line-height: 28px;
-
+        text-align: center;
         @media (max-width: 425px) {
           font-size: 15px;
           line-height: 25px;
