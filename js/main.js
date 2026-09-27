@@ -24,11 +24,12 @@ $('.fancybox').click(function(e) {
 
 $(document).ready(function() {
     $(".navbar-nav .nav-item .nav-link, .dropdown-item").click(function(e) {
-        //$(this).parent().addClass("act").siblings().removeClass("act");
+        // Only in-page links have a data-target; links to other pages navigate normally.
+        var target = $("#" + $(this).data("target"));
+        if (!target.length) return;
+        e.preventDefault();
         $("body, html").animate({
-                // scrollTop = divId.offset().top
-                scrollTop: $("#" + $(this).data("target")).offset().top - 100
-
+                scrollTop: target.offset().top - 100
             },
             800
         );

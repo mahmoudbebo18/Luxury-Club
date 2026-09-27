@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Paste these rules in Firebase console > Firestore Database > Rules.
+// Anyone can read the members counter, and the website can only add 1 to it.
+// Nobody can create, reset or delete it from the browser.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /stats/members {
+      allow read: if true;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+                    && request.resource.data.count == resource.data.count + 1;
+    }
+  }
+}
