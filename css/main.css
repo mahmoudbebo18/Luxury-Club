@@ -178,6 +178,10 @@ ol {
   }
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 .section {
   padding-block: clamp(72px, 9vw, 128px);
 }
@@ -686,13 +690,14 @@ ol {
 
 .hero h1 {
   margin-top: 22px;
-  font-size: clamp(2.3rem, 1.25rem + 3.9vw, 4.1rem);
-  line-height: 1.28;
+  font-size: clamp(1.9rem, 1.2rem + 2.5vw, 3.3rem);
+  line-height: 1.35;
 }
 
 [lang=en] .hero h1 {
+  font-size: clamp(1.75rem, 1.1rem + 2.2vw, 2.9rem);
   letter-spacing: -0.02em;
-  line-height: 1.12;
+  line-height: 1.15;
 }
 
 .text-accent {
@@ -1766,6 +1771,10 @@ ol {
   margin-top: 12px;
   font-size: 1.08rem;
 }
+.service-row-body > .service-row-note {
+  margin-top: 18px;
+  color: var(--muted);
+}
 
 .check-list {
   display: grid;
@@ -1919,6 +1928,7 @@ ol {
   border: 1px solid rgba(201, 169, 110, 0.35);
   color: var(--gold-300);
   font-size: 0.85rem;
+  white-space: nowrap;
   direction: ltr;
 }
 
