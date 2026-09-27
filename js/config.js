@@ -10,7 +10,7 @@ window.DASMAN_CONFIG = {
   // Copy apiKey and projectId from Firebase console > Project settings > Your apps.
   // Leave them empty to hide the counter.
   firebase: {
-    apiKey: "",
-    projectId: ""
-  }
+    apiKey: "AIzaSyDrIyYY2RAAu6p6UqQYvhtWhsy6mw-Vl_A",
+    projectId: "dasman-48189",
+  },
 };
