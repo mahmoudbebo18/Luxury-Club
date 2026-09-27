@@ -61,7 +61,9 @@
   <div class="drawer-backdrop" data-drawer-close></div>
   <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
     <div class="drawer-head">
-      <img src="imgs/dasman-logo.png" alt="DASMAN" width="77" height="42" />
+      <a class="drawer-brand" href="index-en.html" aria-label="DASMAN home">
+        <img src="imgs/dasman-logo.png" alt="DASMAN" width="77" height="42" />
+      </a>
       <button class="drawer-close" type="button" data-drawer-close aria-label="Close menu">
         <svg class="icon" aria-hidden="true"><use href="imgs/icons.svg#i-close" /></svg>
       </button>
@@ -302,6 +304,33 @@
       <a href="services.html" hreflang="ar" lang="ar">العربية</a>
     </div>
   </footer>
+
+  <!-- WhatsApp chat -->
+  <div class="wa-chat" data-wa>
+    <span class="wa-label" aria-hidden="true">Chat with us</span>
+    <div class="wa-panel" id="waPanel" role="dialog" aria-label="Chat with us on WhatsApp" aria-hidden="true">
+      <div class="wa-panel-head">
+        <img src="imgs/dasman.jpeg" alt="" width="46" height="46" loading="lazy" />
+        <div>
+          <strong>DASMAN</strong>
+          <span class="wa-status"><span class="wa-dot"></span>Typically replies within a day</span>
+        </div>
+        <button class="wa-close" type="button" data-wa-close aria-label="Close chat">
+          <svg class="icon" aria-hidden="true"><use href="imgs/icons.svg#i-close" /></svg>
+        </button>
+      </div>
+      <div class="wa-panel-body">
+        <p class="wa-bubble">Welcome to DASMAN!<br />How can we help you?</p>
+        <a class="wa-start" href="https://wa.me/966558103228" target="_blank" rel="noopener" data-wa-message="Hello, I have a question about DASMAN membership">
+          <svg class="icon" aria-hidden="true"><use href="imgs/icons.svg#i-whatsapp" /></svg>Start conversation
+        </a>
+      </div>
+    </div>
+    <button class="wa-button" type="button" aria-controls="waPanel" aria-expanded="false" aria-label="Chat with us on WhatsApp">
+      <svg class="icon wa-icon-open" aria-hidden="true"><use href="imgs/icons.svg#i-whatsapp" /></svg>
+      <svg class="icon wa-icon-close" aria-hidden="true"><use href="imgs/icons.svg#i-close" /></svg>
+    </button>
+  </div>
 
   <script src="js/main.js"></script>
 </body>

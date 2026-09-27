@@ -117,6 +117,40 @@
         });
     }
 
+    // ---------- WhatsApp chat ----------
+    var wa = document.querySelector("[data-wa]");
+    if (wa) {
+        var waButton = wa.querySelector(".wa-button");
+        var waPanel = wa.querySelector(".wa-panel");
+        var waLink = wa.querySelector("[data-wa-message]");
+        waLink.href += "?text=" + encodeURIComponent(waLink.getAttribute("data-wa-message"));
+
+        var setWa = function(open) {
+            wa.classList.toggle("is-open", open);
+            waButton.setAttribute("aria-expanded", String(open));
+            waPanel.setAttribute("aria-hidden", String(!open));
+            if (open) waLink.focus({ preventScroll: true });
+        };
+
+        waButton.addEventListener("click", function() {
+            setWa(!wa.classList.contains("is-open"));
+        });
+        wa.querySelector("[data-wa-close]").addEventListener("click", function() {
+            setWa(false);
+            waButton.focus();
+        });
+        waLink.addEventListener("click", function() { setWa(false); });
+        document.addEventListener("click", function(e) {
+            if (wa.classList.contains("is-open") && !wa.contains(e.target)) setWa(false);
+        });
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape" && wa.classList.contains("is-open")) {
+                setWa(false);
+                waButton.focus();
+            }
+        });
+    }
+
     // ---------- footer year ----------
     document.querySelectorAll("[data-year]").forEach(function(el) {
         el.textContent = new Date().getFullYear();
