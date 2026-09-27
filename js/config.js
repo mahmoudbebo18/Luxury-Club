@@ -3,7 +3,7 @@
 window.DASMAN_CONFIG = {
   // Web3Forms access key. Create it at https://web3forms.com with Dasman_sa@hotmail.com:
   // the key is emailed to that inbox, and every registration is delivered there.
-  web3formsKey: "26a9c872-cb03-40ed-9ce4-984a972b910b",
+  web3formsKey: "742c46ad-034f-4228-b353-08a13656c7d6",
 
   // Firebase project that stores the registered-members counter
   // (Firestore document "stats/members" with a number field "count").
