@@ -5,21 +5,21 @@
 
 @font-face {
   font-family: "Cairo";
-  src: url(../fonts/Cairo-Regular.ttf) format("truetype");
+  src: url(/fonts/Cairo-Regular.ttf) format("truetype");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Cairo";
-  src: url(../fonts/Cairo-SemiBold.ttf) format("truetype");
+  src: url(/fonts/Cairo-SemiBold.ttf) format("truetype");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Cairo";
-  src: url(../fonts/Cairo-Bold.ttf) format("truetype");
+  src: url(/fonts/Cairo-Bold.ttf) format("truetype");
   font-weight: 700;
   font-display: swap;
 }
@@ -2440,5 +2440,29 @@ ol {
     width: 22px;
     height: 22px;
     color: var(--gold-300);
+  }
+}
+
+// ---------- account links (membership platform) ----------
+.auth-link span {
+  @media (max-width: 380px) {
+    display: none;
+  }
+}
+
+.drawer-login {
+  margin-top: 10px;
+}
+
+.form-alt {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+
+  a {
+    font-weight: 700;
+    color: var(--olive-700);
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 }

@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /account
+Disallow: /admin
+Disallow: /m
+Disallow: /login
+Disallow: /reset
+Disallow: /forgot
+Disallow: /app.html
+Sitemap: https://dasman.the-luxury-club.com/sitemap.xml

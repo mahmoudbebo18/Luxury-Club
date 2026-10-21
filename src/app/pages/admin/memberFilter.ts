@@ -1,0 +1,74 @@
+// Member search/filter shared by the members list, coupon distribution and email campaigns.
+import { supabase } from '../../../lib/supabase';
+import type { Tables } from '../../types/database';
+
+export type AdminMember = Tables<'admin_members'>;
+
+export type MemberFilter = {
+  q?: string;
+  university?: string;
+  year?: string;
+  status?: '' | 'active' | 'expired' | 'suspended';
+};
+
+export const STATUS_LABELS = { active: 'سارية', expired: 'منتهية', suspended: 'موقوفة' } as const;
+
+export function describeFilter(f: MemberFilter) {
+  const parts = [
+    f.status && `الحالة: ${STATUS_LABELS[f.status]}`,
+    f.university && `الجامعة: ${f.university}`,
+    f.year && `السنة: ${f.year}`,
+    f.q && `بحث: ${f.q}`,
+  ].filter(Boolean);
+  return parts.length ? parts.join(' · ') : 'كل الأعضاء';
+}
+
+export function memberQuery<T extends string>(columns: T, f: MemberFilter, count?: 'exact') {
+  let q = supabase.from('admin_members').select(columns, count ? { count } : undefined).eq('role', 'member');
+  if (f.status) q = q.eq('status', f.status);
+  if (f.university) q = q.eq('university', f.university);
+  if (f.year) q = q.eq('study_year', f.year);
+  const term = f.q?.trim().replace(/[%,()]/g, ' ');
+  if (term) {
+    q = q.or(
+      ['full_name', 'email', 'phone', 'member_label', 'member_code'].map((c) => `${c}.ilike.%${term}%`).join(','),
+    );
+  }
+  return q;
+}
+
+/** All member ids matching a filter (paged past PostgREST's 1000-row limit). */
+export async function memberIdsFor(f: MemberFilter) {
+  const ids: string[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await memberQuery('id', f).order('member_no').range(from, from + 999);
+    if (error) throw error;
+    ids.push(...(data as unknown as { id: string }[]).map((r) => r.id));
+    if (!data || data.length < 1000) return ids;
+  }
+}
+
+export async function universities() {
+  const { data, error } = await supabase.from('profiles').select('university').eq('role', 'member');
+  if (error) throw error;
+  return [...new Set(data.map((r) => r.university).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ar'));
+}
+
+/** Readable error for admin RPC failures raised by the database functions. */
+export function adminError(err: unknown) {
+  const e = err as { message?: string; details?: string } | null;
+  switch (e?.message) {
+    case 'not_enough_coupons':
+      return `الكوبونات المتبقية في الدفعة (${e.details ?? 0}) أقل من عدد الأعضاء المختارين.`;
+    case 'batch_expired':
+      return 'هذه الدفعة منتهية الصلاحية.';
+    case 'pin_format':
+      return 'الرقم السري يجب أن يكون من 4 إلى 8 أرقام.';
+    case 'not_voidable':
+      return 'هذه العملية ملغاة مسبقًا.';
+    case 'forbidden':
+      return 'ليست لديك صلاحية لهذا الإجراء.';
+    default:
+      return 'حدث خطأ، الرجاء المحاولة مرة أخرى.';
+  }
+}
