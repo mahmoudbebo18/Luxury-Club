@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 
 export function Footer() {
   const { t, lang } = useT();
-  const home = lang === 'en' ? '/index-en.html' : '/';
+  const home = lang === 'en' ? '/index-en' : '/';
   return (
     <footer className="site-footer site-footer--compact">
       <div className="container footer-bottom">

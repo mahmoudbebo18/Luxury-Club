@@ -16,7 +16,7 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  const home = lang === 'en' ? '/index-en.html' : '/';
+  const home = lang === 'en' ? '/index-en' : '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);

@@ -16,7 +16,7 @@ function initialLang(): Lang {
     /* storage blocked */
   }
   // Coming from the English marketing pages
-  return document.referrer.includes('-en.html') ? 'en' : 'ar';
+  return document.referrer.includes('-en') ? 'en' : 'ar';
 }
 
 type Ctx = {

@@ -70,7 +70,7 @@ export default function Login() {
         )}
       </form>
       <p className="form-alt">
-        {t('auth.noAccount')} <a href={lang === 'en' ? '/index-en.html#join' : '/#join'}>{t('auth.register')}</a>
+        {t('auth.noAccount')} <a href={lang === 'en' ? '/index-en#join' : '/#join'}>{t('auth.register')}</a>
       </p>
     </AuthShell>
   );
