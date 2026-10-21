@@ -578,9 +578,12 @@ button.lang-switch {
     width: 100%;
 
     .tab {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
       justify-content: center;
-      padding-inline: 8px;
+      gap: 5px;
+      padding-inline: 6px;
+      font-size: 0.85rem;
     }
   }
 }
