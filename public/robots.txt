@@ -3,6 +3,7 @@ Disallow: /account
 Disallow: /admin
 Disallow: /m
 Disallow: /login
+Disallow: /register
 Disallow: /reset
 Disallow: /forgot
 Disallow: /app.html

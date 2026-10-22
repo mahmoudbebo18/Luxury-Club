@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
-import { AdminTitle } from './AdminLayout';
+import { AdminTitle, StatCard } from './AdminLayout';
 import { CampaignModal } from './CampaignModal';
 import type { Target } from './AssignModal';
 import { describeFilter, memberQuery, universities, type MemberFilter } from './memberFilter';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
+import { Dropdown } from '../../components/Dropdown';
 import { Badge } from '../../components/StatusBadge';
-import { EmptyState, ErrorState } from '../../components/States';
-import { PageLoader, Spinner } from '../../components/PageLoader';
+import { EmptyState, ErrorState, Skeleton } from '../../components/States';
+import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { formatDateTime, startOfDayRiyadh, isoDay } from '../../lib/format';
 import { STUDY_YEARS } from '../../lib/options';
@@ -21,22 +24,39 @@ const CAMPAIGN_STATUS = {
   failed: { label: 'فشل', tone: 'suspended' },
 } as const;
 
-const KIND_LABELS: Record<string, string> = {
-  welcome: 'ترحيب',
-  coupon: 'كوبون جديد',
-  expiry_30: 'قبل الانتهاء',
-  expired: 'انتهاء العضوية',
-  campaign: 'حملة',
+const KIND: Record<string, { label: string; icon: string }> = {
+  welcome: { label: 'ترحيب', icon: 'sparkle' },
+  coupon: { label: 'كوبون جديد', icon: 'ticket' },
+  expiry_30: { label: 'قبل الانتهاء', icon: 'clock' },
+  expired: { label: 'انتهاء العضوية', icon: 'alert' },
+  campaign: { label: 'حملة', icon: 'send' },
 };
 
 export default function Emails() {
   const toast = useToast();
+  const [params, setParams] = useSearchParams();
   const [audienceOpen, setAudienceOpen] = useState(false);
   const [filter, setFilter] = useState<MemberFilter>({ status: 'active' });
   const [counting, setCounting] = useState(false);
   const [target, setTarget] = useState<Target | null>(null);
 
+  useEffect(() => {
+    if (params.get('new')) {
+      setAudienceOpen(true);
+      setParams({}, { replace: true });
+    }
+  }, [params, setParams]);
+
   const unis = useQuery({ queryKey: ['admin', 'universities'], queryFn: universities, enabled: audienceOpen });
+  const audienceCount = useQuery({
+    queryKey: ['admin', 'audience-count', JSON.stringify(filter)],
+    enabled: audienceOpen,
+    queryFn: async () => {
+      const { count, error } = await memberQuery('id', filter, 'exact').limit(1);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
   const campaigns = useQuery({
     queryKey: ['admin', 'campaigns'],
     refetchInterval: 60_000,
@@ -75,7 +95,7 @@ export default function Emails() {
     <>
       <AdminTitle
         title="المراسلات"
-        lead="رسائل للأعضاء من بريد دسمان. الإرسال يتم تلقائيًا كل ساعة، بحد 250 رسالة يوميًا للحملات والرسائل التلقائية."
+        lead="رسائل للأعضاء من بريد دسمان، تُرسل تلقائيًا خلال دقائق بحد 250 رسالة يوميًا."
         actions={
           <button type="button" className="btn btn-primary btn-sm" onClick={() => setAudienceOpen(true)}>
             <Icon name="plus" />
@@ -85,108 +105,102 @@ export default function Emails() {
       />
 
       {queue.data && (
-        <div className="stat-grid stat-grid--3">
-          <div className="stat-tile"><span className="stat-label">في الطابور</span><strong className="stat-value">{queue.data.pending}</strong></div>
-          <div className="stat-tile stat-tile--active"><span className="stat-label">أُرسل اليوم</span><strong className="stat-value">{queue.data.sentToday}</strong></div>
-          <div className="stat-tile stat-tile--suspended"><span className="stat-label">فشل الإرسال</span><strong className="stat-value">{queue.data.failed}</strong></div>
+        <div className="stats stats--3">
+          <StatCard icon="clock" tone="gold" label="في الطابور" value={queue.data.pending} />
+          <StatCard icon="check-circle" tone="green" label="أُرسل اليوم" value={queue.data.sentToday} foot="من 250 رسالة يوميًا" />
+          <StatCard icon="alert" tone="red" label="فشل الإرسال" value={queue.data.failed} />
         </div>
       )}
 
-      <section className="panel">
-        <div className="panel-head"><h2>الحملات</h2></div>
+      <section className="surface">
+        <div className="surface-head"><h2><Icon name="send" />الحملات</h2></div>
         {campaigns.isLoading ? (
-          <PageLoader />
+          <Skeleton rows={3} height={64} />
         ) : campaigns.isError ? (
           <ErrorState message="تعذّر تحميل الحملات." onRetry={() => campaigns.refetch()} />
         ) : !campaigns.data?.length ? (
-          <EmptyState icon="mail">لم تُرسل أي حملة بعد.</EmptyState>
+          <EmptyState icon="send" title="لم تُرسل أي حملة بعد" action={<button type="button" className="btn btn-primary btn-sm" onClick={() => setAudienceOpen(true)}><Icon name="plus" />رسالة جديدة</button>}>
+            اكتب رسالة لكل الأعضاء أو لفئة منهم، وراجعها قبل الإرسال.
+          </EmptyState>
         ) : (
-          <div className="table-wrap">
-            <table className="data-table">
-              <thead><tr><th>العنوان</th><th>المستلمون</th><th>التقدم</th><th>الحالة</th><th>التاريخ</th></tr></thead>
-              <tbody>
-                {campaigns.data.map((c) => {
-                  const st = CAMPAIGN_STATUS[c.status as keyof typeof CAMPAIGN_STATUS];
-                  const pct = c.total ? Math.round(((c.sent + c.failed) / c.total) * 100) : 100;
-                  return (
-                    <tr key={c.id}>
-                      <td className="cell-strong">{c.subject}</td>
-                      <td>{c.audience}</td>
-                      <td>
-                        <div className="progress" aria-label={`${pct}%`}><span style={{ width: `${pct}%` }} /></div>
-                        <small className="cell-sub">{c.sent} من {c.total}{c.failed ? ` · فشل ${c.failed}` : ''}</small>
-                      </td>
-                      <td><Badge tone={st.tone}>{st.label}</Badge></td>
-                      <td>{formatDateTime(c.created_at)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ul className="campaigns">
+            {campaigns.data.map((c, i) => {
+              const st = CAMPAIGN_STATUS[c.status as keyof typeof CAMPAIGN_STATUS];
+              const pct = c.total ? Math.round(((c.sent + c.failed) / c.total) * 100) : 100;
+              return (
+                <motion.li key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                  <div className="campaign-main">
+                    <strong>{c.subject}</strong>
+                    <small><Icon name="users" />{c.audience} · {formatDateTime(c.created_at)}</small>
+                  </div>
+                  <div className="campaign-progress">
+                    <div className="bar"><span style={{ width: `${pct}%` }} className={c.status === 'done' ? 'is-active' : 'is-gold'} /></div>
+                    <small>{c.sent} من {c.total}{c.failed ? ` · فشل ${c.failed}` : ''}</small>
+                  </div>
+                  <Badge tone={st.tone}>{st.label}</Badge>
+                </motion.li>
+              );
+            })}
+          </ul>
         )}
       </section>
 
-      <section className="panel">
-        <div className="panel-head"><h2>آخر الرسائل التلقائية</h2></div>
-        {!queue.data?.recent.length ? (
+      <section className="surface">
+        <div className="surface-head"><h2><Icon name="bell" />آخر الرسائل التلقائية</h2></div>
+        {!queue.data ? (
+          <Skeleton rows={3} height={48} />
+        ) : !queue.data.recent.length ? (
           <EmptyState icon="mail">لا توجد رسائل تلقائية بعد.</EmptyState>
         ) : (
-          <div className="table-wrap">
-            <table className="data-table">
-              <thead><tr><th>النوع</th><th>إلى</th><th>الحالة</th><th>الوقت</th></tr></thead>
-              <tbody>
-                {queue.data.recent.map((q) => (
-                  <tr key={q.id}>
-                    <td>{KIND_LABELS[q.kind] ?? q.kind}</td>
-                    <td>{q.to_name}<small className="cell-sub" dir="ltr">{q.to_email}</small></td>
-                    <td>
-                      {q.status === 'sent' ? <Badge tone="active">أُرسلت</Badge> : q.status === 'failed' ? <Badge tone="suspended">فشلت</Badge> : <Badge tone="gold">في الطابور</Badge>}
-                      {q.error && <small className="cell-sub">{q.error}</small>}
-                    </td>
-                    <td>{formatDateTime(q.sent_at ?? q.created_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ul className="feed">
+            {queue.data.recent.map((q) => {
+              const k = KIND[q.kind] ?? { label: q.kind, icon: 'mail' };
+              return (
+                <li key={q.id}>
+                  <span className="feed-icon"><Icon name={k.icon} /></span>
+                  <span className="feed-body">
+                    <strong>{k.label} · {q.to_name}</strong>
+                    <small dir="ltr">{q.to_email}</small>
+                    {q.error && <small className="feed-error">{q.error}</small>}
+                  </span>
+                  <span className="feed-side">
+                    {q.status === 'sent' ? <Badge tone="active">أُرسلت</Badge> : q.status === 'failed' ? <Badge tone="suspended">فشلت</Badge> : <Badge tone="gold">في الطابور</Badge>}
+                    <small>{formatDateTime(q.sent_at ?? q.created_at)}</small>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </section>
 
       <Modal
         open={audienceOpen}
         title="لمن الرسالة؟"
+        icon="users"
+        lead="لعضو واحد افتح ملفه، ولأعضاء محددين اخترهم من صفحة الأعضاء."
         onClose={() => setAudienceOpen(false)}
         footer={
-          <button type="button" className="btn btn-primary btn-block" onClick={continueToCompose} disabled={counting}>
-            {counting ? <Spinner small /> : 'متابعة'}
+          <button type="button" className="btn btn-primary btn-block" onClick={continueToCompose} disabled={counting || !audienceCount.data}>
+            {counting ? <Spinner small /> : <>متابعة ({audienceCount.data?.toLocaleString('en-US') ?? '…'} عضو)<Icon name="arrow" className="icon-flip" /></>}
           </button>
         }
       >
-        <div className="form-stack">
-          <p className="modal-lead">لرسالة لعضو واحد افتح ملفه، ولأعضاء محددين اخترهم من صفحة الأعضاء.</p>
-          <div className="field">
-            <label htmlFor="aStatus">الحالة</label>
-            <select id="aStatus" value={filter.status ?? ''} onChange={(e) => setFilter({ ...filter, status: e.target.value as MemberFilter['status'] })}>
-              <option value="">كل الأعضاء</option>
-              <option value="active">الساريون</option>
-              <option value="expired">المنتهية عضويتهم</option>
-              <option value="suspended">الموقوفون</option>
-            </select>
+        <div className="ui-form">
+          <div className="ui-field">
+            <span className="ui-label">الحالة</span>
+            <Dropdown block icon="filter" placeholder="كل الأعضاء" value={filter.status ?? ''} onChange={(v) => setFilter({ ...filter, status: v as MemberFilter['status'] })}
+              options={[{ value: '', label: 'كل الأعضاء' }, { value: 'active', label: 'الساريون' }, { value: 'expired', label: 'المنتهية عضويتهم' }, { value: 'suspended', label: 'الموقوفون' }]} />
           </div>
-          <div className="field">
-            <label htmlFor="aUni">الجامعة</label>
-            <select id="aUni" value={filter.university ?? ''} onChange={(e) => setFilter({ ...filter, university: e.target.value })}>
-              <option value="">كل الجامعات</option>
-              {unis.data?.map((u) => <option key={u} value={u}>{u}</option>)}
-            </select>
+          <div className="ui-field">
+            <span className="ui-label">الجامعة</span>
+            <Dropdown block icon="cap" searchable placeholder="كل الجامعات" value={filter.university ?? ''} onChange={(v) => setFilter({ ...filter, university: v })}
+              options={[{ value: '', label: 'كل الجامعات' }, ...(unis.data ?? []).map((u) => ({ value: u, label: u }))]} />
           </div>
-          <div className="field">
-            <label htmlFor="aYear">السنة الدراسية</label>
-            <select id="aYear" value={filter.year ?? ''} onChange={(e) => setFilter({ ...filter, year: e.target.value })}>
-              <option value="">كل السنوات</option>
-              {STUDY_YEARS.map((y) => <option key={y.value} value={y.value}>{y.value}</option>)}
-            </select>
+          <div className="ui-field">
+            <span className="ui-label">السنة الدراسية</span>
+            <Dropdown block icon="calendar" placeholder="كل السنوات" value={filter.year ?? ''} onChange={(v) => setFilter({ ...filter, year: v })}
+              options={[{ value: '', label: 'كل السنوات' }, ...STUDY_YEARS.map((y) => ({ value: y.value, label: y.value }))]} />
           </div>
         </div>
       </Modal>

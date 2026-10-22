@@ -1,4 +1,5 @@
 /login       /app  200
+/register    /app  200
 /forgot      /app  200
 /reset       /app  200
 /account     /app  200

@@ -1,11 +1,12 @@
 // Same markup and classes as the marketing pages' header and drawer, driven by React.
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useT } from '../i18n';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from '../components/Icon';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
+const active = ({ isActive }: { isActive: boolean }) => (isActive ? 'is-active' : undefined);
 
 export function Header({ showLang = true }: { showLang?: boolean }) {
   const { t, lang, setLang } = useT();
@@ -17,6 +18,7 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const home = lang === 'en' ? '/index-en' : '/';
+  const services = lang === 'en' ? '/services-en' : '/services';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -55,13 +57,16 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
             <img className="brand-logo--dark" src="/imgs/dasman-logo.png" alt="دسمان" width="84" height="46" />
           </a>
           <nav className="main-nav" aria-label={t('nav.menu')}>
-            <a href={`${home}#about`}>{t('nav.about')}</a>
-            <a href={`${home}#services`}>{t('nav.services')}</a>
+            <a href={home}>{t('common.home')}</a>
+            <a href={services}>{t('nav.services')}</a>
             {session ? (
               <>
-                <Link to="/account">{t('nav.account')}</Link>
-                <Link to="/account/profile">{t('nav.profile')}</Link>
-                {isAdmin && <Link to="/admin">{t('nav.admin')}</Link>}
+                {isAdmin ? (
+                  <NavLink to="/admin" className={active}>{t('nav.admin')}</NavLink>
+                ) : (
+                  <NavLink to="/account" end className={active}>{t('nav.account')}</NavLink>
+                )}
+                <NavLink to="/account/profile" className={active}>{t('nav.profile')}</NavLink>
               </>
             ) : (
               <>
@@ -119,21 +124,22 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
           </a>
           {session ? (
             <>
-              <Link to="/account" style={order(2)}>
-                <span className="num">02</span>{t('nav.account')}<Icon name="arrow" flip />
-              </Link>
-              <Link to="/account/profile" style={order(3)}>
-                <span className="num">03</span>{t('nav.profile')}<Icon name="arrow" flip />
-              </Link>
-              {isAdmin && (
-                <Link to="/admin" style={order(4)}>
-                  <span className="num">04</span>{t('nav.admin')}<Icon name="arrow" flip />
+              {isAdmin ? (
+                <Link to="/admin" style={order(2)}>
+                  <span className="num">02</span>{t('nav.admin')}<Icon name="arrow" flip />
                 </Link>
+              ) : (
+                <NavLink to="/account" end className={active} style={order(2)}>
+                  <span className="num">02</span>{t('nav.account')}<Icon name="arrow" flip />
+                </NavLink>
               )}
+              <NavLink to="/account/profile" className={active} style={order(3)}>
+                <span className="num">03</span>{t('nav.profile')}<Icon name="arrow" flip />
+              </NavLink>
             </>
           ) : (
             <>
-              <a href={`${home}#services`} style={order(2)}>
+              <a href={services} style={order(2)}>
                 <span className="num">02</span>{t('nav.services')}<Icon name="arrow" flip />
               </a>
               <a href={`${home}#join`} style={order(3)}>

@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { useT } from '../../i18n';
+import { Alert, TextField } from '../../components/Field';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
-import { ErrorState } from '../../components/States';
+import { EmptyState, ErrorState } from '../../components/States';
 import { PageLoader, Spinner } from '../../components/PageLoader';
 import { formatDate, formatMoney, formatTime } from '../../lib/format';
 
@@ -16,6 +18,7 @@ type Card =
   | {
       ok: true;
       status: 'active' | 'expired' | 'suspended';
+      is_trial?: boolean;
       name: string;
       member_no: string;
       university: string;
@@ -139,160 +142,181 @@ export default function MemberCheck() {
 
   if (success) {
     return (
-      <section className="scan-success" role="status">
-        <div className="container scan-container">
-          <span className="success-mark"><Icon name="check" /></span>
+      <motion.section className="scan-success" role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <div className="container scan-success-inner">
+          <motion.svg className="success-check" viewBox="0 0 96 96" initial={{ scale: 0.6 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }}>
+            <circle cx="48" cy="48" r="44" />
+            <motion.path d="M28 49l13 13 27-28" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.25, duration: 0.45 }} />
+          </motion.svg>
           <h1>{t('scan.success')}</h1>
           <p className="success-amount">
-            {t('scan.successDiscount')} <strong>{formatMoney(success.value)}</strong> {t('common.sar')}
+            <span>{t('scan.successDiscount')}</span>
+            <strong>{formatMoney(success.value)}</strong>
+            <span>{t('common.sar')}</span>
           </p>
           <dl className="success-meta">
-            <div><dt>{success.title}</dt><dd>{success.partner}</dd></div>
             <div><dt>{success.member}</dt><dd>{formatTime(success.at, lang)}</dd></div>
+            <div><dt>{success.title}</dt><dd>{success.partner}</dd></div>
           </dl>
-          <p className="success-note">{t('scan.successNote')}</p>
-          <button type="button" className="btn btn-gold btn-block" onClick={() => setSuccess(null)}>
+          <p className="success-note">
+            <Icon name="info" />
+            {t('scan.successNote')}
+          </p>
+          <button type="button" className="btn btn-gold btn-block btn-lg" onClick={() => setSuccess(null)}>
             {t('scan.done')}
           </button>
         </div>
-      </section>
+      </motion.section>
     );
   }
 
   if (card.isLoading) return <PageLoader />;
   if (card.isError || !card.data) {
     return (
-      <section className="scan-page">
-        <div className="container scan-container">
-          <ErrorState message={t('common.error')} onRetry={() => card.refetch()} retryLabel={t('common.retry')} />
-        </div>
-      </section>
+      <div className="container page scan">
+        <ErrorState message={t('common.error')} onRetry={() => card.refetch()} retryLabel={t('common.retry')} />
+      </div>
     );
   }
 
   const c = card.data;
+  const tone = !c.ok ? 'invalid' : c.status;
   return (
-    <section className="scan-page">
-      <div className="container scan-container">
+    <div className="container page scan">
+      <motion.div
+        className={`scan-hero scan-hero--${tone}`}
+        initial={{ opacity: 0, y: 16, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.2, 0.8, 0.2, 1] }}
+      >
+        <span className="scan-hero-icon">
+          <Icon name={!c.ok ? 'x-circle' : c.status === 'active' ? 'check-circle' : 'lock'} />
+        </span>
         {!c.ok ? (
-          <div className="scan-result scan-result--invalid">
-            <span className="scan-icon"><Icon name="close" /></span>
+          <>
             <h1>{t('scan.invalid')}</h1>
             <p>{t('scan.invalidLead')}</p>
-          </div>
+          </>
         ) : (
           <>
-            <div className={`scan-result scan-result--${c.status}`}>
-              <span className="scan-icon"><Icon name={c.status === 'active' ? 'check' : 'lock'} /></span>
-              <p className="scan-state">
-                {c.status === 'active' ? t('scan.valid') : c.status === 'expired' ? t('scan.expired') : t('scan.suspended')}
-              </p>
-              {c.photo_url && <img className="scan-photo" src={c.photo_url} alt="" width="96" height="96" />}
-              <h1>{c.name}</h1>
-              <dl className="scan-meta">
-                <div><dt>{t('card.memberNo')}</dt><dd dir="ltr">{c.member_no}</dd></div>
-                <div><dt>{t('card.university')}</dt><dd>{c.university}</dd></div>
-                <div>
-                  <dt>{c.status === 'expired' ? t('scan.expiredOn') : t('scan.validUntil')}</dt>
-                  <dd>{formatDate(c.expires_at, lang)}</dd>
-                </div>
-              </dl>
-            </div>
-
-            {c.status === 'active' && (
-              <div className="panel scan-coupons">
-                <h2>{t('scan.coupons')}</h2>
-                {c.coupons.length === 0 ? (
-                  <p className="muted">{t('scan.noCoupons')}</p>
-                ) : (
-                  <ul className="coupon-list">
-                    {c.coupons.map((cp) => (
-                      <li key={cp.id} className="coupon coupon--available">
-                        <div className="coupon-value">
-                          <strong>{formatMoney(cp.value)}</strong>
-                          <span>{t('common.sar')}</span>
-                        </div>
-                        <div className="coupon-info">
-                          <strong>{cp.title}</strong>
-                          <span>{cp.partner}</span>
-                          <small>{cp.expires_at ? `${t('coupons.validUntil')} ${formatDate(cp.expires_at, lang)}` : t('coupons.noExpiry')}</small>
-                        </div>
-                        <button type="button" className="btn btn-primary btn-sm" onClick={() => setSelected(cp)}>
-                          {t('scan.redeem')}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+            <span className="scan-hero-state">
+              {c.status === 'active' ? (c.is_trial ? t('scan.validTrial') : t('scan.valid')) : c.status === 'expired' ? t('scan.expired') : t('scan.suspended')}
+            </span>
+            {c.photo_url && <img className="scan-photo" src={c.photo_url} alt="" width="96" height="96" />}
+            <h1>{c.name}</h1>
+            <dl className="scan-meta">
+              <div><dt>{t('card.memberNo')}</dt><dd dir="ltr">{c.member_no}</dd></div>
+              <div><dt>{t('card.university')}</dt><dd>{c.university}</dd></div>
+              <div>
+                <dt>{c.status === 'expired' ? t('scan.expiredOn') : t('scan.validUntil')}</dt>
+                <dd>{formatDate(c.expires_at, lang)}</dd>
               </div>
-            )}
+            </dl>
           </>
         )}
+      </motion.div>
 
-        <div className="scan-footer">
-          <Link to="/m" className="btn btn-ghost btn-block">
-            <Icon name="qr" />
-            {t('scan.anotherMember')}
-          </Link>
-          {device && (
-            <p className="device-note">
+      {c.ok && c.status === 'active' && (
+        <motion.section className="surface scan-coupons" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <h2 className="surface-title"><Icon name="ticket" />{t('scan.coupons')}</h2>
+          {c.coupons.length === 0 ? (
+            <EmptyState icon="ticket">{t('scan.noCoupons')}</EmptyState>
+          ) : (
+            <ul className="tickets tickets--single">
+              {c.coupons.map((cp, i) => (
+                <motion.li key={cp.id} className="ticket ticket--available" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.05 }}>
+                  <div className="ticket-value">
+                    <strong>{formatMoney(cp.value)}</strong>
+                    <span>{t('common.sar')}</span>
+                  </div>
+                  <div className="ticket-body">
+                    <strong>{cp.title}</strong>
+                    <span className="ticket-line"><Icon name="store" />{cp.partner}</span>
+                    <span className="ticket-line">
+                      <Icon name="clock" />
+                      {cp.expires_at ? `${t('coupons.validUntil')} ${formatDate(cp.expires_at, lang)}` : t('coupons.noExpiry')}
+                    </span>
+                  </div>
+                  <button type="button" className="btn btn-primary btn-sm ticket-action" onClick={() => setSelected(cp)}>
+                    {t('scan.redeem')}
+                  </button>
+                </motion.li>
+              ))}
+            </ul>
+          )}
+        </motion.section>
+      )}
+
+      <div className="scan-footer">
+        <Link to="/m" className="btn btn-ghost btn-block">
+          <Icon name="qr" />
+          {t('scan.anotherMember')}
+        </Link>
+        {device && (
+          <p className="device-note">
+            <Icon name="shield" />
+            <span>
               {t('scan.rememberedFor')} <strong>{device.partner}</strong> ·{' '}
               <button type="button" className="link-button" onClick={forgetDevice}>{t('scan.forgetDevice')}</button>
-            </p>
-          )}
-        </div>
+            </span>
+          </p>
+        )}
       </div>
 
       <Modal
         open={!!selected}
         title={t('scan.redeemTitle')}
+        icon="ticket"
         onClose={() => setSelected(null)}
         closeLabel={t('common.cancel')}
         footer={
-          <button type="button" className="btn btn-primary btn-block" onClick={redeem} disabled={busy || mismatch}>
-            {busy ? <Spinner small /> : t('scan.confirm')}
+          <button type="button" className="btn btn-primary btn-block btn-lg" onClick={redeem} disabled={busy || mismatch}>
+            {busy ? <Spinner small /> : <><Icon name="check" />{t('scan.confirm')}</>}
           </button>
         }
       >
         {selected && (
-          <div className="redeem-box">
+          <div className="ui-form">
             <div className="redeem-coupon">
-              <strong>{formatMoney(selected.value)} {t('common.sar')}</strong>
+              <strong>{formatMoney(selected.value)} <small>{t('common.sar')}</small></strong>
               <span>{selected.title} · {selected.partner}</span>
             </div>
             {mismatch ? (
-              <button type="button" className="link-button" onClick={forgetDevice}>{t('scan.forgetDevice')}</button>
+              <button type="button" className="btn btn-ghost btn-block" onClick={forgetDevice}>
+                <Icon name="refresh" />
+                {t('scan.forgetDevice')}
+              </button>
             ) : needPin ? (
               <>
-                <div className="field">
-                  <label htmlFor="pin">{t('scan.pinLabel')}</label>
-                  <input
-                    id="pin"
-                    className="pin-input"
-                    type="password"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    dir="ltr"
-                    maxLength={8}
-                    value={pin}
-                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                    onKeyDown={(e) => e.key === 'Enter' && redeem()}
-                  />
-                </div>
-                <label className="check">
+                <TextField
+                  label={t('scan.pinLabel')}
+                  icon="lock"
+                  className="pin-input"
+                  type="password"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  dir="ltr"
+                  maxLength={8}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                  onKeyDown={(e) => e.key === 'Enter' && redeem()}
+                />
+                <label className="ui-switch">
+                  <span>{t('scan.remember')}</span>
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                  {t('scan.remember')}
+                  <span className="ui-switch-track" />
                 </label>
               </>
             ) : (
               <p className="device-note">
-                {t('scan.rememberedFor')} <strong>{device?.partner}</strong>
+                <Icon name="shield" />
+                <span>{t('scan.rememberedFor')} <strong>{device?.partner}</strong></span>
               </p>
             )}
-            {error && <div className="form-status is-error" role="alert">{error}</div>}
+            <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
           </div>
         )}
       </Modal>
-    </section>
+    </div>
   );
 }

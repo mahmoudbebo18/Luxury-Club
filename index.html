@@ -38,18 +38,18 @@
         <img class="brand-logo--dark" src="/imgs/dasman-logo.png" alt="دسمان" width="84" height="46" />
       </a>
       <nav class="main-nav" aria-label="القائمة الرئيسية">
-        <a href="#about">نبذة عنا</a>
-        <a href="#services">خدماتنا</a>
-        <a href="#privileges">المزايا</a>
-        <a href="#vision">رؤيتنا</a>
-        <a href="#join">انضم إلينا</a>
+        <a href="#home" data-spy="home">الرئيسية</a>
+        <a href="/services" data-spy="services">خدماتنا</a>
+        <a href="#privileges" data-spy="privileges">المزايا</a>
+        <a href="#vision" data-spy="vision">رؤيتنا</a>
+        <a href="#join" data-spy="join">انضم إلينا</a>
       </nav>
       <div class="header-actions">
         <a class="lang-switch" href="/index-en" hreflang="en" lang="en">
           <svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-globe" /></svg>EN
         </a>
         <a class="lang-switch auth-link" href="/login" data-auth-link data-label-out="دخول" data-label-in="حسابي"><svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-user" /></svg><span>دخول</span></a>
-        <a class="btn btn-primary btn-sm header-cta" href="#join">سجّل الآن</a>
+        <a class="btn btn-primary btn-sm header-cta" href="/register">سجّل الآن</a>
         <button class="menu-toggle" type="button" aria-controls="drawer" aria-expanded="false" aria-label="فتح القائمة">
           <svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-menu" /></svg>
         </button>
@@ -69,13 +69,13 @@
       </button>
     </div>
     <nav class="drawer-nav" aria-label="القائمة">
-      <a href="#about" style="--i:1"><span class="num">01</span>نبذة عنا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
-      <a href="#services" style="--i:2"><span class="num">02</span>خدماتنا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
-      <a href="#privileges" style="--i:3"><span class="num">03</span>المزايا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
-      <a href="#vision" style="--i:4"><span class="num">04</span>رؤيتنا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
-      <a href="#join" style="--i:5"><span class="num">05</span>انضم إلينا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
+      <a href="#home" data-spy="home" style="--i:1"><span class="num">01</span>الرئيسية<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
+      <a href="/services" data-spy="services" style="--i:2"><span class="num">02</span>خدماتنا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
+      <a href="#privileges" data-spy="privileges" style="--i:3"><span class="num">03</span>المزايا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
+      <a href="#vision" data-spy="vision" style="--i:4"><span class="num">04</span>رؤيتنا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
+      <a href="#join" data-spy="join" style="--i:5"><span class="num">05</span>انضم إلينا<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
     </nav>
-    <a class="btn btn-primary btn-block" href="#join">سجّل الآن</a>
+    <a class="btn btn-primary btn-block" href="/register">سجّل الآن</a>
     <a class="btn btn-ghost btn-block drawer-login" href="/login" data-auth-link data-label-out="دخول" data-label-in="حسابي"><svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-user" /></svg><span>دخول</span></a>
     <div class="drawer-contact">
       <a href="tel:+966558103228"><svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-phone" /></svg><span dir="ltr">+966 55 810 3228</span></a>
@@ -325,87 +325,24 @@
           </div>
         </div>
 
-        <form class="join-form" id="joinForm" novalidate data-reveal style="--delay:.1s">
-          <div class="form-head">
-            <h3>نموذج التسجيل</h3>
-            <p>جميع الحقول مطلوبة ما عدا الملاحظات.</p>
-          </div>
-          <div class="form-grid">
-            <div class="field field--full">
-              <label for="joinName">الاسم</label>
-              <input type="text" id="joinName" name="name" autocomplete="name" required />
-              <span class="field-error">الرجاء كتابة الاسم</span>
-            </div>
-            <div class="field">
-              <label for="joinUniversity">الجامعة</label>
-              <input type="text" id="joinUniversity" name="university" list="universityList" required />
-              <datalist id="universityList">
-                <option value="جامعة الملك سعود"></option>
-                <option value="جامعة الإمام محمد بن سعود الإسلامية"></option>
-                <option value="جامعة الأميرة نورة بنت عبدالرحمن"></option>
-                <option value="جامعة الملك سعود بن عبدالعزيز للعلوم الصحية"></option>
-                <option value="جامعة الفيصل"></option>
-                <option value="جامعة الأمير سلطان"></option>
-                <option value="جامعة اليمامة"></option>
-                <option value="جامعة دار العلوم"></option>
-              </datalist>
-              <span class="field-error">الرجاء كتابة اسم الجامعة</span>
-            </div>
-            <div class="field">
-              <label for="joinYear">السنة الدراسية</label>
-              <select id="joinYear" name="year" required>
-                <option value="" selected disabled>اختر السنة الدراسية</option>
-                <option value="السنة الأولى">السنة الأولى</option>
-                <option value="السنة الثانية">السنة الثانية</option>
-                <option value="السنة الثالثة">السنة الثالثة</option>
-                <option value="السنة الرابعة">السنة الرابعة</option>
-                <option value="السنة الخامسة">السنة الخامسة</option>
-                <option value="السنة السادسة">السنة السادسة</option>
-                <option value="سنة الامتياز">سنة الامتياز</option>
-                <option value="دراسات عليا">دراسات عليا</option>
-                <option value="أخرى">أخرى</option>
-              </select>
-              <span class="field-error">الرجاء اختيار السنة الدراسية</span>
-            </div>
-            <div class="field">
-              <label for="joinDistrict">الحي السكني</label>
-              <input type="text" id="joinDistrict" name="district" required />
-              <span class="field-error">الرجاء كتابة الحي السكني</span>
-            </div>
-            <div class="field">
-              <label for="joinPhone">رقم الهاتف</label>
-              <input type="tel" id="joinPhone" name="phone" dir="ltr" inputmode="tel" autocomplete="tel"
-                placeholder="05XXXXXXXX" pattern="[0-9+\s\-]{9,16}" required />
-              <span class="field-error">الرجاء كتابة رقم هاتف صحيح</span>
-            </div>
-            <div class="field field--full">
-              <label for="joinEmail">البريد الإلكتروني</label>
-              <input type="email" id="joinEmail" name="email" dir="ltr" autocomplete="email" placeholder="name@example.com" required />
-              <span class="field-error">الرجاء كتابة بريد إلكتروني صحيح</span>
-            </div>
-            <div class="field">
-              <label for="joinPassword">كلمة المرور</label>
-              <input type="password" id="joinPassword" name="password" dir="ltr" autocomplete="new-password" minlength="8" required />
-              <span class="field-error">8 أحرف على الأقل</span>
-            </div>
-            <div class="field">
-              <label for="joinPassword2">تأكيد كلمة المرور</label>
-              <input type="password" id="joinPassword2" name="password2" dir="ltr" autocomplete="new-password" minlength="8" required />
-              <span class="field-error">كلمتا المرور غير متطابقتين</span>
-            </div>
-            <div class="field field--full">
-              <label for="joinNotes">ملاحظات، اقتراحات، اهتمامات</label>
-              <textarea id="joinNotes" name="notes" rows="4"></textarea>
+        <div class="join-cta" data-reveal style="--delay:.1s">
+          <div class="join-cta-visual" aria-hidden="true">
+            <div class="join-cta-card">
+              <img src="/imgs/dasman-logo-light.png" alt="" width="70" height="38" loading="lazy" />
+              <span class="join-cta-qr"><svg class="icon" aria-hidden="true"><use href="/imgs/icons.svg#i-qr" /></svg></span>
+              <span class="join-cta-no">DSM-0001</span>
             </div>
           </div>
-          <input class="visually-hidden" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button class="btn btn-primary btn-block join-submit" type="submit">
-            <span class="btn-label">إنشاء العضوية</span>
-            <span class="btn-spinner" aria-hidden="true"></span>
-          </button>
-          <div class="form-status" role="status" aria-live="polite"></div>
+          <h3>أنشئ عضويتك الآن</h3>
+          <p>سجّل في دقيقة واحدة، واحصل على بطاقتك الرقمية وكوبوناتك فورًا.</p>
+          <ol class="join-cta-steps">
+            <li><span>1</span>أنشئ حسابك</li>
+            <li><span>2</span>فعّل بريدك</li>
+            <li><span>3</span>استخدم بطاقتك</li>
+          </ol>
+          <a class="btn btn-primary btn-block" href="/register">إنشاء حساب<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg></a>
           <p class="form-alt">لديك حساب؟ <a href="/login">تسجيل الدخول</a></p>
-        </form>
+        </div>
       </div>
     </section>
   </main>

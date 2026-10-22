@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
-import { AdminTitle } from './AdminLayout';
+import { AdminTitle, Pager, StatCard } from './AdminLayout';
 import { adminError } from './memberFilter';
 import { Icon } from '../../components/Icon';
+import { Dropdown } from '../../components/Dropdown';
+import { useConfirm } from '../../components/Modal';
 import { Badge } from '../../components/StatusBadge';
-import { EmptyState, ErrorState } from '../../components/States';
-import { PageLoader, Spinner } from '../../components/PageLoader';
+import { EmptyState, ErrorState, Skeleton } from '../../components/States';
+import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { endOfDayRiyadh, formatDateTime, formatMoney, isoDay, startOfDayRiyadh } from '../../lib/format';
 import { exportExcel } from '../../lib/excel';
@@ -16,6 +18,7 @@ const PAGE = 50;
 
 export default function Redemptions() {
   const toast = useToast();
+  const confirm = useConfirm();
   const queryClient = useQueryClient();
   const [partner, setPartner] = useState('');
   const [from, setFrom] = useState('');
@@ -50,10 +53,29 @@ export default function Redemptions() {
     },
   });
 
-  const voidOne = async (id: string) => {
-    if (!confirm('إلغاء عملية الصرف؟ سيعود الكوبون متاحًا للعضو.')) return;
-    setBusy(id);
-    const { error } = await supabase.rpc('admin_void_redemption', { p_redemption_id: id });
+  // Totals for the current filter (what the café bills Dasman for).
+  const totals = useQuery({
+    queryKey: ['admin', 'redemptions', 'totals', partner, from, to],
+    queryFn: async () => {
+      const { data, error } = await query('value_sar, voided_at').range(0, 9999);
+      if (error) throw error;
+      const rows = data as unknown as { value_sar: number; voided_at: string | null }[];
+      const valid = rows.filter((r) => !r.voided_at);
+      return { count: valid.length, sum: valid.reduce((s, r) => s + Number(r.value_sar), 0), voided: rows.length - valid.length };
+    },
+  });
+
+  const voidOne = async (r: RedemptionRow) => {
+    const ok = await confirm({
+      title: 'إلغاء عملية الصرف؟',
+      message: <>سيعود كوبون «{r.coupon_title}» متاحًا لـ <b>{r.member_name}</b>، ويُسجَّل الإلغاء في السجل.</>,
+      confirm: 'إلغاء الصرف',
+      cancel: 'تراجع',
+      danger: true,
+    });
+    if (!ok) return;
+    setBusy(r.id);
+    const { error } = await supabase.rpc('admin_void_redemption', { p_redemption_id: r.id });
     setBusy(null);
     if (error) return toast(adminError(error), 'error');
     toast('أُلغيت عملية الصرف وعاد الكوبون للعضو.');
@@ -94,7 +116,13 @@ export default function Redemptions() {
 
   const rows = list.data?.rows ?? [];
   const total = list.data?.count ?? 0;
-  const pages = Math.ceil(total / PAGE);
+  const filtered = !!(partner || from || to);
+  const reset = () => {
+    setPartner('');
+    setFrom('');
+    setTo('');
+    setPage(0);
+  };
 
   return (
     <>
@@ -108,40 +136,69 @@ export default function Redemptions() {
           </button>
         }
       />
-      <div className="filters">
-        <select value={partner} onChange={(e) => { setPartner(e.target.value); setPage(0); }} aria-label="الكافيه">
-          <option value="">كل الكافيهات</option>
-          {partners.data?.map((p) => <option key={p.id} value={p.id!}>{p.name}</option>)}
-        </select>
-        <label className="date-filter">من <input type="date" dir="ltr" value={from} onChange={(e) => { setFrom(e.target.value); setPage(0); }} /></label>
-        <label className="date-filter">إلى <input type="date" dir="ltr" value={to} onChange={(e) => { setTo(e.target.value); setPage(0); }} /></label>
+
+      <div className="toolbar">
+        <Dropdown
+          label="الكافيه"
+          icon="store"
+          placeholder="كل الكافيهات"
+          value={partner}
+          onChange={(v) => { setPartner(v); setPage(0); }}
+          options={[{ value: '', label: 'كل الكافيهات' }, ...(partners.data ?? []).map((p) => ({ value: p.id!, label: p.name! }))]}
+        />
+        <label className="date-pill">
+          <span>من</span>
+          <input type="date" dir="ltr" value={from} max={to || undefined} onChange={(e) => { setFrom(e.target.value); setPage(0); }} />
+        </label>
+        <label className="date-pill">
+          <span>إلى</span>
+          <input type="date" dir="ltr" value={to} min={from || undefined} onChange={(e) => { setTo(e.target.value); setPage(0); }} />
+        </label>
+        {filtered && (
+          <button type="button" className="btn btn-xs btn-soft" onClick={reset}>
+            <Icon name="close" />
+            مسح الفلاتر
+          </button>
+        )}
       </div>
 
+      {totals.data && (
+        <div className="stats stats--3">
+          <StatCard icon="check-circle" tone="green" label="عمليات صرف" value={totals.data.count.toLocaleString('en-US')} />
+          <StatCard icon="wallet" tone="gold" label="إجمالي الخصومات" value={<>{formatMoney(totals.data.sum)} <small>ريال</small></>} />
+          <StatCard icon="undo" tone="red" label="ملغاة" value={totals.data.voided.toLocaleString('en-US')} />
+        </div>
+      )}
+
       {list.isLoading ? (
-        <PageLoader />
+        <Skeleton rows={5} height={56} />
       ) : list.isError ? (
         <ErrorState message="تعذّر تحميل السجل." onRetry={() => list.refetch()} />
       ) : rows.length === 0 ? (
-        <EmptyState icon="list">لا توجد عمليات صرف مطابقة.</EmptyState>
+        <div className="surface">
+          <EmptyState icon="history" title="لا توجد عمليات صرف" action={filtered ? <button type="button" className="btn btn-ghost btn-sm" onClick={reset}>مسح الفلاتر</button> : undefined}>
+            {filtered ? 'لا شيء مطابق لهذه الفلاتر.' : 'تظهر هنا كل عملية صرف يقوم بها الكاشير.'}
+          </EmptyState>
+        </div>
       ) : (
-        <div className="table-wrap">
-          <table className="data-table">
-            <thead><tr><th>الوقت</th><th>الكافيه</th><th>العضو</th><th>الكوبون</th><th>القيمة</th><th>الحالة</th><th /></tr></thead>
+        <div className="table-card">
+          <table className="dtable">
+            <thead><tr><th>العضو</th><th>الكوبون</th><th>الكافيه</th><th>الوقت</th><th>القيمة</th><th>الحالة</th><th /></tr></thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className={r.voided_at ? 'is-voided' : undefined}>
-                  <td>{formatDateTime(r.redeemed_at)}</td>
-                  <td>{r.partner_name}</td>
-                  <td>
-                    {r.member_id ? <Link to={`/admin/members/${r.member_id}`}>{r.member_name}</Link> : '—'}
-                    <small className="cell-sub" dir="ltr">{r.member_label}</small>
+                  <td className="cell-title">
+                    {r.member_id ? <Link className="cell-strong" to={`/admin/members/${r.member_id}`}>{r.member_name}</Link> : '—'}
+                    <small className="cell-sub mono" dir="ltr">{r.member_label}</small>
                   </td>
-                  <td>{r.coupon_title}<small className="cell-sub" dir="ltr">{r.coupon_code}</small></td>
-                  <td>{formatMoney(r.value_sar)} ريال</td>
-                  <td>{r.voided_at ? <Badge tone="suspended">ملغاة</Badge> : <Badge tone="active">مصروف</Badge>}</td>
+                  <td data-label="الكوبون">{r.coupon_title}<small className="cell-sub mono" dir="ltr">{r.coupon_code}</small></td>
+                  <td data-label="الكافيه">{r.partner_name}</td>
+                  <td data-label="الوقت">{formatDateTime(r.redeemed_at)}</td>
+                  <td data-label="القيمة"><b>{formatMoney(r.value_sar)}</b> ريال</td>
+                  <td data-label="الحالة">{r.voided_at ? <Badge tone="suspended">ملغاة</Badge> : <Badge tone="active">مصروف</Badge>}</td>
                   <td className="cell-actions">
                     {!r.voided_at && (
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => voidOne(r.id)} disabled={busy === r.id}>
+                      <button type="button" className="btn btn-ghost btn-xs btn-danger-text" onClick={() => voidOne(r)} disabled={busy === r.id}>
                         {busy === r.id ? <Spinner small /> : <Icon name="undo" />}
                         إلغاء
                       </button>
@@ -151,13 +208,7 @@ export default function Redemptions() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-      {pages > 1 && (
-        <div className="pager">
-          <button type="button" className="btn btn-ghost btn-sm" disabled={page === 0} onClick={() => setPage(page - 1)}>السابق</button>
-          <span>صفحة {page + 1} من {pages}</span>
-          <button type="button" className="btn btn-ghost btn-sm" disabled={page + 1 >= pages} onClick={() => setPage(page + 1)}>التالي</button>
+          <Pager page={page} pageSize={PAGE} total={total} onPage={setPage} />
         </div>
       )}
     </>

@@ -17,6 +17,8 @@ export type Database = {
       app_settings: {
         Row: {
           id: number
+          new_member_days: number
+          reminder_days: number
           reply_to: string
           sender_email: string
           sender_name: string
@@ -24,6 +26,8 @@ export type Database = {
         }
         Insert: {
           id?: number
+          new_member_days?: number
+          reminder_days?: number
           reply_to?: string
           sender_email?: string
           sender_name?: string
@@ -31,6 +35,8 @@ export type Database = {
         }
         Update: {
           id?: number
+          new_member_days?: number
+          reminder_days?: number
           reply_to?: string
           sender_email?: string
           sender_name?: string
@@ -383,6 +389,7 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean
+          is_trial: boolean
           joined_at: string
           member_code: string
           member_no: number
@@ -401,6 +408,7 @@ export type Database = {
           full_name: string
           id: string
           is_active?: boolean
+          is_trial?: boolean
           joined_at?: string
           member_code?: string
           member_no?: number
@@ -419,6 +427,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean
+          is_trial?: boolean
           joined_at?: string
           member_code?: string
           member_no?: number
@@ -555,6 +564,7 @@ export type Database = {
           full_name: string | null
           id: string | null
           is_active: boolean | null
+          is_trial: boolean | null
           joined_at: string | null
           member_code: string | null
           member_label: string | null
@@ -577,6 +587,7 @@ export type Database = {
           full_name?: string | null
           id?: string | null
           is_active?: boolean | null
+          is_trial?: boolean | null
           joined_at?: string | null
           member_code?: string | null
           member_label?: never
@@ -599,6 +610,7 @@ export type Database = {
           full_name?: string | null
           id?: string | null
           is_active?: boolean | null
+          is_trial?: boolean | null
           joined_at?: string | null
           member_code?: string | null
           member_label?: never
@@ -897,4 +909,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

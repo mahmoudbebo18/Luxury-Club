@@ -82,9 +82,9 @@ Deno.serve(async (req) => {
   const body = await req.json().catch(() => ({}));
   const report: Record<string, unknown> = {};
 
-  // Daily jobs
+  // Daily jobs: the worker runs every 5 minutes, so only the 8:00–8:04 Riyadh run does them.
   const riyadhHour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Riyadh', hour: 'numeric', hour12: false }).format(new Date()));
-  if (body.daily || riyadhHour === 8) {
+  if (body.daily || (riyadhHour === 8 && new Date().getUTCMinutes() < 5)) {
     const { data, error } = await supabase.rpc('queue_expiry_notices');
     report.expiry_notices = error ? `error: ${error.message}` : data;
     const ping = await fetch('https://api.brevo.com/v3/account', { headers: { 'api-key': BREVO_KEY } });

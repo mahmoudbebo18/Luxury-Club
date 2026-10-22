@@ -12,6 +12,8 @@ export type Profile = Tables<'profiles'>;
 type Ctx = {
   session: Session | null;
   ready: boolean;
+  /** True after arriving from a password-recovery email link (only then may /reset set a password). */
+  recovery: boolean;
   profile: Profile | null | undefined; // undefined while loading
   isAdmin: boolean;
   signOut: () => Promise<void>;
@@ -19,9 +21,13 @@ type Ctx = {
 
 const AuthContext = createContext<Ctx | null>(null);
 
+// supabase-js reads the recovery link from the URL hash before React subscribes, so remember it here.
+const arrivedWithRecovery = /type=recovery/.test(location.hash);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
+  const [recovery, setRecovery] = useState(arrivedWithRecovery);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -29,7 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(data.session);
       setReady(true);
     });
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+    const { data } = supabase.auth.onAuthStateChange((event, next) => {
+      if (event === 'PASSWORD_RECOVERY') setRecovery(true);
+      if (event === 'SIGNED_OUT') setRecovery(false);
       setSession(next);
       setReady(true);
     });
@@ -57,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         session,
         ready,
+        recovery,
         profile: userId ? profile : null,
         isAdmin: profile?.role === 'admin',
         signOut,
@@ -80,6 +89,12 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;
   if (profile === undefined) return <PageLoader />;
   return <>{children}</>;
+}
+
+/** Member-only pages (card, coupons): the admin account is not a membership, so it goes to /admin. */
+export function RequireMember({ children }: { children: ReactNode }) {
+  const { isAdmin } = useAuth();
+  return <RequireAuth>{isAdmin ? <Navigate to="/admin" replace /> : children}</RequireAuth>;
 }
 
 export function RequireAdmin({ children }: { children: ReactNode }) {

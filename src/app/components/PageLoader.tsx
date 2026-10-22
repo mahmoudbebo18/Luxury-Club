@@ -5,6 +5,9 @@ export function Spinner({ small }: { small?: boolean }) {
 export function PageLoader() {
   return (
     <div className="page-loader" role="status" aria-live="polite">
+      <span className="page-loader-mark">
+        <img src="/imgs/dasman-logo.png" alt="" width="64" height="35" />
+      </span>
       <Spinner />
     </div>
   );

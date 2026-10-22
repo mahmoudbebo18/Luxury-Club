@@ -98,18 +98,17 @@
     }
 
     // ---------- active nav link ----------
-    var navLinks = document.querySelectorAll(".main-nav a[href^='#']");
+    // Links carry data-spy="<section id>" (header and drawer); "about" belongs to "home".
+    var navLinks = document.querySelectorAll("a[data-spy]");
     if (navLinks.length && "IntersectionObserver" in window) {
-        var linkFor = {};
-        navLinks.forEach(function(link) {
-            linkFor[link.getAttribute("href").slice(1)] = link;
-        });
+        var spyAlias = { about: "home" };
         var spy = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
                 if (!entry.isIntersecting) return;
-                navLinks.forEach(function(link) { link.classList.remove("is-active"); });
-                var active = linkFor[entry.target.id];
-                if (active) active.classList.add("is-active");
+                var id = spyAlias[entry.target.id] || entry.target.id;
+                navLinks.forEach(function(link) {
+                    link.classList.toggle("is-active", link.getAttribute("data-spy") === id);
+                });
             });
         }, { rootMargin: "-45% 0px -50% 0px" });
         document.querySelectorAll("main > section[id]").forEach(function(section) {

@@ -1,23 +1,29 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { AdminTitle } from './AdminLayout';
 import { AssignModal, type Target } from './AssignModal';
 import { adminError, describeFilter, memberQuery, type MemberFilter } from './memberFilter';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
+import { Dropdown } from '../../components/Dropdown';
+import { Alert, TextField } from '../../components/Field';
 import { Badge } from '../../components/StatusBadge';
-import { EmptyState, ErrorState } from '../../components/States';
-import { PageLoader, Spinner } from '../../components/PageLoader';
+import { EmptyState, ErrorState, Skeleton } from '../../components/States';
+import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
-import { endOfDayRiyadh, formatDate, formatMoney } from '../../lib/format';
+import { endOfDayRiyadh, formatDate, formatMoney, isoDay } from '../../lib/format';
+
+const EMPTY = { partner: '', title: '', value: '', quantity: '', expires: '' };
 
 export default function Coupons() {
   const toast = useToast();
   const queryClient = useQueryClient();
+  const [params, setParams] = useSearchParams();
   const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ partner: '', title: '', value: '', quantity: '', expires: '' });
+  const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [assign, setAssign] = useState<{ batchId: string; target: Target } | null>(null);
@@ -40,17 +46,34 @@ export default function Coupons() {
     },
   });
 
+  const startCreate = () => {
+    setForm(EMPTY);
+    setError(null);
+    setCreating(true);
+  };
+
+  // /admin/coupons?new=1 (from the overview) opens the form directly.
+  useEffect(() => {
+    if (params.get('new') && partners.data?.length) {
+      startCreate();
+      setParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, partners.data]);
+
   const create = async () => {
     const value = Number(form.value);
     const quantity = Number(form.quantity);
-    if (!form.partner || !form.title.trim()) return setError('اختر الكافيه واكتب عنوان الكوبون.');
+    if (!form.partner) return setError('اختر الكافيه.');
+    if (!form.title.trim()) return setError('اكتب عنوان الكوبون.');
     if (!(value > 0)) return setError('اكتب قيمة صحيحة.');
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 5000) return setError('العدد من 1 إلى 5000.');
+    if (form.expires && form.expires < isoDay(new Date().toISOString())) return setError('تاريخ الانتهاء في الماضي.');
     setBusy(true);
     setError(null);
     const { error } = await supabase.rpc('admin_create_batch', {
       p_partner_id: form.partner,
-      p_title: form.title,
+      p_title: form.title.trim(),
       p_value: value,
       p_quantity: quantity,
       p_expires_at: form.expires ? endOfDayRiyadh(form.expires) : (null as unknown as string),
@@ -60,10 +83,9 @@ export default function Coupons() {
     toast(`تم إنشاء ${quantity} كوبون.`);
     queryClient.invalidateQueries({ queryKey: ['admin'] });
     setCreating(false);
-    setForm({ partner: '', title: '', value: '', quantity: '', expires: '' });
   };
 
-  // Pick who receives coupons from a batch: all active members, everyone, or a status filter.
+  // Pick who receives coupons from a batch: all active members, or chosen members.
   const chooseAudience = async (batchId: string, filter: MemberFilter) => {
     const { count, error } = await memberQuery('id', filter, 'exact').limit(1);
     if (error) return toast('تعذّر حساب عدد الأعضاء.', 'error');
@@ -71,69 +93,91 @@ export default function Coupons() {
     setAssign({ batchId, target: { filter, label: describeFilter(filter), count: count ?? 0 } });
   };
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const activePartners = partners.data?.filter((p) => p.is_active) ?? [];
 
   return (
     <>
       <AdminTitle
         title="الكوبونات"
-        lead="أنشئ دفعة كوبونات لكافيه، ثم وزّعها على الأعضاء. لتوزيع على أعضاء محددين اخترهم من صفحة الأعضاء."
+        lead="أنشئ دفعة كوبونات لكافيه، ثم وزّعها على الأعضاء."
         actions={
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => { setCreating(true); setError(null); }} disabled={!partners.data?.length}>
+          <button type="button" className="btn btn-primary btn-sm" onClick={startCreate} disabled={!activePartners.length}>
             <Icon name="plus" />
             دفعة جديدة
           </button>
         }
       />
-      {partners.data && partners.data.length === 0 && <p className="admin-note">أضف كافيه أولًا من صفحة الكافيهات.</p>}
+      {partners.data && activePartners.length === 0 && (
+        <Link to="/admin/partners" className="adm-note">
+          <Icon name="info" />
+          <span>أضف كافيه أولًا من صفحة الكافيهات، ثم أنشئ له دفعة كوبونات.</span>
+          <Icon name="arrow" className="icon-flip" />
+        </Link>
+      )}
 
       {batches.isLoading ? (
-        <PageLoader />
+        <Skeleton rows={2} height={160} />
       ) : batches.isError ? (
         <ErrorState message="تعذّر تحميل الدفعات." onRetry={() => batches.refetch()} />
       ) : !batches.data?.length ? (
-        <EmptyState>لا توجد دفعات كوبونات بعد.</EmptyState>
+        <div className="surface">
+          <EmptyState icon="ticket" title="لا توجد دفعات بعد" action={activePartners.length ? <button type="button" className="btn btn-primary btn-sm" onClick={startCreate}><Icon name="plus" />دفعة جديدة</button> : undefined}>
+            الدفعة = مجموعة كوبونات لكافيه واحد، بقيمة وعدد وتاريخ انتهاء.
+          </EmptyState>
+        </div>
       ) : (
-        <div className="table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr><th>الدفعة</th><th>الكافيه</th><th>القيمة</th><th>العدد</th><th>متبقي</th><th>موزع</th><th>مصروف</th><th>الانتهاء</th><th /></tr>
-            </thead>
-            <tbody>
-              {batches.data.map((b) => {
-                const expired = b.expires_at && new Date(b.expires_at) <= new Date();
-                return (
-                  <tr key={b.id}>
-                    <td className="cell-strong">{b.title}</td>
-                    <td>{b.partner_name}</td>
-                    <td>{formatMoney(b.value_sar ?? 0)} ريال</td>
-                    <td>{b.quantity}</td>
-                    <td>{b.remaining}</td>
-                    <td>{b.assigned}</td>
-                    <td>{b.redeemed}</td>
-                    <td>{b.expires_at ? formatDate(b.expires_at) : 'بدون'}{expired && <Badge tone="expired">منتهية</Badge>}</td>
-                    <td className="cell-actions">
-                      <button type="button" className="btn btn-gold btn-sm" disabled={!b.remaining || !!expired} onClick={() => setAudienceFor(b.id!)}>
-                        <Icon name="users" />توزيع
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="cards cards--wide">
+          {batches.data.map((b, i) => {
+            const expired = !!b.expires_at && new Date(b.expires_at) <= new Date();
+            const q = b.quantity ?? 0;
+            const pct = (v: number | null) => (q ? ((v ?? 0) / q) * 100 : 0);
+            return (
+              <motion.article key={b.id} className={expired ? 'bcard is-off' : 'bcard'} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                <div className="bcard-head">
+                  <span className="bcard-value">{formatMoney(b.value_sar ?? 0)}<small>ريال</small></span>
+                  <div>
+                    <h3>{b.title}</h3>
+                    <small><Icon name="store" />{b.partner_name}</small>
+                  </div>
+                </div>
+                <div className="bcard-bar" aria-hidden="true">
+                  <span className="is-redeemed" style={{ width: `${pct(b.redeemed)}%` }} />
+                  <span className="is-assigned" style={{ width: `${pct(b.assigned)}%` }} />
+                </div>
+                <dl className="bcard-nums">
+                  <div><dt><i className="is-redeemed" />مصروف</dt><dd>{b.redeemed}</dd></div>
+                  <div><dt><i className="is-assigned" />عند الأعضاء</dt><dd>{b.assigned}</dd></div>
+                  <div><dt><i />متبقي</dt><dd>{b.remaining}</dd></div>
+                  <div><dt>الإجمالي</dt><dd>{q}</dd></div>
+                </dl>
+                <div className="bcard-foot">
+                  <span className="muted">
+                    <Icon name="clock" />
+                    {b.expires_at ? `حتى ${formatDate(b.expires_at)}` : 'بدون تاريخ انتهاء'}
+                    {expired && <Badge tone="expired">منتهية</Badge>}
+                  </span>
+                  <button type="button" className="btn btn-gold btn-xs" disabled={!b.remaining || expired} onClick={() => setAudienceFor(b.id!)}>
+                    <Icon name="users" />توزيع
+                  </button>
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
       )}
 
-      <Modal open={!!audienceFor} title="توزيع على" onClose={() => setAudienceFor(null)}>
+      <Modal open={!!audienceFor} title="توزيع على من؟" icon="users" onClose={() => setAudienceFor(null)}>
         <div className="choice-list">
           <button type="button" className="choice" onClick={() => chooseAudience(audienceFor!, { status: 'active' })}>
-            <strong>كل الأعضاء الساريين</strong>
-            <span>كل عضو عضويته سارية يحصل على كوبون.</span>
+            <span className="choice-icon"><Icon name="users" /></span>
+            <span><strong>كل الأعضاء الساريين</strong><small>كل عضو عضويته سارية يحصل على كوبون.</small></span>
+            <Icon name="arrow" className="icon-flip" />
           </button>
           <Link className="choice" to="/admin/members?status=active">
-            <strong>أعضاء محددون</strong>
-            <span>اختر الأعضاء من صفحة الأعضاء ثم «توزيع كوبونات».</span>
+            <span className="choice-icon"><Icon name="check-circle" /></span>
+            <span><strong>أعضاء أختارهم</strong><small>حدّدهم من صفحة الأعضاء ثم «توزيع كوبون».</small></span>
+            <Icon name="arrow" className="icon-flip" />
           </Link>
         </div>
       </Modal>
@@ -143,38 +187,27 @@ export default function Coupons() {
       <Modal
         open={creating}
         title="دفعة كوبونات جديدة"
+        icon="ticket"
         onClose={() => setCreating(false)}
         footer={
-          <button type="button" className="btn btn-primary btn-block" onClick={create} disabled={busy}>
-            {busy ? <Spinner small /> : 'إنشاء الكوبونات'}
-          </button>
+          <div className="ui-modal-actions">
+            <button type="button" className="btn btn-ghost" onClick={() => setCreating(false)}>إلغاء</button>
+            <button type="button" className="btn btn-primary" onClick={create} disabled={busy}>
+              {busy ? <Spinner small /> : <><Icon name="check" />إنشاء {form.quantity ? `${form.quantity} كوبون` : 'الكوبونات'}</>}
+            </button>
+          </div>
         }
       >
-        <div className="form-grid">
-          <div className="field field--full">
-            <label htmlFor="bPartner">الكافيه</label>
-            <select id="bPartner" value={form.partner} onChange={set('partner')}>
-              <option value="" disabled>اختر الكافيه</option>
-              {partners.data?.filter((p) => p.is_active).map((p) => <option key={p.id} value={p.id!}>{p.name}</option>)}
-            </select>
+        <div className="ui-grid">
+          <div className="ui-field ui-field--full">
+            <span className="ui-label">الكافيه</span>
+            <Dropdown block icon="store" placeholder="اختر الكافيه" value={form.partner} onChange={(v) => setForm((f) => ({ ...f, partner: v }))} options={activePartners.map((p) => ({ value: p.id!, label: p.name! }))} />
           </div>
-          <div className="field field--full">
-            <label htmlFor="bTitle">عنوان الكوبون</label>
-            <input id="bTitle" placeholder="مثال: خصم 50 ريال على أي طلب" value={form.title} onChange={set('title')} maxLength={100} />
-          </div>
-          <div className="field">
-            <label htmlFor="bValue">القيمة (ريال)</label>
-            <input id="bValue" type="number" min="1" step="0.5" dir="ltr" value={form.value} onChange={set('value')} />
-          </div>
-          <div className="field">
-            <label htmlFor="bQty">عدد الكوبونات</label>
-            <input id="bQty" type="number" min="1" max="5000" dir="ltr" value={form.quantity} onChange={set('quantity')} />
-          </div>
-          <div className="field field--full">
-            <label htmlFor="bExp">تاريخ الانتهاء (اختياري)</label>
-            <input id="bExp" type="date" dir="ltr" value={form.expires} onChange={set('expires')} />
-          </div>
-          {error && <div className="form-status is-error field--full">{error}</div>}
+          <TextField label="عنوان الكوبون" icon="ticket" full placeholder="مثال: خصم 50 ريال على أي طلب" value={form.title} onChange={set('title')} maxLength={100} />
+          <TextField label="القيمة (ريال)" icon="wallet" type="number" min="1" step="0.5" dir="ltr" inputMode="decimal" value={form.value} onChange={set('value')} />
+          <TextField label="عدد الكوبونات" icon="hash" type="number" min="1" max="5000" dir="ltr" inputMode="numeric" value={form.quantity} onChange={set('quantity')} />
+          <TextField label="تاريخ الانتهاء" optional="(اختياري)" icon="calendar" full type="date" dir="ltr" value={form.expires} onChange={set('expires')} min={isoDay(new Date().toISOString())} />
+          <AnimatePresence>{error && <div className="ui-field--full"><Alert tone="error">{error}</Alert></div>}</AnimatePresence>
         </div>
       </Modal>
     </>

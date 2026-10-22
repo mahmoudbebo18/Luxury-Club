@@ -4,7 +4,7 @@ compatibility_date = "2026-10-01"
 workers_dev = false
 
 [triggers]
-crons = ["0 * * * *"]
+crons = ["*/5 * * * *"]
 
 [vars]
 SUPABASE_URL = "https://klvepleypymiygytysds.supabase.co"

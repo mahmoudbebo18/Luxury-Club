@@ -6,7 +6,7 @@ const pages = ['index', 'index-en', 'services', 'services-en', 'app'];
 
 // Dev-server mirror of Cloudflare Pages: platform routes are served by app.html (public/_redirects),
 // and pages are reachable without ".html" like in production.
-const appRoutes = /^\/(login|forgot|reset|account|m|admin)(\/|$|\?)/;
+const appRoutes = /^\/(login|register|forgot|reset|account|m|admin)(\/|$|\?)/;
 const prettyPages = /^\/(index-en|services|services-en)(?=$|[?#])/;
 function spaFallback(): Plugin {
   const rewrite = (req: { url?: string }, _res: unknown, next: () => void) => {

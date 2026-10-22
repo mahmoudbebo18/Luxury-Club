@@ -1,8 +1,12 @@
 // Write an email to one member, a selection, or everyone matching a filter; preview, then queue it.
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { Modal } from '../../components/Modal';
+import { Alert, TextArea, TextField } from '../../components/Field';
+import { Icon } from '../../components/Icon';
+import { Tabs } from '../../components/Tabs';
 import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { adminError, memberIdsFor } from './memberFilter';
@@ -18,16 +22,39 @@ export function textToHtml(text: string) {
     .join('\n');
 }
 
-export function CampaignModal({ open, onClose, target }: { open: boolean; onClose: () => void; target: Target | null }) {
+const GREETING = 'أهلًا {{name}}،\n\n';
+
+type Props = { open: boolean; onClose: () => void; target: Target | null; onDone?: () => void };
+
+export function CampaignModal({ open, onClose, target, onDone }: Props) {
   const toast = useToast();
   const queryClient = useQueryClient();
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const [subject, setSubject] = useState('');
-  const [body, setBody] = useState('أهلًا {{name}}،\n\n');
-  const [preview, setPreview] = useState(false);
+  const [body, setBody] = useState(GREETING);
+  const [view, setView] = useState<'write' | 'preview'>('write');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const valid = subject.trim().length > 0 && body.replace('أهلًا {{name}}،', '').trim().length > 0;
+  useEffect(() => {
+    if (open) {
+      setView('write');
+      setError(null);
+    }
+  }, [open]);
+
+  const valid = subject.trim().length > 0 && body.replace(GREETING.trim(), '').trim().length > 0;
+
+  const insertName = () => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const at = el.selectionStart ?? body.length;
+    setBody(body.slice(0, at) + '{{name}}' + body.slice(el.selectionEnd ?? at));
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(at + 8, at + 8);
+    });
+  };
 
   const send = async () => {
     if (!target) return;
@@ -42,11 +69,11 @@ export function CampaignModal({ open, onClose, target }: { open: boolean; onClos
         p_member_ids: ids,
       });
       if (error) throw error;
-      toast(`أُضيفت ${ids.length} رسالة إلى طابور الإرسال.`);
+      toast(`أُضيفت ${ids.length} رسالة إلى الطابور، وتبدأ في الوصول خلال 5 دقائق.`);
       queryClient.invalidateQueries({ queryKey: ['admin'] });
       setSubject('');
-      setBody('أهلًا {{name}}،\n\n');
-      setPreview(false);
+      setBody(GREETING);
+      onDone?.();
       onClose();
     } catch (err) {
       setError(adminError(err));
@@ -55,46 +82,77 @@ export function CampaignModal({ open, onClose, target }: { open: boolean; onClos
     }
   };
 
+  const count = target?.count ?? 0;
   return (
     <Modal
       open={open}
       wide
+      icon="send"
       title="رسالة بريد جديدة"
+      lead={<>إلى: <b>{target?.label}</b> ({count.toLocaleString('en-US')} عضو)</>}
       onClose={onClose}
       footer={
-        <div className="modal-foot-row">
-          <button type="button" className="btn btn-ghost" onClick={() => setPreview((p) => !p)} disabled={!valid}>
-            {preview ? 'تعديل' : 'معاينة'}
-          </button>
-          <button type="button" className="btn btn-primary" onClick={send} disabled={!valid || busy || !preview}>
-            {busy ? <Spinner small /> : `إرسال إلى ${target?.count ?? 0} عضو`}
-          </button>
+        <div className="ui-modal-actions">
+          <span className="foot-note">
+            <Icon name="info" />
+            تُرسل عبر الطابور بحد 250 رسالة يوميًا.
+          </span>
+          {view === 'write' ? (
+            <button type="button" className="btn btn-primary" onClick={() => setView('preview')} disabled={!valid}>
+              <Icon name="eye" />
+              معاينة
+            </button>
+          ) : (
+            <button type="button" className="btn btn-primary" onClick={send} disabled={!valid || busy}>
+              {busy ? <Spinner small /> : <><Icon name="send" />إرسال إلى {count.toLocaleString('en-US')} عضو</>}
+            </button>
+          )}
         </div>
       }
     >
-      <p className="modal-lead">
-        المستلمون: <strong>{target?.label}</strong> ({target?.count ?? 0} عضو). الإرسال يتم عبر الطابور في حدود 250 رسالة يوميًا، والباقي يكمل في الأيام التالية.
-      </p>
-      {preview ? (
-        <div className="email-preview">
-          <div className="email-preview-subject">{subject}</div>
-          <div className="email-preview-body" dangerouslySetInnerHTML={{ __html: textToHtml(body).replace(/\{\{name\}\}/g, 'محمد') }} />
-          <p className="field-hint">المعاينة باسم تجريبي، وكل عضو يرى اسمه. اضغط «إرسال» للتأكيد.</p>
-        </div>
-      ) : (
-        <div className="form-stack">
-          <div className="field">
-            <label htmlFor="cSubject">العنوان</label>
-            <input id="cSubject" value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={150} />
+      <div className="ui-form">
+        <Tabs
+          value={view}
+          onChange={(v) => (v === 'preview' && !valid ? undefined : setView(v))}
+          tabs={[
+            { value: 'write', label: 'كتابة', icon: 'edit' },
+            { value: 'preview', label: 'معاينة', icon: 'eye' },
+          ]}
+        />
+        {view === 'write' ? (
+          <>
+            <TextField label="العنوان" icon="file" value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={150} placeholder="مثال: عرض جديد لأعضاء دسمان" />
+            <div className="ui-field">
+              <TextArea
+                ref={bodyRef}
+                label="نص الرسالة"
+                rows={9}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                hint="اترك سطرًا فارغًا بين الفقرات."
+              />
+              <div className="var-chips">
+                <span>إدراج:</span>
+                <button type="button" className="var-chip" onClick={insertName}>اسم العضو</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="mail-preview">
+            <div className="mail-preview-head">
+              <span className="avatar">د</span>
+              <span>
+                <strong>دسمان</strong>
+                <small dir="ltr">dasman@the-luxury-club.com</small>
+              </span>
+            </div>
+            <div className="mail-preview-subject">{subject}</div>
+            <div className="mail-preview-body" dangerouslySetInnerHTML={{ __html: textToHtml(body).replace(/\{\{name\}\}/g, 'محمد') }} />
+            <p className="ui-hint">المعاينة باسم تجريبي، وكل عضو يرى اسمه.</p>
           </div>
-          <div className="field">
-            <label htmlFor="cBody">نص الرسالة</label>
-            <textarea id="cBody" rows={10} value={body} onChange={(e) => setBody(e.target.value)} />
-            <span className="field-hint">اترك سطرًا فارغًا بين الفقرات. اكتب {'{{name}}'} ليظهر اسم العضو.</span>
-          </div>
-        </div>
-      )}
-      {error && <div className="form-status is-error">{error}</div>}
+        )}
+        <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
+      </div>
     </Modal>
   );
 }

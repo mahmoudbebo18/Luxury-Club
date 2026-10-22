@@ -1,4 +1,4 @@
-// Hourly job: keeps the free Supabase project active (a real API read), then lets the
+// Every 5 minutes: keeps the free Supabase project active (a real API read), then lets the
 // process-email-queue Edge Function send the mail queue (and run the daily jobs at 8:00 Riyadh).
 export default {
   async scheduled(_event, env, ctx) {

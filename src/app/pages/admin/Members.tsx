@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { AdminTitle } from './AdminLayout';
+import { AnimatePresence, motion } from 'motion/react';
+import { AdminTitle, Pager } from './AdminLayout';
 import { AssignModal, type Target } from './AssignModal';
 import { CampaignModal } from './CampaignModal';
 import { describeFilter, memberQuery, STATUS_LABELS, universities, type AdminMember, type MemberFilter } from './memberFilter';
 import { Icon } from '../../components/Icon';
-import { StatusBadge } from '../../components/StatusBadge';
-import { EmptyState, ErrorState } from '../../components/States';
-import { PageLoader, Spinner } from '../../components/PageLoader';
+import { Dropdown } from '../../components/Dropdown';
+import { Badge, StatusBadge } from '../../components/StatusBadge';
+import { EmptyState, ErrorState, Skeleton } from '../../components/States';
+import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { STUDY_YEARS } from '../../lib/options';
 import { formatDate, isoDay, type MembershipStatus } from '../../lib/format';
@@ -18,6 +20,7 @@ const PAGE = 50;
 
 export default function Members() {
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const filter: MemberFilter = {
     q: params.get('q') ?? '',
@@ -40,9 +43,12 @@ export default function Members() {
     setParams(next, { replace: true });
   };
 
+  // The top-bar search changes ?q= directly; keep the box in sync.
+  useEffect(() => setSearch(filter.q ?? ''), [filter.q]);
+
   // Debounced search box → URL
   useEffect(() => {
-    const timer = setTimeout(() => search !== (filter.q ?? '') && setParam('q', search.trim()), 350);
+    const timer = setTimeout(() => search.trim() !== (filter.q ?? '') && setParam('q', search.trim()), 350);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
@@ -70,6 +76,8 @@ export default function Members() {
   const total = list.data?.count ?? 0;
   const pageIds = rows.map((r) => r.id!);
   const allOnPage = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
+  const someOnPage = pageIds.some((id) => selected.has(id));
+  const filtered = !!(filter.q || filter.status || filter.university || filter.year);
 
   const target: Target | null = useMemo(() => {
     if (allMatching) return { filter, label: describeFilter(filter), count: total };
@@ -95,6 +103,10 @@ export default function Members() {
       return n;
     });
   };
+  const clearSelection = () => {
+    setSelected(new Set());
+    setAllMatching(false);
+  };
 
   const exportAll = async () => {
     setExporting(true);
@@ -118,6 +130,7 @@ export default function Members() {
           'السنة الدراسية': m.study_year,
           الحي: m.district,
           الحالة: STATUS_LABELS[m.status as MembershipStatus],
+          تجريبية: m.is_trial ? 'نعم' : 'لا',
           'تاريخ التسجيل': isoDay(m.joined_at),
           'تاريخ الانتهاء': isoDay(m.expires_at),
           'كوبونات متاحة': m.coupons_available,
@@ -125,6 +138,7 @@ export default function Members() {
           ملاحظات: m.notes ?? '',
         })),
       );
+      toast(`تم تصدير ${out.length} عضو.`);
     } catch {
       toast('تعذّر التصدير، حاول مرة أخرى.', 'error');
     } finally {
@@ -132,13 +146,13 @@ export default function Members() {
     }
   };
 
-  const pages = Math.ceil(total / PAGE);
+  const count = selected.size || (allMatching ? total : 0);
 
   return (
     <>
       <AdminTitle
         title="الأعضاء"
-        lead={`${total.toLocaleString('en-US')} عضو${filter.q || filter.status || filter.university || filter.year ? ' مطابق للبحث' : ''}`}
+        lead={list.data ? `${total.toLocaleString('en-US')} عضو${filtered ? ' مطابق للبحث' : ''}` : 'جارٍ التحميل…'}
         actions={
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportAll} disabled={exporting || !total}>
             {exporting ? <Spinner small /> : <Icon name="download" />}
@@ -147,105 +161,152 @@ export default function Members() {
         }
       />
 
-      <div className="filters">
-        <div className="search-box">
+      <div className="toolbar">
+        <label className="toolbar-search">
           <Icon name="search" />
-          <input type="search" placeholder="بحث بالاسم أو البريد أو الهاتف أو رقم العضوية" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="بحث" />
-        </div>
-        <select value={filter.status} onChange={(e) => setParam('status', e.target.value)} aria-label="الحالة">
-          <option value="">كل الحالات</option>
-          <option value="active">سارية</option>
-          <option value="expired">منتهية</option>
-          <option value="suspended">موقوفة</option>
-        </select>
-        <select value={filter.university} onChange={(e) => setParam('university', e.target.value)} aria-label="الجامعة">
-          <option value="">كل الجامعات</option>
-          {unis.data?.map((u) => <option key={u} value={u}>{u}</option>)}
-        </select>
-        <select value={filter.year} onChange={(e) => setParam('year', e.target.value)} aria-label="السنة الدراسية">
-          <option value="">كل السنوات</option>
-          {STUDY_YEARS.map((y) => <option key={y.value} value={y.value}>{y.value}</option>)}
-        </select>
+          <input type="search" placeholder="بحث بالاسم أو البريد أو الجوال أو رقم العضوية" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="بحث" />
+          {list.isFetching && !list.isLoading && <Spinner small />}
+        </label>
+        <Dropdown
+          label="الحالة"
+          icon="filter"
+          placeholder="كل الحالات"
+          value={filter.status ?? ''}
+          onChange={(v) => setParam('status', v)}
+          options={[
+            { value: '', label: 'كل الحالات' },
+            { value: 'active', label: 'سارية' },
+            { value: 'expired', label: 'منتهية' },
+            { value: 'suspended', label: 'موقوفة' },
+          ]}
+        />
+        <Dropdown
+          label="الجامعة"
+          icon="cap"
+          placeholder="كل الجامعات"
+          searchable
+          searchPlaceholder="ابحث عن جامعة…"
+          value={filter.university ?? ''}
+          onChange={(v) => setParam('university', v)}
+          options={[{ value: '', label: 'كل الجامعات' }, ...(unis.data ?? []).map((u) => ({ value: u, label: u }))]}
+        />
+        <Dropdown
+          label="السنة الدراسية"
+          icon="calendar"
+          placeholder="كل السنوات"
+          value={filter.year ?? ''}
+          onChange={(v) => setParam('year', v)}
+          options={[{ value: '', label: 'كل السنوات' }, ...STUDY_YEARS.map((y) => ({ value: y.value, label: y.value }))]}
+        />
+        {filtered && (
+          <button type="button" className="btn btn-xs btn-soft" onClick={() => setParams({}, { replace: true })}>
+            <Icon name="close" />
+            مسح الفلاتر
+          </button>
+        )}
       </div>
 
-      {(selected.size > 0 || allMatching) && (
-        <div className="bulk-bar">
-          <span>
-            {allMatching ? `كل المطابقين (${total})` : `${selected.size} محدد`}
-            {!allMatching && allOnPage && total > pageIds.length && (
-              <button type="button" className="link-button" onClick={() => setAllMatching(true)}>
-                تحديد كل المطابقين ({total})
-              </button>
-            )}
-          </span>
-          <div className="bulk-actions">
-            <button type="button" className="btn btn-gold btn-sm" onClick={() => setModal('assign')}>
-              <Icon name="ticket" />
-              توزيع كوبونات
-            </button>
-            <button type="button" className="btn btn-primary btn-sm" onClick={() => setModal('email')}>
-              <Icon name="mail" />
-              إرسال بريد
-            </button>
-            <button type="button" className="link-button" onClick={() => { setSelected(new Set()); setAllMatching(false); }}>
-              إلغاء التحديد
-            </button>
-          </div>
-        </div>
-      )}
-
       {list.isLoading ? (
-        <PageLoader />
+        <Skeleton rows={6} height={58} />
       ) : list.isError ? (
         <ErrorState message="تعذّر تحميل الأعضاء." onRetry={() => list.refetch()} />
       ) : rows.length === 0 ? (
-        <EmptyState icon="users">لا يوجد أعضاء مطابقون.</EmptyState>
+        <div className="surface">
+          <EmptyState icon="users" title="لا يوجد أعضاء مطابقون" action={filtered ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => setParams({}, { replace: true })}>مسح الفلاتر</button> : undefined}>
+            جرّب كلمة بحث أخرى أو غيّر الفلاتر.
+          </EmptyState>
+        </div>
       ) : (
-        <div className="table-wrap">
-          <table className="data-table">
+        <div className="table-card">
+          <table className="dtable dtable--members">
             <thead>
               <tr>
-                <th className="col-check"><input type="checkbox" checked={allOnPage} onChange={togglePage} aria-label="تحديد الصفحة" /></th>
-                <th>رقم العضوية</th>
-                <th>الاسم</th>
+                <th className="col-check">
+                  <input
+                    type="checkbox"
+                    className="ui-checkbox"
+                    checked={allOnPage || allMatching}
+                    ref={(el) => {
+                      if (el) el.indeterminate = someOnPage && !allOnPage && !allMatching;
+                    }}
+                    onChange={togglePage}
+                    aria-label="تحديد الصفحة"
+                  />
+                </th>
+                <th>العضو</th>
                 <th>الجامعة</th>
-                <th>الهاتف</th>
+                <th>الجوال</th>
                 <th>الحالة</th>
                 <th>الانتهاء</th>
-                <th>كوبونات</th>
+                <th className="num">الكوبونات</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((m) => (
-                <tr key={m.id} className={selected.has(m.id!) || allMatching ? 'is-selected' : undefined}>
-                  <td className="col-check"><input type="checkbox" checked={allMatching || selected.has(m.id!)} onChange={() => toggle(m.id!)} aria-label={`تحديد ${m.full_name}`} /></td>
-                  <td dir="ltr" className="cell-mono">{m.member_label}</td>
-                  <td>
-                    <Link to={`/admin/members/${m.id}`} className="cell-strong">{m.full_name || '—'}</Link>
-                    <small className="cell-sub" dir="ltr">{m.email}</small>
-                  </td>
-                  <td>{m.university}<small className="cell-sub">{m.study_year}</small></td>
-                  <td dir="ltr">{m.phone}</td>
-                  <td><StatusBadge status={m.status as MembershipStatus} /></td>
-                  <td>{formatDate(m.expires_at)}</td>
-                  <td>{m.coupons_available} / {m.coupons_redeemed}</td>
-                </tr>
-              ))}
+              {rows.map((m) => {
+                const isSel = allMatching || selected.has(m.id!);
+                return (
+                  <tr key={m.id} className={isSel ? 'is-selected is-link' : 'is-link'} onClick={() => navigate(`/admin/members/${m.id}`)}>
+                    <td className="col-check" onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" className="ui-checkbox" checked={isSel} onChange={() => toggle(m.id!)} aria-label={`تحديد ${m.full_name}`} />
+                    </td>
+                    <td className="cell-person">
+                      <span className="avatar">{(m.full_name || '؟').trim().charAt(0)}</span>
+                      <span>
+                        <Link to={`/admin/members/${m.id}`} className="cell-strong" onClick={(e) => e.stopPropagation()}>{m.full_name || '—'}</Link>
+                        <small dir="ltr">{m.member_label} · {m.email}</small>
+                      </span>
+                    </td>
+                    <td data-label="الجامعة">{m.university || '—'}<small className="cell-sub">{m.study_year}</small></td>
+                    <td data-label="الجوال" className="cell-phone"><span dir="ltr">{m.phone || '—'}</span></td>
+                    <td data-label="الحالة"><StatusBadge status={m.status as MembershipStatus} />{m.is_trial && m.status === 'active' && <Badge tone="gold">تجريبية</Badge>}</td>
+                    <td data-label="الانتهاء">{formatDate(m.expires_at)}</td>
+                    <td data-label="الكوبونات" className="num">
+                      <span className="coupon-pair" title="متاحة / مصروفة">
+                        <b>{m.coupons_available}</b> / {m.coupons_redeemed}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+          <Pager page={page} pageSize={PAGE} total={total} onPage={(p) => setParam('page', String(p))} />
         </div>
       )}
 
-      {pages > 1 && (
-        <div className="pager">
-          <button type="button" className="btn btn-ghost btn-sm" disabled={page === 0} onClick={() => setParam('page', String(page - 1))}>السابق</button>
-          <span>صفحة {page + 1} من {pages}</span>
-          <button type="button" className="btn btn-ghost btn-sm" disabled={page + 1 >= pages} onClick={() => setParam('page', String(page + 1))}>التالي</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {count > 0 && (
+          <motion.div className="bulk" initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} transition={{ type: 'spring', stiffness: 420, damping: 34 }} role="region" aria-label="إجراءات المحددين">
+            <div className="bulk-count">
+              <span>{count.toLocaleString('en-US')}</span>
+              <div>
+                <strong>{allMatching ? 'كل المطابقين محددون' : 'عضو محدد'}</strong>
+                {!allMatching && allOnPage && total > pageIds.length && (
+                  <button type="button" className="bulk-all" onClick={() => setAllMatching(true)}>
+                    تحديد كل المطابقين ({total.toLocaleString('en-US')})
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="bulk-actions">
+              <button type="button" className="btn btn-gold btn-sm" onClick={() => setModal('assign')}>
+                <Icon name="ticket" />
+                <span>توزيع كوبون</span>
+              </button>
+              <button type="button" className="btn btn-sm bulk-btn" onClick={() => setModal('email')}>
+                <Icon name="send" />
+                <span>إرسال بريد</span>
+              </button>
+              <button type="button" className="bulk-close" onClick={clearSelection} aria-label="إلغاء التحديد">
+                <Icon name="close" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <AssignModal open={modal === 'assign'} onClose={() => setModal(null)} target={target} />
-      <CampaignModal open={modal === 'email'} onClose={() => setModal(null)} target={target} />
+      <AssignModal open={modal === 'assign'} onClose={() => setModal(null)} target={target} onDone={clearSelection} />
+      <CampaignModal open={modal === 'email'} onClose={() => setModal(null)} target={target} onDone={clearSelection} />
     </>
   );
 }
