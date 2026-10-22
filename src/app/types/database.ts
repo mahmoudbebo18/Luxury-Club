@@ -17,6 +17,7 @@ export type Database = {
       app_settings: {
         Row: {
           id: number
+          launch_hold: boolean
           new_member_days: number
           reminder_days: number
           reply_to: string
@@ -26,6 +27,7 @@ export type Database = {
         }
         Insert: {
           id?: number
+          launch_hold?: boolean
           new_member_days?: number
           reminder_days?: number
           reply_to?: string
@@ -35,6 +37,7 @@ export type Database = {
         }
         Update: {
           id?: number
+          launch_hold?: boolean
           new_member_days?: number
           reminder_days?: number
           reply_to?: string

@@ -73,8 +73,12 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(function TextF
 
 type PasswordProps = Omit<InputProps, 'type' | 'end'> & { showLabel: string; hideLabel: string; capsLabel?: string };
 
+// Copying a password out of an Arabic message brings invisible direction marks (and often a
+// trailing space on paste) that the eye can't see but break the sign-in.
+const INVISIBLE = /[؜​-‏‪-‮⁦-⁩﻿]/g;
+
 export const PasswordField = forwardRef<HTMLInputElement, PasswordProps>(function PasswordField(
-  { showLabel, hideLabel, capsLabel, hint, onKeyUp, ...rest },
+  { showLabel, hideLabel, capsLabel, hint, onKeyUp, onChange, ...rest },
   ref,
 ) {
   const [visible, setVisible] = useState(false);
@@ -88,6 +92,13 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordProps>(functio
       onKeyUp={(e) => {
         setCaps(e.getModifierState?.('CapsLock') ?? false);
         onKeyUp?.(e);
+      }}
+      onChange={(e) => {
+        const pasted = (e.nativeEvent as InputEvent).inputType === 'insertFromPaste';
+        let value = e.target.value.replace(INVISIBLE, '');
+        if (pasted) value = value.trim();
+        if (value !== e.target.value) e.target.value = value;
+        onChange?.(e);
       }}
       end={
         <button type="button" className="ui-control-end" onClick={() => setVisible((v) => !v)} aria-label={visible ? hideLabel : showLabel} aria-pressed={visible}>
