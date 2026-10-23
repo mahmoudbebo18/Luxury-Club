@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -21,6 +21,7 @@ type MyCoupon = {
   title: string;
   value: number;
   partner: string;
+  image_url: string | null;
   expires_at: string | null;
   assigned_at: string | null;
   redeemed_at: string | null;
@@ -52,6 +53,12 @@ export default function Dashboard() {
       return (data ?? []) as unknown as MyCoupon[];
     },
   });
+
+  // /account#coupons (from the offers service) lands on the coupons once they are drawn.
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === '#coupons' && coupons.data) document.getElementById('coupons')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash, coupons.data]);
 
   if (!profile) return <PageLoader />;
   const status = statusOf(profile);
@@ -176,7 +183,25 @@ export default function Dashboard() {
             </ol>
           </motion.div>
 
-          <motion.div {...rise(6)}>
+          <motion.div className="dash-links" {...rise(6)}>
+            <Link className="dash-link dash-link--gold" to="/account/services">
+              <span className="dash-stat-icon"><Icon name="concierge" /></span>
+              <span>{t('account.services')}<small>{t('account.servicesSub')}</small></span>
+              <Icon name="arrow" className="icon-flip dash-link-arrow" />
+            </Link>
+            <Link className="dash-link" to="/account/activities">
+              <span className="dash-stat-icon"><Icon name="trophy" /></span>
+              <span>{t('account.activities')}<small>{t('account.activitiesSub')}</small></span>
+              <Icon name="arrow" className="icon-flip dash-link-arrow" />
+            </Link>
+            <Link className="dash-link" to="/account/ambassador">
+              <span className="dash-stat-icon"><Icon name="sparkle" /></span>
+              <span>
+                {profile.is_ambassador ? t('account.ambassadorMine') : t('account.ambassador')}
+                <small>{profile.is_ambassador ? t('account.ambassadorMineSub') : t('account.ambassadorSub')}</small>
+              </span>
+              <Icon name="arrow" className="icon-flip dash-link-arrow" />
+            </Link>
             <Link className="dash-link" to="/account/profile">
               <span className="dash-stat-icon"><Icon name="user" /></span>
               <span>{t('account.editProfile')}</span>
@@ -186,7 +211,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <motion.section className="surface coupons" aria-labelledby="couponsTitle" {...rise(4)}>
+      <motion.section className="surface coupons" id="coupons" aria-labelledby="couponsTitle" {...rise(4)}>
         <div className="surface-head">
           <h2 id="couponsTitle">
             <Icon name="ticket" />
@@ -225,6 +250,7 @@ export default function Dashboard() {
                         <strong>{formatMoney(c.value)}</strong>
                         <span>{t('common.sar')}</span>
                       </div>
+                      {c.image_url && <img className="ticket-thumb" src={c.image_url} alt="" loading="lazy" />}
                       <div className="ticket-body">
                         <strong>{c.title}</strong>
                         <span className="ticket-line">

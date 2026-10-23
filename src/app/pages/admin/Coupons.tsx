@@ -10,11 +10,13 @@ import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
 import { Dropdown } from '../../components/Dropdown';
 import { Alert, TextField } from '../../components/Field';
+import { ImageField } from '../../components/ImageField';
 import { Badge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { endOfDayRiyadh, formatDate, formatMoney, isoDay } from '../../lib/format';
+import { removeImage } from '../../lib/upload';
 
 const EMPTY = { partner: '', title: '', value: '', quantity: '', expires: '' };
 
@@ -28,6 +30,9 @@ export default function Coupons() {
   const [error, setError] = useState<string | null>(null);
   const [assign, setAssign] = useState<{ batchId: string; target: Target } | null>(null);
   const [audienceFor, setAudienceFor] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [imageFor, setImageFor] = useState<{ id: string; title: string; url: string | null } | null>(null);
 
   const batches = useQuery({
     queryKey: ['admin', 'batches'],
@@ -48,6 +53,7 @@ export default function Coupons() {
 
   const startCreate = () => {
     setForm(EMPTY);
+    setImage(null);
     setError(null);
     setCreating(true);
   };
@@ -71,13 +77,14 @@ export default function Coupons() {
     if (form.expires && form.expires < isoDay(new Date().toISOString())) return setError('تاريخ الانتهاء في الماضي.');
     setBusy(true);
     setError(null);
-    const { error } = await supabase.rpc('admin_create_batch', {
+    const { data: batchId, error } = await supabase.rpc('admin_create_batch', {
       p_partner_id: form.partner,
       p_title: form.title.trim(),
       p_value: value,
       p_quantity: quantity,
       p_expires_at: form.expires ? endOfDayRiyadh(form.expires) : (null as unknown as string),
     });
+    if (!error && image) await supabase.from('coupon_batches').update({ image_url: image }).eq('id', batchId);
     setBusy(false);
     if (error) return setError(adminError(error));
     toast(`تم إنشاء ${quantity} كوبون.`);
@@ -134,6 +141,7 @@ export default function Coupons() {
             const pct = (v: number | null) => (q ? ((v ?? 0) / q) * 100 : 0);
             return (
               <motion.article key={b.id} className={expired ? 'bcard is-off' : 'bcard'} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                {b.image_url && <img className="bcard-img" src={b.image_url} alt="" loading="lazy" />}
                 <div className="bcard-head">
                   <span className="bcard-value">{formatMoney(b.value_sar ?? 0)}<small>ريال</small></span>
                   <div>
@@ -157,6 +165,9 @@ export default function Coupons() {
                     {b.expires_at ? `حتى ${formatDate(b.expires_at)}` : 'بدون تاريخ انتهاء'}
                     {expired && <Badge tone="expired">منتهية</Badge>}
                   </span>
+                  <button type="button" className="btn btn-ghost btn-xs bcard-img-btn" onClick={() => setImageFor({ id: b.id!, title: b.title!, url: b.image_url })}>
+                    <Icon name="edit" />الصورة
+                  </button>
                   <button type="button" className="btn btn-gold btn-xs" disabled={!b.remaining || expired} onClick={() => setAudienceFor(b.id!)}>
                     <Icon name="users" />توزيع
                   </button>
@@ -192,7 +203,7 @@ export default function Coupons() {
         footer={
           <div className="ui-modal-actions">
             <button type="button" className="btn btn-ghost" onClick={() => setCreating(false)}>إلغاء</button>
-            <button type="button" className="btn btn-primary" onClick={create} disabled={busy}>
+            <button type="button" className="btn btn-primary" onClick={create} disabled={busy || uploading}>
               {busy ? <Spinner small /> : <><Icon name="check" />إنشاء {form.quantity ? `${form.quantity} كوبون` : 'الكوبونات'}</>}
             </button>
           </div>
@@ -206,10 +217,51 @@ export default function Coupons() {
           <TextField label="عنوان الكوبون" icon="ticket" full placeholder="مثال: خصم 50 ريال على أي طلب" value={form.title} onChange={set('title')} maxLength={100} />
           <TextField label="القيمة (ريال)" icon="wallet" type="number" min="1" step="0.5" dir="ltr" inputMode="decimal" value={form.value} onChange={set('value')} />
           <TextField label="عدد الكوبونات" icon="hash" type="number" min="1" max="5000" dir="ltr" inputMode="numeric" value={form.quantity} onChange={set('quantity')} />
+          <ImageField label="صورة الكوبون" folder="coupons" value={image} onChange={setImage} onBusy={setUploading} hint="اختيارية: شعار الكافيه أو صورة العرض، تظهر للعضو مع الكوبون." />
           <TextField label="تاريخ الانتهاء" optional="(اختياري)" icon="calendar" full type="date" dir="ltr" value={form.expires} onChange={set('expires')} min={isoDay(new Date().toISOString())} />
           <AnimatePresence>{error && <div className="ui-field--full"><Alert tone="error">{error}</Alert></div>}</AnimatePresence>
         </div>
       </Modal>
+      {imageFor && <BatchImage batch={imageFor} onClose={() => setImageFor(null)} />}
     </>
+  );
+}
+
+/** Change the image of an existing batch (shown on the member's coupons). */
+function BatchImage({ batch, onClose }: { batch: { id: string; title: string; url: string | null }; onClose: () => void }) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [url, setUrl] = useState(batch.url);
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const save = async () => {
+    setBusy(true);
+    const { error } = await supabase.from('coupon_batches').update({ image_url: url }).eq('id', batch.id);
+    setBusy(false);
+    if (error) return toast('تعذّر حفظ الصورة.', 'error');
+    if (batch.url && batch.url !== url) removeImage(batch.url);
+    toast('تم حفظ صورة الكوبون.');
+    queryClient.invalidateQueries({ queryKey: ['admin', 'batches'] });
+    onClose();
+  };
+
+  return (
+    <Modal
+      open
+      title={`صورة «${batch.title}»`}
+      icon="ticket"
+      onClose={onClose}
+      footer={
+        <div className="ui-modal-actions">
+          <button type="button" className="btn btn-ghost" onClick={onClose}>إلغاء</button>
+          <button type="button" className="btn btn-primary" onClick={save} disabled={busy || uploading || url === batch.url}>
+            {busy ? <Spinner small /> : <><Icon name="check" />حفظ</>}
+          </button>
+        </div>
+      }
+    >
+      <ImageField label="صورة الكوبون" folder="coupons" value={url} onChange={setUrl} onBusy={setUploading} hint="تظهر للأعضاء مع الكوبون في حساباتهم." />
+    </Modal>
   );
 }

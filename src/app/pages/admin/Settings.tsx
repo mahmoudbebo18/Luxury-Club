@@ -16,13 +16,29 @@ import type { Tables } from '../../types/database';
 
 type Template = Tables<'email_templates'>;
 
-const ORDER = ['welcome', 'coupon', 'expiry_30', 'expired'];
+const ORDER = [
+  'welcome', 'coupon', 'expiry_30', 'expired',
+  'activity_registered', 'activity_team_added', 'activity_reminder', 'registration_cancelled', 'activity_cancelled',
+  'ambassador_approved', 'ambassador_rejected', 'admin_activity_registration', 'ambassador_request',
+];
 const META: Record<string, { icon: string; when: string }> = {
   welcome: { icon: 'sparkle', when: 'بعد تأكيد العضو لبريده' },
   coupon: { icon: 'ticket', when: 'عند توزيع كوبون على العضو' },
   expiry_30: { icon: 'clock', when: 'قبل انتهاء العضوية بـ 30 يومًا' },
   expired: { icon: 'alert', when: 'يوم انتهاء العضوية' },
+  activity_registered: { icon: 'trophy', when: 'للعضو أو قائد الفريق بعد التسجيل' },
+  activity_team_added: { icon: 'users', when: 'لكل عضو يضيفه القائد لفريقه' },
+  activity_reminder: { icon: 'bell', when: 'قبل النشاط بيوم، 8 صباحًا' },
+  registration_cancelled: { icon: 'x-circle', when: 'عند إلغاء تسجيل أو حذف عضو من فريق' },
+  activity_cancelled: { icon: 'alert', when: 'لكل المسجلين عند إلغاء النشاط' },
+  ambassador_approved: { icon: 'sparkle', when: 'عند قبول العضو سفيرًا' },
+  ambassador_rejected: { icon: 'mail', when: 'عند رفض طلب السفير' },
+  admin_activity_registration: { icon: 'bell', when: 'للإدارة مع كل تسجيل في نشاط' },
+  ambassador_request: { icon: 'bell', when: 'للإدارة مع كل طلب سفير' },
 };
+
+const ACTIVITY_KINDS = ['activity_registered', 'activity_team_added', 'activity_reminder', 'registration_cancelled', 'activity_cancelled', 'admin_activity_registration'];
+const ADMIN_KINDS = ['admin_activity_registration', 'ambassador_request'];
 
 const VARS: { key: string; label: string; sample: string; only?: string[] }[] = [
   { key: 'name', label: 'اسم العضو', sample: 'محمد العتيبي' },
@@ -33,6 +49,25 @@ const VARS: { key: string; label: string; sample: string; only?: string[] }[] = 
   { key: 'coupon_value', label: 'قيمة الكوبون', sample: '50', only: ['coupon'] },
   { key: 'partner', label: 'الكافيه', sample: 'كافيه الورد', only: ['coupon'] },
   { key: 'coupon_expires', label: 'انتهاء الكوبون', sample: '30 نوفمبر 2026', only: ['coupon'] },
+  { key: 'activity_title', label: 'اسم النشاط', sample: 'بطولة دسمان للبادل', only: ACTIVITY_KINDS },
+  { key: 'activity_date', label: 'موعد النشاط', sample: 'الخميس، 12 نوفمبر 2026، 8:00 م', only: ACTIVITY_KINDS },
+  { key: 'activity_location', label: 'مكان النشاط', sample: 'ملاعب الياسمين', only: ACTIVITY_KINDS },
+  { key: 'activities_url', label: 'رابط الأنشطة', sample: 'https://dasman.the-luxury-club.com/account/activities', only: ACTIVITY_KINDS },
+  { key: 'team_name', label: 'اسم الفريق', sample: 'صقور الملقا', only: ACTIVITY_KINDS },
+  { key: 'team_line', label: 'سطر الفريق', sample: 'الفريق: صقور الملقا · عدد الأعضاء: 5', only: ['activity_registered'] },
+  { key: 'captain_name', label: 'اسم القائد', sample: 'عبدالله السبيعي', only: ['activity_team_added'] },
+  { key: 'team_size', label: 'عدد أعضاء الفريق', sample: '5', only: ['admin_activity_registration'] },
+  { key: 'seats_taken', label: 'المحجوز', sample: '12', only: ['admin_activity_registration'] },
+  { key: 'seats_total', label: 'العدد الكلي', sample: '16', only: ['admin_activity_registration'] },
+  { key: 'seats_left', label: 'المتبقي', sample: '4', only: ['admin_activity_registration'] },
+  { key: 'member_name', label: 'اسم العضو', sample: 'محمد العتيبي', only: ADMIN_KINDS },
+  { key: 'university', label: 'الجامعة', sample: 'جامعة الملك سعود', only: ['ambassador_request'] },
+  { key: 'motivation', label: 'سبب التقديم', sample: 'أحب تنظيم الفعاليات وعندي شبكة واسعة في الجامعة…', only: ['ambassador_request'] },
+  { key: 'admin_url', label: 'رابط لوحة الإدارة', sample: 'https://dasman.the-luxury-club.com/admin', only: ADMIN_KINDS },
+  { key: 'referral_url', label: 'رابط الدعوة', sample: 'https://dasman.the-luxury-club.com/register?ref=K7Q2MX', only: ['ambassador_approved'] },
+  { key: 'referral_code', label: 'كود الدعوة', sample: 'K7Q2MX', only: ['ambassador_approved'] },
+  { key: 'ambassador_url', label: 'رابط صفحة السفير', sample: 'https://dasman.the-luxury-club.com/account/ambassador', only: ['ambassador_approved'] },
+  { key: 'admin_note', label: 'رسالة الإدارة', sample: 'نتمنى أن تقدّم في الفصل القادم.', only: ['ambassador_rejected'] },
 ];
 
 const fillSample = (html: string) => VARS.reduce((s, v) => s.replaceAll(`{{${v.key}}}`, v.sample), html);
@@ -206,15 +241,20 @@ function Templates({ initial }: { initial: Template[] }) {
 function Sender({ settings }: { settings: Tables<'app_settings'> }) {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ sender_name: settings.sender_name, reply_to: settings.reply_to });
+  const [form, setForm] = useState({ sender_name: settings.sender_name, reply_to: settings.reply_to, notify_email: settings.notify_email });
   const [busy, setBusy] = useState(false);
-  const changed = form.sender_name !== settings.sender_name || form.reply_to !== settings.reply_to;
+  const changed = form.sender_name !== settings.sender_name || form.reply_to !== settings.reply_to || form.notify_email !== settings.notify_email;
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const save = async () => {
     if (!form.sender_name.trim()) return toast('اكتب اسم المرسل.', 'error');
-    if (form.reply_to && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.reply_to.trim())) return toast('بريد «الرد على» غير صحيح.', 'error');
+    if (form.reply_to && !email.test(form.reply_to.trim())) return toast('بريد «الرد على» غير صحيح.', 'error');
+    if (form.notify_email.trim() && !email.test(form.notify_email.trim())) return toast('بريد تنبيهات الإدارة غير صحيح.', 'error');
     setBusy(true);
-    const { error } = await supabase.from('app_settings').update({ sender_name: form.sender_name.trim(), reply_to: form.reply_to.trim() }).eq('id', 1);
+    const { error } = await supabase
+      .from('app_settings')
+      .update({ sender_name: form.sender_name.trim(), reply_to: form.reply_to.trim(), notify_email: form.notify_email.trim().toLowerCase() })
+      .eq('id', 1);
     setBusy(false);
     if (error) return toast('تعذّر الحفظ.', 'error');
     toast('تم حفظ بيانات المرسل.');
@@ -228,6 +268,16 @@ function Sender({ settings }: { settings: Tables<'app_settings'> }) {
         <TextField label="اسم المرسل" icon="user" value={form.sender_name} onChange={(e) => setForm({ ...form, sender_name: e.target.value })} hint="يظهر للأعضاء في صندوق الوارد." />
         <TextField label="الرد على" icon="send" type="email" dir="ltr" value={form.reply_to} onChange={(e) => setForm({ ...form, reply_to: e.target.value })} hint="عندما يرد العضو تصل الرسالة إلى هذا البريد." />
         <TextField label="بريد الإرسال" icon="lock" full dir="ltr" value={settings.sender_email} disabled readOnly hint="موثّق في Brevo على دومين الموقع، وتغييره يحتاج توثيق دومين جديد." />
+        <TextField
+          label="بريد تنبيهات الإدارة"
+          icon="bell"
+          full
+          type="email"
+          dir="ltr"
+          value={form.notify_email}
+          onChange={(e) => setForm({ ...form, notify_email: e.target.value })}
+          hint="يصله بريد مع كل تسجيل في نشاط وكل طلب سفير. اتركه فارغًا لإيقاف التنبيهات."
+        />
       </div>
       <div className="tpl-actions">
         <button type="button" className="btn btn-primary btn-sm" onClick={save} disabled={busy || !changed}>

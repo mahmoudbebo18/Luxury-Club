@@ -20,6 +20,23 @@ import { CheckEmail } from './CheckEmail';
 
 const STEP1 = ['full_name', 'email', 'password', 'confirm'] as const;
 
+// An ambassador's invite link (/register?ref=CODE) is remembered on this device for 30 days, so the
+// sign-up still counts if the visitor looks around the site first and comes back later.
+const REF_KEY = 'dasman-ref';
+function referralCode() {
+  const fromUrl = new URLSearchParams(location.search).get('ref')?.trim().toUpperCase();
+  try {
+    if (fromUrl && /^[A-Z0-9]{4,12}$/.test(fromUrl)) {
+      localStorage.setItem(REF_KEY, JSON.stringify({ code: fromUrl, until: Date.now() + 30 * 86_400_000 }));
+      return fromUrl;
+    }
+    const saved = JSON.parse(localStorage.getItem(REF_KEY) ?? 'null') as { code: string; until: number } | null;
+    return saved && saved.until > Date.now() ? saved.code : '';
+  } catch {
+    return fromUrl ?? '';
+  }
+}
+
 export default function Register() {
   const { t, lang } = useT();
   const { session } = useAuth();
@@ -27,6 +44,7 @@ export default function Register() {
   const [dir, setDir] = useState(1);
   const [doneEmail, setDoneEmail] = useState<string | null>(null);
   const [status, setStatus] = useState<{ text: string; exists?: boolean } | null>(null);
+  const [ref] = useState(referralCode);
 
   const req = z.string().trim().min(1, t('common.required'));
   const schema = z
@@ -83,6 +101,7 @@ export default function Register() {
           phone: cleanPhone(v.phone),
           notes: v.notes?.trim() ?? '',
           lang,
+          ref,
         },
       },
     });
@@ -96,6 +115,11 @@ export default function Register() {
     }
     // With email confirmation on, an already-registered address comes back without identities.
     if (data.user && data.user.identities?.length === 0) return setStatus({ text: t('reg.exists'), exists: true });
+    try {
+      localStorage.removeItem(REF_KEY);
+    } catch {
+      /* storage blocked */
+    }
     setDoneEmail(email);
   };
 

@@ -66,6 +66,14 @@ export function adminError(err: unknown) {
       return 'الرقم السري يجب أن يكون من 4 إلى 8 أرقام.';
     case 'not_voidable':
       return 'هذه العملية ملغاة مسبقًا.';
+    case 'capacity_below_taken':
+      return `العدد لا يمكن أن يكون أقل من المسجلين حاليًا (${e.details ?? 0}).`;
+    case 'mode_locked':
+      return 'لا يمكن تغيير نوع التسجيل (فردي/فرق) بعد وجود مسجلين.';
+    case 'has_registrations':
+      return 'لا يمكن حذف نشاط فيه مسجلون، ألغِ النشاط بدلًا من ذلك.';
+    case 'not_found':
+      return 'العنصر غير موجود أو تم تحديثه، أعد تحميل الصفحة.';
     case 'forbidden':
       return 'ليست لديك صلاحية لهذا الإجراء.';
     default:

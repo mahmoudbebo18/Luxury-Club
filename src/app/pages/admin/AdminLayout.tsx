@@ -16,6 +16,9 @@ const links = [
   { to: '/admin/partners', label: 'الكافيهات', icon: 'store' },
   { to: '/admin/coupons', label: 'الكوبونات', icon: 'ticket' },
   { to: '/admin/redemptions', label: 'سجل الصرف', icon: 'history' },
+  { to: '/admin/services', label: 'الخدمات', icon: 'concierge' },
+  { to: '/admin/activities', label: 'الأنشطة', icon: 'trophy' },
+  { to: '/admin/ambassadors', label: 'السفراء', icon: 'sparkle', badge: 'applications' as const },
   { to: '/admin/emails', label: 'المراسلات', icon: 'mail', badge: 'queue' as const },
   { to: '/admin/settings', label: 'الإعدادات', icon: 'settings' },
 ];
@@ -29,6 +32,15 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
       return count ?? 0;
     },
   });
+  const applications = useQuery({
+    queryKey: ['admin', 'applications-count'],
+    refetchInterval: 300_000,
+    queryFn: async () => {
+      const { count } = await supabase.from('ambassador_applications').select('id', { count: 'exact', head: true }).eq('status', 'pending');
+      return count ?? 0;
+    },
+  });
+  const badges = { queue: queue.data, applications: applications.data };
   return (
     <nav className="adm-nav" aria-label="لوحة الإدارة">
       {links.map((l) => (
@@ -38,7 +50,7 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
               {isActive && <motion.span layoutId="adm-nav-pill" className="adm-nav-pill" transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
               <Icon name={l.icon} />
               <span>{l.label}</span>
-              {l.badge === 'queue' && !!queue.data && <em className="adm-nav-badge">{queue.data}</em>}
+              {l.badge && !!badges[l.badge] && <em className="adm-nav-badge">{badges[l.badge]}</em>}
             </>
           )}
         </NavLink>

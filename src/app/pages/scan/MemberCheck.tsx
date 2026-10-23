@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { useT } from '../../i18n';
+import { useAuth } from '../../auth/AuthProvider';
 import { Alert, TextField } from '../../components/Field';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
@@ -52,10 +53,64 @@ function writeDevice(d: Device | null) {
   }
 }
 
+type Checkin = { activity_id: string; member_id: string; title: string; starts_at: string; team_name: string | null; checked_in_at: string | null };
+
+/** Ambassadors and admins who scan a member's QR can check them in at today's activity. */
+function ActivityCheckins({ code }: { code: string }) {
+  const { t, lang } = useT();
+  const queryClient = useQueryClient();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const list = useQuery({
+    queryKey: ['member-checkins', code],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('member_checkins', { p_member_code: code });
+      if (error) throw error;
+      return (data ?? []) as unknown as Checkin[];
+    },
+  });
+  if (!list.data?.length) return null;
+
+  const mark = async (c: Checkin) => {
+    setBusy(c.activity_id);
+    setError(null);
+    const { data, error } = await supabase.rpc('set_checkin', { p_activity_id: c.activity_id, p_member_id: c.member_id, p_checked: true });
+    setBusy(null);
+    if (error || !(data as { ok?: boolean } | null)?.ok) return setError(t('checkin.err'));
+    queryClient.invalidateQueries({ queryKey: ['member-checkins', code] });
+  };
+
+  return (
+    <motion.section className="surface scan-checkin" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+      <h2 className="surface-title"><Icon name="trophy" />{t('checkin.forMember')}</h2>
+      <ul className="checkin-people">
+        {list.data.map((c) => (
+          <li key={c.activity_id} className={c.checked_in_at ? 'is-in' : undefined}>
+            <span className="checkin-person">
+              <strong>{c.title}</strong>
+              <small>{formatTime(c.starts_at, lang)}{c.team_name && ` · ${c.team_name}`}</small>
+            </span>
+            {c.checked_in_at ? (
+              <span className="badge badge--active">{t('checkin.done')} {formatTime(c.checked_in_at, lang)}</span>
+            ) : (
+              <button type="button" className="btn btn-primary btn-sm" onClick={() => mark(c)} disabled={busy === c.activity_id}>
+                {busy === c.activity_id ? <Spinner small /> : <><Icon name="check" />{t('checkin.mark')}</>}
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
+    </motion.section>
+  );
+}
+
 export default function MemberCheck() {
   const { code = '' } = useParams();
   const { t, lang } = useT();
   const queryClient = useQueryClient();
+  const { profile, isAdmin } = useAuth();
+  const canCheckIn = isAdmin || !!profile?.is_ambassador;
   const [device, setDevice] = useState<Device | null>(readDevice);
   const [selected, setSelected] = useState<CardCoupon | null>(null);
   const [pin, setPin] = useState('');
@@ -215,6 +270,8 @@ export default function MemberCheck() {
           </>
         )}
       </motion.div>
+
+      {c.ok && c.status === 'active' && canCheckIn && <ActivityCheckins code={code} />}
 
       {c.ok && c.status === 'active' && (
         <motion.section className="surface scan-coupons" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>

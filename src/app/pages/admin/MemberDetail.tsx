@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
@@ -84,6 +84,15 @@ export default function MemberDetail() {
     if (!(await confirm({ title: 'إرسال رابط كلمة المرور', message: <>سيصل رابط تعيين كلمة مرور جديدة إلى <b dir="ltr">{m.email}</b>.</>, confirm: 'إرسال الرابط', icon: 'key' }))) return;
     run('reset', async () => supabase.auth.resetPasswordForEmail(m.email!, { redirectTo: `${location.origin}/reset` }), 'أُرسل رابط تعيين كلمة المرور إلى العضو.');
   };
+  const setAmbassador = async (on: boolean) => {
+    const ok = await confirm(
+      on
+        ? { title: 'تعيين سفيرًا', message: `يحصل ${m.full_name} على رابط دعوة وصلاحية تسجيل الحضور في الأنشطة، ويصله بريد بذلك.`, confirm: 'تعيين سفيرًا', icon: 'sparkle' }
+        : { title: 'إلغاء صفة السفير؟', message: 'يفقد صلاحية تسجيل الحضور ويتوقف احتساب التسجيلات الجديدة عبر رابطه.', confirm: 'إلغاء الصفة', danger: true },
+    );
+    if (!ok) return;
+    run('ambassador', async () => supabase.rpc('admin_set_ambassador', { p_member_id: m.id!, p_on: on }), on ? 'أصبح العضو سفيرًا.' : 'أُلغيت صفة السفير.');
+  };
   const copyCode = async () => {
     try {
       await navigator.clipboard.writeText(m.member_code ?? '');
@@ -162,6 +171,7 @@ export default function MemberDetail() {
             <StatusBadge status={status} />
             {m.is_trial && status === 'active' && <Badge tone="gold">تجريبية</Badge>}
             {m.role === 'admin' && <Badge tone="gold">أدمن</Badge>}
+            {m.is_ambassador && <Badge tone="gold">سفير</Badge>}
             <span className="tag mono" dir="ltr">{m.member_label}</span>
           </div>
           <p>{[m.university, m.study_year].filter(Boolean).join(' · ') || '—'}</p>
@@ -194,6 +204,12 @@ export default function MemberDetail() {
                 </button>
               </dd>
             </div>
+            {m.referred_by && (
+              <div><dt><Icon name="send" />دعاه</dt><dd><Link to={`/admin/members/${m.referred_by}`}>{m.referred_by_name}</Link></dd></div>
+            )}
+            {m.is_ambassador && (
+              <div><dt><Icon name="sparkle" />سجّلوا عن طريقه</dt><dd><b>{m.referrals}</b> · كود <span className="mono" dir="ltr">{m.referral_code}</span></dd></div>
+            )}
             {m.notes && <div className="facts-full"><dt><Icon name="file" />ملاحظات</dt><dd>{m.notes}</dd></div>}
           </dl>
         </section>
@@ -213,6 +229,15 @@ export default function MemberDetail() {
               <span className="al-icon">{busy === 'reset' ? <Spinner small /> : <Icon name="key" />}</span>
               <span><strong>رابط تعيين كلمة المرور</strong><small>يصل إلى بريد العضو</small></span>
             </button>
+            {m.role === 'member' && (
+              <button type="button" onClick={() => setAmbassador(!m.is_ambassador)} disabled={!!busy}>
+                <span className="al-icon al-icon--gold">{busy === 'ambassador' ? <Spinner small /> : <Icon name="sparkle" />}</span>
+                <span>
+                  <strong>{m.is_ambassador ? 'إلغاء صفة السفير' : 'تعيين سفيرًا'}</strong>
+                  <small>{m.is_ambassador ? 'تبقى عضويته وسجل من دعاهم' : 'رابط دعوة وتسجيل الحضور في الأنشطة'}</small>
+                </span>
+              </button>
+            )}
             <a href={`/m/${m.member_code}`} target="_blank" rel="noopener">
               <span className="al-icon"><Icon name="qr" /></span>
               <span><strong>صفحة المسح</strong><small>كما يراها الكاشير</small></span>

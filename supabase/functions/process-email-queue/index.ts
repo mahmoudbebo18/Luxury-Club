@@ -36,6 +36,13 @@ function formatDate(value: string | undefined) {
   return new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-latn', { timeZone: 'Asia/Riyadh', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(value));
 }
 
+function formatDateTime(value: string | undefined) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-latn', {
+    timeZone: 'Asia/Riyadh', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit',
+  }).format(new Date(value));
+}
+
 function fill(template: string, vars: Record<string, string>) {
   return template.replace(/\{\{(\w+)\}\}/g, (_, key) => esc(vars[key] ?? ''));
 }
@@ -87,6 +94,8 @@ Deno.serve(async (req) => {
   if (body.daily || (riyadhHour === 8 && new Date().getUTCMinutes() < 5)) {
     const { data, error } = await supabase.rpc('queue_expiry_notices');
     report.expiry_notices = error ? `error: ${error.message}` : data;
+    const reminders = await supabase.rpc('queue_activity_reminders');
+    report.activity_reminders = reminders.error ? `error: ${reminders.error.message}` : reminders.data;
     const ping = await fetch('https://api.brevo.com/v3/account', { headers: { 'api-key': BREVO_KEY } });
     report.brevo_ping = ping.status;
   }
@@ -135,9 +144,15 @@ Deno.serve(async (req) => {
         name: m?.full_name || row.to_name || '',
         member_no: m ? 'DSM-' + String(m.member_no).padStart(4, '0') : '',
         account_url: `${siteUrl}/account`,
+        activities_url: `${siteUrl}/account/activities`,
+        ambassador_url: `${siteUrl}/account/ambassador`,
+        admin_url: `${siteUrl}/admin`,
         ...row.vars,
       };
       vars.expires_at = formatDate(row.vars.expires_at ?? m?.expires_at);
+      if (row.vars.activity_at) vars.activity_date = formatDateTime(row.vars.activity_at);
+      if (row.vars.referral_code) vars.referral_url = `${siteUrl}/register?ref=${row.vars.referral_code}`;
+      vars.team_line = row.vars.team_name ? `الفريق: ${row.vars.team_name} · عدد الأعضاء: ${row.vars.team_size ?? ''}` : '';
 
       let subject = row.subject;
       let html = row.body_html;

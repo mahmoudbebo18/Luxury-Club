@@ -39,6 +39,19 @@ export function startOfDayRiyadh(day: string) {
   return new Date(`${day}T00:00:00+03:00`).toISOString();
 }
 
+/** ISO timestamp → "YYYY-MM-DDTHH:mm" in Riyadh, for <input type="datetime-local">. */
+export function toLocalInput(value: string | null | undefined) {
+  if (!value) return '';
+  const d = new Date(value);
+  const time = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d);
+  return `${isoDay(value)}T${time}`;
+}
+
+/** "YYYY-MM-DDTHH:mm" typed in Riyadh time → ISO timestamp. */
+export function fromLocalInput(value: string) {
+  return value ? new Date(`${value}:00+03:00`).toISOString() : null;
+}
+
 export function daysLeft(expiresAt: string) {
   return Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 86_400_000));
 }

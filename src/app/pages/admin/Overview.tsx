@@ -19,6 +19,9 @@ type Stats = {
   coupons_assigned: number;
   coupons_redeemed: number;
   emails_pending: number;
+  activities_upcoming: number;
+  ambassadors: number;
+  ambassador_pending: number;
 };
 
 const n = (v: number) => v.toLocaleString('en-US');
@@ -129,7 +132,17 @@ export default function Overview() {
             </motion.section>
           </div>
 
+          {s.ambassador_pending > 0 && (
+            <Link to="/admin/ambassadors" className="adm-note">
+              <Icon name="sparkle" />
+              <span><b>{n(s.ambassador_pending)}</b> طلب جديد للانضمام كسفير بانتظار مراجعتك.</span>
+              <Icon name="arrow" className="icon-flip" />
+            </Link>
+          )}
+
           <div className="quick">
+            <Link to="/admin/activities" className="quick-item"><Icon name="trophy" /><span><strong>الأنشطة ({n(s.activities_upcoming ?? 0)} قادمة)</strong><small>بطولات، مقاعد، مسجلون، حضور</small></span></Link>
+            <Link to="/admin/ambassadors" className="quick-item"><Icon name="sparkle" /><span><strong>السفراء ({n(s.ambassadors ?? 0)})</strong><small>الطلبات والإحالات</small></span></Link>
             <Link to="/admin/members" className="quick-item"><Icon name="users" /><span><strong>إدارة الأعضاء</strong><small>بحث، تجديد، إيقاف، تصدير</small></span></Link>
             <Link to="/admin/partners" className="quick-item"><Icon name="store" /><span><strong>الكافيهات</strong><small>إضافة كافيه ورقمه السري</small></span></Link>
             <Link to="/admin/settings" className="quick-item"><Icon name="file" /><span><strong>قوالب الرسائل</strong><small>الترحيب والكوبونات والتنبيهات</small></span></Link>

@@ -18,6 +18,9 @@ type Props = {
 
 export function Modal({ open, title, onClose, children, footer, wide, closeLabel = 'إغلاق', icon, lead }: Props) {
   const panel = useRef<HTMLDivElement>(null);
+  // Callers pass inline arrows: keep the latest in a ref so a re-render doesn't re-run the focus effect.
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -27,7 +30,7 @@ export function Modal({ open, title, onClose, children, footer, wide, closeLabel
       const first = panel.current?.querySelector<HTMLElement>('input:not([type=hidden]), select, textarea, [data-autofocus]');
       (first ?? panel.current)?.focus();
     }, 60);
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && closeRef.current();
     document.addEventListener('keydown', onKey);
     return () => {
       clearTimeout(timer);
@@ -35,7 +38,7 @@ export function Modal({ open, title, onClose, children, footer, wide, closeLabel
       document.removeEventListener('keydown', onKey);
       prev?.focus?.({ preventScroll: true });
     };
-  }, [open, onClose]);
+  }, [open]);
 
   return createPortal(
     <AnimatePresence>

@@ -5,3 +5,4 @@ dist/
 .wrangler/
 supabase/.temp/
 supabase/import/
+*.tsbuildinfo

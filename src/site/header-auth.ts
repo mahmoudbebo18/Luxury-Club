@@ -32,3 +32,18 @@ if (hasSession) {
   // "Join us" in the header and drawer scrolls to the members section, which only invites sign-up.
   document.querySelectorAll<HTMLElement>('.main-nav a[href$="#join"], .drawer-nav a[href$="#join"]').forEach((a) => a.remove());
 }
+
+if (hasSession) {
+  // Services page: each service gets a button to request it from the member's services page
+  // (activities already has its own button).
+  const en = document.documentElement.lang === 'en';
+  document.querySelectorAll<HTMLElement>('.service-row[id]').forEach((row) => {
+    const body = row.querySelector('.service-row-body');
+    if (!body || body.querySelector('.service-row-cta')) return;
+    const a = document.createElement('a');
+    a.className = 'btn btn-primary service-row-cta';
+    a.href = `/account/services${en ? '?lang=en' : ''}#${row.id}`;
+    a.innerHTML = `${en ? 'Request this service' : 'اطلب الخدمة'}<svg class="icon icon-flip" aria-hidden="true"><use href="/imgs/icons.svg#i-arrow" /></svg>`;
+    body.append(a);
+  });
+}

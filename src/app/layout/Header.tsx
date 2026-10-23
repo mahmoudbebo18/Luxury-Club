@@ -58,13 +58,20 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
           </a>
           <nav className="main-nav" aria-label={t('nav.menu')}>
             <a href={home}>{t('common.home')}</a>
-            <a href={services}>{t('nav.services')}</a>
+            {session && !isAdmin ? (
+              <NavLink to="/account/services" className={active}>{t('nav.myServices')}</NavLink>
+            ) : (
+              <a href={services}>{t('nav.services')}</a>
+            )}
             {session ? (
               <>
                 {isAdmin ? (
                   <NavLink to="/admin" className={active}>{t('nav.admin')}</NavLink>
                 ) : (
-                  <NavLink to="/account" end className={active}>{t('nav.account')}</NavLink>
+                  <>
+                    <NavLink to="/account" end className={active}>{t('nav.account')}</NavLink>
+                    <NavLink to="/account/activities" className={active}>{t('nav.activities')}</NavLink>
+                  </>
                 )}
                 <NavLink to="/account/profile" className={active}>{t('nav.profile')}</NavLink>
               </>
@@ -129,12 +136,23 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
                   <span className="num">02</span>{t('nav.admin')}<Icon name="arrow" flip />
                 </Link>
               ) : (
-                <NavLink to="/account" end className={active} style={order(2)}>
-                  <span className="num">02</span>{t('nav.account')}<Icon name="arrow" flip />
-                </NavLink>
+                <>
+                  <NavLink to="/account" end className={active} style={order(2)}>
+                    <span className="num">02</span>{t('nav.account')}<Icon name="arrow" flip />
+                  </NavLink>
+                  <NavLink to="/account/services" className={active} style={order(3)}>
+                    <span className="num">03</span>{t('nav.myServices')}<Icon name="arrow" flip />
+                  </NavLink>
+                  <NavLink to="/account/activities" className={active} style={order(4)}>
+                    <span className="num">04</span>{t('nav.activities')}<Icon name="arrow" flip />
+                  </NavLink>
+                  <NavLink to="/account/ambassador" className={active} style={order(5)}>
+                    <span className="num">05</span>{t('nav.ambassador')}<Icon name="arrow" flip />
+                  </NavLink>
+                </>
               )}
-              <NavLink to="/account/profile" className={active} style={order(3)}>
-                <span className="num">03</span>{t('nav.profile')}<Icon name="arrow" flip />
+              <NavLink to="/account/profile" className={active} style={order(6)}>
+                <span className="num">{isAdmin ? '03' : '06'}</span>{t('nav.profile')}<Icon name="arrow" flip />
               </NavLink>
             </>
           ) : (

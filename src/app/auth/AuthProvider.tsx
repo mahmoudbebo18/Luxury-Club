@@ -86,7 +86,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   const { session, ready, profile } = useAuth();
   const location = useLocation();
   if (!ready) return <PageLoader />;
-  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;
+  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search + location.hash)}`} replace />;
   if (profile === undefined) return <PageLoader />;
   return <>{children}</>;
 }
@@ -101,7 +101,7 @@ export function RequireAdmin({ children }: { children: ReactNode }) {
   const { session, ready, profile, isAdmin } = useAuth();
   const location = useLocation();
   if (!ready) return <PageLoader />;
-  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;
+  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search + location.hash)}`} replace />;
   if (profile === undefined) return <PageLoader />;
   if (!isAdmin) return <Navigate to="/account" replace />;
   return <>{children}</>;
