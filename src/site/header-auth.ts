@@ -1,5 +1,5 @@
 // "Login" in the header and drawer becomes "My account" when a Supabase session is stored, and
-// "Register now" leads signed-in members to their account. Reads localStorage only, so the
+// the sign-up links disappear for signed-in members. Reads localStorage only, so the
 // marketing pages never load the Supabase client for this.
 const hasSession = (() => {
   try {
@@ -16,11 +16,6 @@ document.querySelectorAll<HTMLAnchorElement>('[data-auth-link]').forEach((a) => 
 });
 
 if (hasSession) {
-  // Header and drawer already show "My account": drop the duplicate "Register now".
-  document.querySelectorAll<HTMLElement>('.header-cta, .drawer a[href^="/register"]').forEach((a) => a.remove());
-  // "Join us" in the header, drawer and footer: a member has already joined.
-  document.querySelectorAll<HTMLElement>('.main-nav a[href$="#join"], .drawer-nav a[href$="#join"]').forEach((a) => a.remove());
-  document.querySelectorAll<HTMLElement>('.footer-links a[href$="#join"]').forEach((a) => a.closest('li')?.remove());
   // The join card leads to the account instead of sign-up.
   document.querySelectorAll<HTMLAnchorElement>('.join-cta a[href^="/register"]').forEach((a) => {
     a.href = '/account';
@@ -28,4 +23,12 @@ if (hasSession) {
     if (text) text.textContent = document.documentElement.lang === 'ar' ? 'حسابي' : 'My account';
     a.closest('.join-cta')?.querySelector('.form-alt')?.remove();
   });
+  // Every other sign-up link ("Register now", "Join us", the hero and privileges buttons) is for
+  // visitors only: a member has already joined. Footer links take their list item with them, and
+  // the services page's join band has nothing left to offer without its button.
+  document.querySelectorAll<HTMLElement>('a[href^="/register"]').forEach((a) => {
+    (a.closest('.footer-links li') ?? a.closest('.cta-wrap') ?? a).remove();
+  });
+  // "Join us" in the header and drawer scrolls to the members section, which only invites sign-up.
+  document.querySelectorAll<HTMLElement>('.main-nav a[href$="#join"], .drawer-nav a[href$="#join"]').forEach((a) => a.remove());
 }

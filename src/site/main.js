@@ -97,6 +97,41 @@
         });
     }
 
+    // ---------- landing on a #section ----------
+    // Arriving from another page (e.g. /#vision from the services page), the browser jumps to the
+    // section before the Cairo font and images have settled; the text then reflows and pushes the
+    // section down, leaving the visitor above it by a different amount on every device. Keep the
+    // section under the header while the layout settles, until the visitor scrolls themselves.
+    var navEntry = window.performance && performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+    var restored = navEntry && navEntry.type !== "navigate"; // reload / back: the browser restores the old position
+    var hashTarget = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (hashTarget && !restored && "ResizeObserver" in window) {
+        var root = document.documentElement;
+        var aligning = true;
+        var alignToHash = function() {
+            if (!aligning) return;
+            root.style.scrollBehavior = "auto"; // jump, don't animate, on every correction
+            hashTarget.scrollIntoView({ block: "start" }); // honours scroll-padding-top (the fixed header)
+            root.style.scrollBehavior = "";
+        };
+        var layoutWatch = new ResizeObserver(alignToHash);
+        var userEvents = ["wheel", "touchstart", "keydown", "mousedown"];
+        var stopAligning = function() {
+            aligning = false;
+            layoutWatch.disconnect();
+            userEvents.forEach(function(type) { window.removeEventListener(type, stopAligning); });
+        };
+        var onPageLoad = function() {
+            alignToHash();
+            setTimeout(stopAligning, 1500);
+        };
+        layoutWatch.observe(document.body);
+        userEvents.forEach(function(type) { window.addEventListener(type, stopAligning, { passive: true }); });
+        if (document.readyState === "complete") onPageLoad();
+        else window.addEventListener("load", onPageLoad);
+        if (document.fonts) document.fonts.ready.then(alignToHash);
+    }
+
     // ---------- active nav link ----------
     // Links carry data-spy="<section id>" (header and drawer); "about" belongs to "home".
     var navLinks = document.querySelectorAll("a[data-spy]");

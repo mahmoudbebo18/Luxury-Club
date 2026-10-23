@@ -70,6 +70,7 @@ $swash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBo
   --shadow: 0 30px 60px -34px rgba(27, 30, 18, 0.5);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --header-h: 80px;
+  --header-h-scrolled: 68px; // the header shrinks once the page scrolls
   --dir: 1;
 }
 
@@ -86,7 +87,9 @@ $swash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBo
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 8px);
+  // A #section link always lands on a scrolled page, so the section starts right under the
+  // shrunken header instead of leaving a strip of the section above it showing.
+  scroll-padding-top: var(--header-h-scrolled);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -448,7 +451,7 @@ ol {
   transition: height 0.35s var(--ease);
 
   .is-scrolled & {
-    height: 68px;
+    height: var(--header-h-scrolled);
   }
 }
 
