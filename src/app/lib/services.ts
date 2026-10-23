@@ -2,6 +2,9 @@
 // (used by the member page and by the admin form's preview).
 import type { Lang } from '../i18n';
 
+/** The club's WhatsApp (same number as the marketing pages' chat button). */
+export const CLUB_WHATSAPP = '966558103228';
+
 export const SERVICE_ICONS = ['legal', 'logistics', 'gift', 'concierge', 'flask', 'car', 'trophy', 'hotel', 'dining', 'bag', 'shield', 'cap', 'calendar', 'users', 'sparkle', 'phone'] as const;
 export type ServiceIcon = (typeof SERVICE_ICONS)[number];
 

@@ -34,9 +34,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: clamp(14px, 3vh, 28px);
   height: 100%;
-  padding: clamp(32px, 4vw, 52px);
+  padding: clamp(24px, 5vh, 52px) clamp(32px, 4vw, 52px) clamp(30px, 5vh, 52px);
   overflow: hidden;
   border-radius: 32px;
   color: rgba(255, 255, 255, 0.82);
@@ -80,14 +80,14 @@
   max-width: 440px;
 
   h2 {
-    margin-top: 12px;
+    margin-top: clamp(6px, 1.4vh, 12px);
     color: var(--white);
-    font-size: clamp(1.9rem, 1.2rem + 1.6vw, 2.6rem);
+    font-size: clamp(1.6rem, min(1.2rem + 1.6vw, 4.6vh), 2.6rem);
     line-height: 1.3;
   }
 
   p {
-    margin-top: 12px;
+    margin-top: clamp(6px, 1.4vh, 12px);
     font-size: 1.05rem;
     color: rgba(255, 255, 255, 0.72);
   }
@@ -96,21 +96,49 @@
 // floating membership card + coupon ticket
 .auth-mock {
   position: relative;
-  flex: 1;
-  min-height: 210px;
+  flex: 1 1 0;
+  min-height: 0;
   display: grid;
   place-items: center;
   perspective: 900px;
+  container-type: size;
+
+  // no room for the illustration on very short screens
+  @container (max-height: 130px) {
+    .auth-mock-card,
+    .auth-mock-ticket {
+      display: none;
+    }
+  }
+
+  @container (max-height: 240px) {
+    .auth-mock-ticket {
+      top: 0;
+      scale: 0.85;
+      transform-origin: top;
+    }
+  }
+}
+
+.auth-aside-logo,
+.auth-aside-copy,
+.auth-perks,
+.auth-count {
+  flex-shrink: 0;
 }
 
 .auth-mock-card {
-  width: min(330px, 80%);
+  // 1.586 = card ratio: at most ~80% of the space left in height
+  // Everything inside scales with the card (cqw = 1% of its width; 22px at the full 330px).
+  --card-w: min(330px, 80%, 125cqh);
+  width: var(--card-w);
   aspect-ratio: 1.586;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 22px;
-  border-radius: 22px;
+  padding: calc(var(--card-w) * 0.067);
+  border-radius: calc(var(--card-w) * 0.067);
+  container-type: inline-size;
   border: 1px solid rgba(220, 195, 147, 0.35);
   background:
     radial-gradient(260px 160px at 100% 0%, rgba(220, 195, 147, 0.35), transparent 70%),
@@ -143,12 +171,17 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
+  img {
+    width: 21cqw;
+    height: auto;
+  }
 }
 
 .auth-mock-chip {
-  width: 38px;
-  height: 28px;
-  border-radius: 7px;
+  width: 11.5cqw;
+  height: 8.5cqw;
+  border-radius: 2cqw;
   background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
   opacity: 0.9;
 }
@@ -161,12 +194,12 @@
   small {
     display: block;
     color: var(--gold-300);
-    font-size: 0.75rem;
+    font-size: max(0.6rem, 3.6cqw);
   }
 
   strong {
     color: var(--white);
-    font-size: 1.05rem;
+    font-size: max(0.75rem, 5.1cqw);
     letter-spacing: 0.06em;
   }
 }
@@ -174,15 +207,15 @@
 .auth-mock-qr {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 15.8cqw;
+  height: 15.8cqw;
+  border-radius: 3.6cqw;
   background-color: var(--white);
   color: var(--olive-900);
 
   .icon {
-    width: 34px;
-    height: 34px;
+    width: 10.3cqw;
+    height: 10.3cqw;
   }
 }
 
@@ -231,7 +264,7 @@
 
 .auth-perks {
   display: grid;
-  gap: 12px;
+  gap: clamp(8px, 1.4vh, 12px);
   margin: 0;
   padding: 0;
   list-style: none;

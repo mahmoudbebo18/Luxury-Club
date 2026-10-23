@@ -14,6 +14,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { Spinner } from '../../components/PageLoader';
 import { memberLabel, statusOf } from '../../lib/format';
 import {
+  CLUB_WHATSAPP,
   PAGE_PATH,
   anchorOf,
   emailParts,
@@ -82,7 +83,7 @@ export default function Services() {
           <Icon name="alert" />
           <div>
             <p>{t('svc.inactive')}</p>
-            <a className="btn btn-sm btn-ghost" href="https://wa.me/966558103228" target="_blank" rel="noopener">
+            <a className="btn btn-sm btn-ghost" href={`https://wa.me/${CLUB_WHATSAPP}`} target="_blank" rel="noopener">
               <Icon name="whatsapp" />
               {t('account.contact')}
             </a>

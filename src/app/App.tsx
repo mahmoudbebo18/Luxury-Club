@@ -10,6 +10,7 @@ import { AppLayout } from './layout/AppLayout';
 import { AuthLayout } from './pages/auth/AuthShell';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { ScrollToTop } from './layout/ScrollToTop';
+import { WhatsAppChat } from './components/WhatsAppChat';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
@@ -96,6 +97,7 @@ export function App() {
                   </Route>
                 </Routes>
               </Suspense>
+              <WhatsAppChat />
             </AuthProvider>
           </ConfirmProvider>
         </ToastProvider>
