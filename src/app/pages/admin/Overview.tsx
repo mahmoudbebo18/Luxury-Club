@@ -45,6 +45,21 @@ export default function Overview() {
     },
   });
 
+  const upcoming = useQuery({
+    queryKey: ['admin', 'activities', 'upcoming'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_activities')
+        .select('id, title, starts_at, mode, capacity, taken, participants, state')
+        .in('status', ['published', 'closed'])
+        .gt('starts_at', new Date().toISOString())
+        .order('starts_at')
+        .limit(4);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', hour: 'numeric', hour12: false }).format(new Date()));
   const greeting = hour < 12 ? 'صباح الخير' : 'مساء الخير';
 
@@ -131,6 +146,35 @@ export default function Overview() {
               )}
             </motion.section>
           </div>
+
+          <motion.section className="surface" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <div className="surface-head">
+              <h2><Icon name="trophy" />الأنشطة القادمة</h2>
+              <Link className="text-more" to="/admin/activities">كل الأنشطة</Link>
+            </div>
+            {upcoming.isLoading ? (
+              <Skeleton rows={2} height={44} />
+            ) : !upcoming.data?.length ? (
+              <EmptyState icon="trophy" action={<Link className="btn btn-primary btn-sm" to="/admin/activities?new=1"><Icon name="plus" />نشاط جديد</Link>}>لا توجد أنشطة قادمة منشورة.</EmptyState>
+            ) : (
+              <ul className="feed">
+                {upcoming.data.map((a) => {
+                  const cap = a.capacity ?? 0;
+                  const taken = a.taken ?? 0;
+                  return (
+                    <li key={a.id}>
+                      <span className="feed-icon"><Icon name="trophy" /></span>
+                      <span className="feed-body">
+                        <strong><Link to={`/admin/activities/${a.id}`}>{a.title}</Link>{taken >= cap && <Badge tone="gold">مكتمل</Badge>}</strong>
+                        <small>{formatDateTime(a.starts_at)} · {a.participants} شخص</small>
+                      </span>
+                      <span className="feed-value">{taken}<small> / {cap} {a.mode === 'team' ? 'فريق' : 'مقعد'}</small></span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </motion.section>
 
           {s.ambassador_pending > 0 && (
             <Link to="/admin/ambassadors" className="adm-note">

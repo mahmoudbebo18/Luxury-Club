@@ -239,6 +239,7 @@ export const ar = {
   'nav.ambassador': 'السفراء',
 
   'account.activities': 'الأنشطة والبطولات',
+  'account.nextActivity': 'نشاطك القادم',
   'account.activitiesSub': 'سجّل في البطولات والفعاليات القادمة',
   'account.ambassador': 'كن سفيرًا لدسمان',
   'account.ambassadorSub': 'ادعُ زملاءك وساعد في تنظيم الأنشطة',

@@ -16,6 +16,7 @@ import { PageLoader, Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { STUDY_YEARS } from '../../lib/options';
 import { daysLeft, formatDate, formatDateTime, formatMoney, type MembershipStatus } from '../../lib/format';
+import { STATE_AR, STATE_TONE, type ActivityState } from '../../lib/activities';
 
 const COUPON_STATUS: Record<string, { label: string; tone: Tone }> = {
   assigned: { label: 'متاح', tone: 'active' },
@@ -53,6 +54,27 @@ export default function MemberDetail() {
         .order('assigned_at', { ascending: false });
       if (error) throw error;
       return data;
+    },
+  });
+
+  // Activities the member is signed up for (alone, as captain, or added to a team).
+  const activities = useQuery({
+    queryKey: ['admin', 'member', id, 'activities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_activity_roster')
+        .select('activity_id, team_name, is_captain, checked_in_at, registered_at')
+        .eq('member_id', id)
+        .order('registered_at', { ascending: false });
+      if (error) throw error;
+      if (!data.length) return [];
+      const { data: acts, error: actsError } = await supabase
+        .from('admin_activities')
+        .select('id, title, starts_at, state, mode')
+        .in('id', [...new Set(data.map((r) => r.activity_id!))]);
+      if (actsError) throw actsError;
+      const byId = new Map(acts.map((a) => [a.id, a]));
+      return data.map((r) => ({ ...r, activity: byId.get(r.activity_id) }));
     },
   });
 
@@ -284,6 +306,38 @@ export default function MemberDetail() {
                       <td data-label="القيمة">{formatMoney(b?.value_sar ?? 0)} ريال</td>
                       <td data-label="الحالة"><Badge tone={st.tone}>{st.label}</Badge></td>
                       <td data-label="التاريخ">{c.status === 'redeemed' ? formatDateTime(c.redeemed_at) : formatDate(c.assigned_at)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="surface">
+        <div className="surface-head">
+          <h2><Icon name="trophy" />الأنشطة</h2>
+          <span className="muted">{activities.data?.length ?? 0} نشاط</span>
+        </div>
+        {activities.isLoading ? (
+          <Skeleton rows={2} height={48} />
+        ) : !activities.data?.length ? (
+          <EmptyState icon="trophy">لم يسجّل العضو في أي نشاط.</EmptyState>
+        ) : (
+          <div className="table-card table-card--flat">
+            <table className="dtable">
+              <thead><tr><th>النشاط</th><th>الموعد</th><th>الفريق</th><th>حالة النشاط</th><th>الحضور</th></tr></thead>
+              <tbody>
+                {activities.data.map((r) => {
+                  const st = (r.activity?.state ?? 'open') as ActivityState;
+                  return (
+                    <tr key={r.activity_id}>
+                      <td className="cell-title"><Link className="cell-strong" to={`/admin/activities/${r.activity_id}`}>{r.activity?.title ?? '—'}</Link><small className="cell-sub">سجّل {formatDate(r.registered_at)}</small></td>
+                      <td data-label="الموعد">{formatDateTime(r.activity?.starts_at)}</td>
+                      <td data-label="الفريق">{r.team_name ? <>{r.team_name}{r.is_captain && <em className="cap-tag">القائد</em>}</> : 'فردي'}</td>
+                      <td data-label="حالة النشاط"><Badge tone={STATE_TONE[st]}>{STATE_AR[st]}</Badge></td>
+                      <td data-label="الحضور">{r.checked_in_at ? <Badge tone="active">حضر {formatDateTime(r.checked_in_at)}</Badge> : '—'}</td>
                     </tr>
                   );
                 })}

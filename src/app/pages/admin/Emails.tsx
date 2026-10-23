@@ -16,6 +16,7 @@ import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { formatDateTime, startOfDayRiyadh, isoDay } from '../../lib/format';
 import { STUDY_YEARS } from '../../lib/options';
+import { emailKind } from '../../lib/emailKinds';
 
 const CAMPAIGN_STATUS = {
   queued: { label: 'في الطابور', tone: 'gold' },
@@ -23,14 +24,6 @@ const CAMPAIGN_STATUS = {
   done: { label: 'اكتمل', tone: 'active' },
   failed: { label: 'فشل', tone: 'suspended' },
 } as const;
-
-const KIND: Record<string, { label: string; icon: string }> = {
-  welcome: { label: 'ترحيب', icon: 'sparkle' },
-  coupon: { label: 'كوبون جديد', icon: 'ticket' },
-  expiry_30: { label: 'قبل الانتهاء', icon: 'clock' },
-  expired: { label: 'انتهاء العضوية', icon: 'alert' },
-  campaign: { label: 'حملة', icon: 'send' },
-};
 
 export default function Emails() {
   const toast = useToast();
@@ -154,7 +147,7 @@ export default function Emails() {
         ) : (
           <ul className="feed">
             {queue.data.recent.map((q) => {
-              const k = KIND[q.kind] ?? { label: q.kind, icon: 'mail' };
+              const k = emailKind(q.kind);
               return (
                 <li key={q.id}>
                   <span className="feed-icon"><Icon name={k.icon} /></span>
@@ -196,6 +189,11 @@ export default function Emails() {
             <span className="ui-label">الجامعة</span>
             <Dropdown block icon="cap" searchable placeholder="كل الجامعات" value={filter.university ?? ''} onChange={(v) => setFilter({ ...filter, university: v })}
               options={[{ value: '', label: 'كل الجامعات' }, ...(unis.data ?? []).map((u) => ({ value: u, label: u }))]} />
+          </div>
+          <div className="ui-field">
+            <span className="ui-label">الفئة</span>
+            <Dropdown block icon="sparkle" placeholder="كل الأعضاء" value={filter.group ?? ''} onChange={(v) => setFilter({ ...filter, group: v as MemberFilter['group'] })}
+              options={[{ value: '', label: 'كل الأعضاء' }, { value: 'ambassadors', label: 'السفراء' }, { value: 'referred', label: 'سجّلوا عن طريق سفير' }]} />
           </div>
           <div className="ui-field">
             <span className="ui-label">السنة الدراسية</span>

@@ -9,13 +9,16 @@ export type MemberFilter = {
   university?: string;
   year?: string;
   status?: '' | 'active' | 'expired' | 'suspended';
+  group?: '' | 'ambassadors' | 'referred';
 };
 
 export const STATUS_LABELS = { active: 'سارية', expired: 'منتهية', suspended: 'موقوفة' } as const;
+export const GROUP_LABELS = { ambassadors: 'السفراء', referred: 'سجّلوا عن طريق سفير' } as const;
 
 export function describeFilter(f: MemberFilter) {
   const parts = [
     f.status && `الحالة: ${STATUS_LABELS[f.status]}`,
+    f.group && GROUP_LABELS[f.group],
     f.university && `الجامعة: ${f.university}`,
     f.year && `السنة: ${f.year}`,
     f.q && `بحث: ${f.q}`,
@@ -28,6 +31,8 @@ export function memberQuery<T extends string>(columns: T, f: MemberFilter, count
   if (f.status) q = q.eq('status', f.status);
   if (f.university) q = q.eq('university', f.university);
   if (f.year) q = q.eq('study_year', f.year);
+  if (f.group === 'ambassadors') q = q.eq('is_ambassador', true);
+  if (f.group === 'referred') q = q.not('referred_by', 'is', null);
   const term = f.q?.trim().replace(/[%,()]/g, ' ');
   if (term) {
     q = q.or(

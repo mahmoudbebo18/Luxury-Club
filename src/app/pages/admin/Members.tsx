@@ -27,6 +27,7 @@ export default function Members() {
     university: params.get('university') ?? '',
     year: params.get('year') ?? '',
     status: (params.get('status') as MemberFilter['status']) ?? '',
+    group: (params.get('group') as MemberFilter['group']) ?? '',
   };
   const page = Number(params.get('page') ?? 0);
   const [search, setSearch] = useState(filter.q ?? '');
@@ -77,7 +78,7 @@ export default function Members() {
   const pageIds = rows.map((r) => r.id!);
   const allOnPage = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
   const someOnPage = pageIds.some((id) => selected.has(id));
-  const filtered = !!(filter.q || filter.status || filter.university || filter.year);
+  const filtered = !!(filter.q || filter.status || filter.university || filter.year || filter.group);
 
   const target: Target | null = useMemo(() => {
     if (allMatching) return { filter, label: describeFilter(filter), count: total };
@@ -131,6 +132,9 @@ export default function Members() {
           الحي: m.district,
           الحالة: STATUS_LABELS[m.status as MembershipStatus],
           تجريبية: m.is_trial ? 'نعم' : 'لا',
+          سفير: m.is_ambassador ? 'نعم' : '',
+          'سجّلوا عن طريقه': m.is_ambassador ? m.referrals : '',
+          'دعاه السفير': m.referred_by_name ?? '',
           'تاريخ التسجيل': isoDay(m.joined_at),
           'تاريخ الانتهاء': isoDay(m.expires_at),
           'كوبونات متاحة': m.coupons_available,
@@ -198,6 +202,18 @@ export default function Members() {
           onChange={(v) => setParam('year', v)}
           options={[{ value: '', label: 'كل السنوات' }, ...STUDY_YEARS.map((y) => ({ value: y.value, label: y.value }))]}
         />
+        <Dropdown
+          label="الفئة"
+          icon="sparkle"
+          placeholder="كل الأعضاء"
+          value={filter.group ?? ''}
+          onChange={(v) => setParam('group', v)}
+          options={[
+            { value: '', label: 'كل الأعضاء' },
+            { value: 'ambassadors', label: 'السفراء' },
+            { value: 'referred', label: 'سجّلوا عن طريق سفير' },
+          ]}
+        />
         {filtered && (
           <button type="button" className="btn btn-xs btn-soft" onClick={() => setParams({}, { replace: true })}>
             <Icon name="close" />
@@ -258,7 +274,7 @@ export default function Members() {
                     </td>
                     <td data-label="الجامعة">{m.university || '—'}<small className="cell-sub">{m.study_year}</small></td>
                     <td data-label="الجوال" className="cell-phone"><span dir="ltr">{m.phone || '—'}</span></td>
-                    <td data-label="الحالة"><StatusBadge status={m.status as MembershipStatus} />{m.is_trial && m.status === 'active' && <Badge tone="gold">تجريبية</Badge>}</td>
+                    <td data-label="الحالة"><StatusBadge status={m.status as MembershipStatus} />{m.is_trial && m.status === 'active' && <Badge tone="gold">تجريبية</Badge>}{m.is_ambassador && <Badge tone="gold">سفير</Badge>}</td>
                     <td data-label="الانتهاء">{formatDate(m.expires_at)}</td>
                     <td data-label="الكوبونات" className="num">
                       <span className="coupon-pair" title="متاحة / مصروفة">

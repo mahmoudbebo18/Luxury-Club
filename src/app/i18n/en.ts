@@ -240,6 +240,7 @@ export const en: Record<StringKey, string> = {
   'nav.ambassador': 'Ambassadors',
 
   'account.activities': 'Activities & tournaments',
+  'account.nextActivity': 'Your next activity',
   'account.activitiesSub': 'Sign up for the upcoming tournaments and events',
   'account.ambassador': 'Become a Dasman ambassador',
   'account.ambassadorSub': 'Invite your classmates and help run activities',

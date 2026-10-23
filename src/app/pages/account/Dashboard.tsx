@@ -13,7 +13,8 @@ import { Tabs } from '../../components/Tabs';
 import { useToast } from '../../components/Toast';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { PageLoader, Spinner } from '../../components/PageLoader';
-import { daysLeft, formatDate, formatMoney, memberLabel, statusOf } from '../../lib/format';
+import { daysLeft, formatDate, formatDateTime, formatMoney, memberLabel, statusOf } from '../../lib/format';
+import type { MemberActivity } from '../../lib/activities';
 
 type MyCoupon = {
   id: string;
@@ -44,6 +45,19 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [tab, setTab] = useState<Tab>('available');
+
+  // Same query as the activities page (shared cache): the member's next activity, if any.
+  const activities = useQuery({
+    queryKey: ['activities'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('list_activities');
+      if (error) throw error;
+      return (data ?? []) as unknown as MemberActivity[];
+    },
+  });
+  const nextActivity = activities.data
+    ?.filter((a) => a.registration_id && a.state !== 'cancelled' && new Date(a.ends_at ?? a.starts_at) > new Date())
+    .sort((a, b) => a.starts_at.localeCompare(b.starts_at))[0];
 
   const coupons = useQuery({
     queryKey: ['my-coupons'],
@@ -184,6 +198,17 @@ export default function Dashboard() {
           </motion.div>
 
           <motion.div className="dash-links" {...rise(6)}>
+            {nextActivity && (
+              <Link className="dash-link dash-link--next" to="/account/activities">
+                <span className="dash-stat-icon"><Icon name="calendar" /></span>
+                <span>
+                  <em>{t('account.nextActivity')}</em>
+                  {nextActivity.title}
+                  <small>{formatDateTime(nextActivity.starts_at, lang)}{nextActivity.team_name && ` · ${nextActivity.team_name}`}</small>
+                </span>
+                <Icon name="arrow" className="icon-flip dash-link-arrow" />
+              </Link>
+            )}
             <Link className="dash-link dash-link--gold" to="/account/services">
               <span className="dash-stat-icon"><Icon name="concierge" /></span>
               <span>{t('account.services')}<small>{t('account.servicesSub')}</small></span>

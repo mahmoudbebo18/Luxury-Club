@@ -13,29 +13,9 @@ import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { useConfirm } from '../../components/Modal';
 import type { Tables } from '../../types/database';
+import { emailKind, kindOrder } from '../../lib/emailKinds';
 
 type Template = Tables<'email_templates'>;
-
-const ORDER = [
-  'welcome', 'coupon', 'expiry_30', 'expired',
-  'activity_registered', 'activity_team_added', 'activity_reminder', 'registration_cancelled', 'activity_cancelled',
-  'ambassador_approved', 'ambassador_rejected', 'admin_activity_registration', 'ambassador_request',
-];
-const META: Record<string, { icon: string; when: string }> = {
-  welcome: { icon: 'sparkle', when: 'بعد تأكيد العضو لبريده' },
-  coupon: { icon: 'ticket', when: 'عند توزيع كوبون على العضو' },
-  expiry_30: { icon: 'clock', when: 'قبل انتهاء العضوية بـ 30 يومًا' },
-  expired: { icon: 'alert', when: 'يوم انتهاء العضوية' },
-  activity_registered: { icon: 'trophy', when: 'للعضو أو قائد الفريق بعد التسجيل' },
-  activity_team_added: { icon: 'users', when: 'لكل عضو يضيفه القائد لفريقه' },
-  activity_reminder: { icon: 'bell', when: 'قبل النشاط بيوم، 8 صباحًا' },
-  registration_cancelled: { icon: 'x-circle', when: 'عند إلغاء تسجيل أو حذف عضو من فريق' },
-  activity_cancelled: { icon: 'alert', when: 'لكل المسجلين عند إلغاء النشاط' },
-  ambassador_approved: { icon: 'sparkle', when: 'عند قبول العضو سفيرًا' },
-  ambassador_rejected: { icon: 'mail', when: 'عند رفض طلب السفير' },
-  admin_activity_registration: { icon: 'bell', when: 'للإدارة مع كل تسجيل في نشاط' },
-  ambassador_request: { icon: 'bell', when: 'للإدارة مع كل طلب سفير' },
-};
 
 const ACTIVITY_KINDS = ['activity_registered', 'activity_team_added', 'activity_reminder', 'registration_cancelled', 'activity_cancelled', 'admin_activity_registration'];
 const ADMIN_KINDS = ['admin_activity_registration', 'ambassador_request'];
@@ -83,7 +63,7 @@ export default function Settings() {
       ]);
       if (settings.error) throw settings.error;
       if (tpl.error) throw tpl.error;
-      return { settings: settings.data, templates: [...tpl.data].sort((a, b) => ORDER.indexOf(a.kind) - ORDER.indexOf(b.kind)) };
+      return { settings: settings.data, templates: [...tpl.data].sort((a, b) => kindOrder(a.kind) - kindOrder(b.kind)) };
     },
   });
 
@@ -175,10 +155,10 @@ function Templates({ initial }: { initial: Template[] }) {
       <nav className="tpl-list" aria-label="القوالب">
         {list.map((t) => (
           <button key={t.kind} type="button" className={t.kind === current ? 'tpl-item is-active' : 'tpl-item'} onClick={() => pick(t.kind)}>
-            <span className="tpl-item-icon"><Icon name={META[t.kind]?.icon ?? 'mail'} /></span>
+            <span className="tpl-item-icon"><Icon name={emailKind(t.kind).icon} /></span>
             <span className="tpl-item-body">
               <strong>{t.label}{dirty(t) && <i className="dot" aria-label="غير محفوظ" />}</strong>
-              <small>{META[t.kind]?.when}</small>
+              <small>{emailKind(t.kind).when}</small>
             </span>
           </button>
         ))}
@@ -188,7 +168,7 @@ function Templates({ initial }: { initial: Template[] }) {
         {tpl && (
           <motion.section key={tpl.kind} className="surface tpl-editor" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
             <div className="surface-head">
-              <h2><Icon name={META[tpl.kind]?.icon ?? 'mail'} />{tpl.label}</h2>
+              <h2><Icon name={emailKind(tpl.kind).icon} />{tpl.label}</h2>
               <Tabs value={view} onChange={setView} tabs={[{ value: 'edit', label: 'تعديل', icon: 'edit' }, { value: 'preview', label: 'معاينة', icon: 'eye' }]} />
             </div>
 

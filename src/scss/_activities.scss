@@ -54,6 +54,23 @@
   }
 }
 
+// The member's next activity, above the dashboard links.
+.dash-link--next {
+  border-color: var(--olive-600);
+  background-color: var(--olive-100);
+
+  em {
+    color: var(--olive-700);
+    font-size: 0.78rem;
+    font-style: normal;
+  }
+
+  .dash-stat-icon {
+    background-color: var(--olive-700);
+    color: var(--gold-300);
+  }
+}
+
 // ---------- coupon image on the member's ticket ----------
 .ticket:has(.ticket-thumb) {
   grid-template-columns: 92px 70px minmax(0, 1fr);

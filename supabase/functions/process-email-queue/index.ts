@@ -162,7 +162,9 @@ Deno.serve(async (req) => {
         subject = t.subject;
         html = t.body_html;
       }
-      await sendBrevo(sender, settings!.reply_to, row, fill(subject!, vars).replace(/&amp;/g, '&'), layout(fill(html!, vars), siteUrl));
+      // A line whose only content was an empty variable (e.g. the team line of a solo sign-up) is dropped.
+      const body = fill(html!, vars).replace(/<p>\s*<\/p>\n?/g, '');
+      await sendBrevo(sender, settings!.reply_to, row, fill(subject!, vars).replace(/&amp;/g, '&'), layout(body, siteUrl));
       await supabase.from('email_queue').update({ status: 'sent', sent_at: new Date().toISOString(), error: null }).eq('id', row.id);
       sent++;
     } catch (err) {
