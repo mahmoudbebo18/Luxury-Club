@@ -1,0 +1,10 @@
+/login       /app  200
+/register    /app  200
+/forgot      /app  200
+/reset       /app  200
+/account     /app  200
+/account/*   /app  200
+/m           /app  200
+/m/*         /app  200
+/admin       /app  200
+/admin/*     /app  200
