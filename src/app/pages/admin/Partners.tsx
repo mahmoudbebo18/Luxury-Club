@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { AdminTitle } from './AdminLayout';
 import { adminError } from './memberFilter';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
-import { Alert, TextField } from '../../components/Field';
+import { TextField } from '../../components/Field';
 import { Badge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { Spinner } from '../../components/PageLoader';
@@ -24,7 +24,8 @@ export default function Partners() {
   const [pin, setPin] = useState('');
   const [active, setActive] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
 
   const partners = useQuery({
     queryKey: ['admin', 'partners'],
@@ -164,7 +165,6 @@ export default function Partners() {
               <span className="ui-switch-track" />
             </label>
           )}
-          <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
         </form>
       </Modal>
     </>

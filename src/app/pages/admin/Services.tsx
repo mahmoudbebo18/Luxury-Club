@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { AdminTitle } from './AdminLayout';
 import { adminError } from './memberFilter';
@@ -11,7 +11,7 @@ import { Icon } from '../../components/Icon';
 import { Modal, useConfirm } from '../../components/Modal';
 import { Dropdown } from '../../components/Dropdown';
 import { Tabs } from '../../components/Tabs';
-import { Alert, TextArea, TextField } from '../../components/Field';
+import { TextArea, TextField } from '../../components/Field';
 import { ImageField } from '../../components/ImageField';
 import { Badge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
@@ -264,7 +264,8 @@ function ServiceForm({ service, nextOrder, onClose }: { service: AdminService | 
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -465,7 +466,6 @@ function ServiceForm({ service, nextOrder, onClose }: { service: AdminService | 
             <p className="ui-hint ui-field--full">Empty fields show the Arabic text to members using English.</p>
           </div>
         )}
-        <AnimatePresence>{error && <div className="ui-field--full"><Alert tone="error">{error}</Alert></div>}</AnimatePresence>
       </div>
     </Modal>
   );

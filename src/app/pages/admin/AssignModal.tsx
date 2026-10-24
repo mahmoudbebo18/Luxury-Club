@@ -21,7 +21,8 @@ export function AssignModal({ open, onClose, target, batchId, onDone }: Props) {
   const queryClient = useQueryClient();
   const [batch, setBatch] = useState(batchId ?? '');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
 
   useEffect(() => {
     if (open) {
@@ -106,7 +107,6 @@ export function AssignModal({ open, onClose, target, batchId, onDone }: Props) {
               المتبقي في هذه الدفعة {chosen?.remaining} فقط، وهو أقل من عدد الأعضاء المختارين ({target?.count}).
             </Alert>
           )}
-          {error && <Alert tone="error">{error}</Alert>}
         </AnimatePresence>
       </div>
     </Modal>

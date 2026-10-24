@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { AdminTitle } from './AdminLayout';
 import { AssignModal, type Target } from './AssignModal';
@@ -9,7 +9,7 @@ import { adminError, describeFilter, memberQuery, type MemberFilter } from './me
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/Modal';
 import { Dropdown } from '../../components/Dropdown';
-import { Alert, TextField } from '../../components/Field';
+import { TextField } from '../../components/Field';
 import { ImageField } from '../../components/ImageField';
 import { Badge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
@@ -27,7 +27,8 @@ export default function Coupons() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
   const [assign, setAssign] = useState<{ batchId: string; target: Target } | null>(null);
   const [audienceFor, setAudienceFor] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
@@ -219,7 +220,6 @@ export default function Coupons() {
           <TextField label="عدد الكوبونات" icon="hash" type="number" min="1" max="5000" dir="ltr" inputMode="numeric" value={form.quantity} onChange={set('quantity')} />
           <ImageField label="صورة الكوبون" folder="coupons" value={image} onChange={setImage} onBusy={setUploading} hint="اختيارية: شعار الكافيه أو صورة العرض، تظهر للعضو مع الكوبون." />
           <TextField label="تاريخ الانتهاء" optional="(اختياري)" icon="calendar" full type="date" dir="ltr" value={form.expires} onChange={set('expires')} min={isoDay(new Date().toISOString())} />
-          <AnimatePresence>{error && <div className="ui-field--full"><Alert tone="error">{error}</Alert></div>}</AnimatePresence>
         </div>
       </Modal>
       {imageFor && <BatchImage batch={imageFor} onClose={() => setImageFor(null)} />}

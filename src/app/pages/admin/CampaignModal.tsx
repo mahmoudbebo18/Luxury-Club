@@ -1,10 +1,9 @@
 // Write an email to one member, a selection, or everyone matching a filter; preview, then queue it.
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { Modal } from '../../components/Modal';
-import { Alert, TextArea, TextField } from '../../components/Field';
+import { TextArea, TextField } from '../../components/Field';
 import { Icon } from '../../components/Icon';
 import { Tabs } from '../../components/Tabs';
 import { Spinner } from '../../components/PageLoader';
@@ -34,7 +33,8 @@ export function CampaignModal({ open, onClose, target, onDone }: Props) {
   const [body, setBody] = useState(GREETING);
   const [view, setView] = useState<'write' | 'preview'>('write');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
 
   useEffect(() => {
     if (open) {
@@ -151,7 +151,6 @@ export function CampaignModal({ open, onClose, target, onDone }: Props) {
             <p className="ui-hint">المعاينة باسم تجريبي، وكل عضو يرى اسمه.</p>
           </div>
         )}
-        <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
       </div>
     </Modal>
   );

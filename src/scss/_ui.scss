@@ -1042,6 +1042,11 @@
   gap: 10px;
   width: min(440px, calc(100% - 32px));
   pointer-events: none;
+
+  &--error {
+    top: max(20px, env(safe-area-inset-top));
+    bottom: auto;
+  }
 }
 
 .ui-toast {

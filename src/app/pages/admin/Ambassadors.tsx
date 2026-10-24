@@ -3,14 +3,14 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 import { AdminTitle } from './AdminLayout';
 import { adminError } from './memberFilter';
 import { Icon } from '../../components/Icon';
 import { Modal, useConfirm } from '../../components/Modal';
 import { Tabs } from '../../components/Tabs';
-import { Alert, TextArea } from '../../components/Field';
+import { TextArea } from '../../components/Field';
 import { Badge, StatusBadge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { Spinner } from '../../components/PageLoader';
@@ -32,7 +32,8 @@ export default function Ambassadors() {
   const [busy, setBusy] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState<Application | null>(null);
   const [note, setNote] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  // Errors show as a toast at the top of the screen, seen however far the form is scrolled.
+  const setError = (text: string | null) => text && toast(text, 'error');
   const [viewing, setViewing] = useState<Ambassador | null>(null);
 
   const apps = useQuery({
@@ -226,7 +227,6 @@ export default function Ambassadors() {
         <div className="ui-form">
           <p className="ui-confirm-text">يصل إلى <b>{rejecting?.full_name}</b> بريد اعتذار، ويستطيع التقديم مرة أخرى لاحقًا.</p>
           <TextArea label="رسالة للعضو" optional="(اختياري، تظهر في البريد وفي صفحته)" rows={3} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} placeholder="مثال: نحتاج سفراء من سنوات متقدمة حاليًا، نتمنى أن تقدّم في الفصل القادم." />
-          <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
         </div>
       </Modal>
     </>
