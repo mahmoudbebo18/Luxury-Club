@@ -1503,6 +1503,7 @@ export type Database = {
         Returns: Json
       }
       assert_admin: { Args: never; Returns: undefined }
+      check_referral_code: { Args: { p_code: string }; Returns: boolean }
       checkin_activities: { Args: never; Returns: Json }
       checkin_open: {
         Args: { a: Database["public"]["Tables"]["activities"]["Row"] }
