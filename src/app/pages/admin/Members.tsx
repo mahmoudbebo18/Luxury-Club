@@ -265,16 +265,21 @@ export default function Members() {
                     <td className="col-check" onClick={(e) => e.stopPropagation()}>
                       <input type="checkbox" className="ui-checkbox" checked={isSel} onChange={() => toggle(m.id!)} aria-label={`تحديد ${m.full_name}`} />
                     </td>
-                    <td className="cell-person">
-                      <span className="avatar">{(m.full_name || '؟').trim().charAt(0)}</span>
-                      <span>
-                        <Link to={`/admin/members/${m.id}`} className="cell-strong" onClick={(e) => e.stopPropagation()}>{m.full_name || '—'}</Link>
-                        <small dir="ltr">{m.member_label} · {m.email}</small>
-                      </span>
+                    <td>
+                      <div className="cell-person">
+                        <span className="avatar">{(m.full_name || '؟').trim().charAt(0)}</span>
+                        <span>
+                          <span className="cell-name">
+                            <Link to={`/admin/members/${m.id}`} className="cell-strong" onClick={(e) => e.stopPropagation()}>{m.full_name || '—'}</Link>
+                            {m.is_ambassador && <Badge tone="gold">سفير</Badge>}
+                          </span>
+                          <small dir="ltr">{m.member_label} · {m.email}</small>
+                        </span>
+                      </div>
                     </td>
                     <td data-label="الجامعة">{m.university || '—'}<small className="cell-sub">{m.study_year}</small></td>
                     <td data-label="الجوال" className="cell-phone"><span dir="ltr">{m.phone || '—'}</span></td>
-                    <td data-label="الحالة"><StatusBadge status={m.status as MembershipStatus} />{m.is_trial && m.status === 'active' && <Badge tone="gold">تجريبية</Badge>}{m.is_ambassador && <Badge tone="gold">سفير</Badge>}</td>
+                    <td data-label="الحالة"><span className="cell-badges"><StatusBadge status={m.status as MembershipStatus} />{m.is_trial && m.status === 'active' && <Badge tone="gold">تجريبية</Badge>}</span></td>
                     <td data-label="الانتهاء">{formatDate(m.expires_at)}</td>
                     <td data-label="الكوبونات" className="num">
                       <span className="coupon-pair" title="متاحة / مصروفة">

@@ -708,6 +708,7 @@ $side-w: 264px;
 .quick {
   display: grid;
   gap: 14px;
+  margin-top: 18px;
 
   @include up($md) {
     grid-template-columns: repeat(3, 1fr);
@@ -916,6 +917,8 @@ $side-w: 264px;
   padding-inline-end: 0 !important;
 }
 
+// A wrapper inside the <td>: a flex <td> stops being a table cell, so it doesn't stretch to the
+// row's height and its bottom border sits off the rest of the row.
 .cell-person {
   display: flex;
   align-items: center;
@@ -944,6 +947,26 @@ $side-w: 264px;
 .cell-strong {
   color: var(--ink);
   font-weight: 700;
+}
+
+// Name with a role tag (e.g. ambassador) beside it.
+.cell-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+
+  .badge {
+    flex-shrink: 0;
+    padding: 1px 9px;
+    font-size: 0.72rem;
+  }
+}
+
+.cell-badges {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 6px;
 }
 
 .cell-title {
