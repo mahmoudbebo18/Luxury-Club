@@ -1,5 +1,6 @@
-// Ambassador programme: applications to review, current ambassadors ranked by referrals, past decisions.
-import { useState } from 'react';
+// Ambassador programme: applications to review, current ambassadors ranked by referrals (with the
+// list of who signed up through each), past decisions.
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
@@ -19,6 +20,7 @@ import type { Tables } from '../../types/database';
 
 type Application = Tables<'admin_ambassador_applications'>;
 type Tab = 'pending' | 'ambassadors' | 'history';
+type Ambassador = { id: string; full_name: string; referral_code: string | null; referrals: number };
 
 export default function Ambassadors() {
   const toast = useToast();
@@ -29,6 +31,7 @@ export default function Ambassadors() {
   const [rejecting, setRejecting] = useState<Application | null>(null);
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<Ambassador | null>(null);
 
   const apps = useQuery({
     queryKey: ['admin', 'ambassador-applications'],
@@ -122,7 +125,19 @@ export default function Ambassadors() {
                     </td>
                     <td data-label="الجامعة">{m.university || '—'}</td>
                     <td data-label="منذ">{formatDate(m.ambassador_since)}</td>
-                    <td data-label="سجّلوا عن طريقه"><b>{m.referrals}</b></td>
+                    <td data-label="سجّلوا عن طريقه">
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-xs"
+                        onClick={() => setViewing({ id: m.id!, full_name: m.full_name!, referral_code: m.referral_code, referrals: m.referrals ?? 0 })}
+                        disabled={!m.referrals}
+                        aria-label={`عرض من سجّلوا عن طريق ${m.full_name}`}
+                      >
+                        <b>{m.referrals}</b>
+                        <Icon name="users" />
+                        {m.referrals ? 'عرض' : null}
+                      </button>
+                    </td>
                     <td data-label="كود الدعوة"><span className="mono" dir="ltr">{m.referral_code}</span></td>
                     <td className="cell-actions">
                       {m.status !== 'active' && <StatusBadge status={m.status as MembershipStatus} />}
@@ -190,6 +205,8 @@ export default function Ambassadors() {
         </div>
       )}
 
+      <ReferralsModal ambassador={viewing} onClose={() => setViewing(null)} />
+
       <Modal
         open={!!rejecting}
         title="رفض الطلب"
@@ -211,5 +228,84 @@ export default function Ambassadors() {
         </div>
       </Modal>
     </>
+  );
+}
+
+// Everyone who signed up through one ambassador's link or code, newest first.
+function ReferralsModal({ ambassador, onClose }: { ambassador: Ambassador | null; onClose: () => void }) {
+  const [q, setQ] = useState('');
+  const list = useQuery({
+    queryKey: ['admin', 'referrals', ambassador?.id],
+    enabled: !!ambassador,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_members')
+        .select('id, full_name, member_label, university, study_year, phone, joined_at, status, is_trial')
+        .eq('referred_by', ambassador!.id)
+        .order('joined_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const shown = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return list.data ?? [];
+    return (list.data ?? []).filter((m) =>
+      [m.full_name, m.member_label, m.university, m.phone].some((v) => v?.toLowerCase().includes(term)),
+    );
+  }, [list.data, q]);
+
+  const close = () => {
+    setQ('');
+    onClose();
+  };
+
+  return (
+    <Modal
+      open={!!ambassador}
+      wide
+      icon="users"
+      title={`سجّلوا عن طريق ${ambassador?.full_name ?? ''}`}
+      lead={<>{ambassador?.referrals} عضو · كود الدعوة <span className="mono" dir="ltr">{ambassador?.referral_code}</span></>}
+      onClose={close}
+    >
+      {(ambassador?.referrals ?? 0) > 6 && (
+        <div className="toolbar-search">
+          <Icon name="search" />
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="بحث بالاسم أو الرقم أو الجامعة أو الجوال…" aria-label="بحث في الأعضاء" />
+        </div>
+      )}
+      {list.isLoading ? (
+        <Skeleton rows={4} height={48} />
+      ) : list.isError ? (
+        <ErrorState message="تعذّر تحميل الأعضاء." onRetry={() => list.refetch()} />
+      ) : !list.data?.length ? (
+        <EmptyState icon="users">لم يسجّل أحد عن طريقه بعد.</EmptyState>
+      ) : !shown.length ? (
+        <EmptyState icon="search">لا نتائج مطابقة.</EmptyState>
+      ) : (
+        <ul className="ref-list">
+          {shown.map((m) => (
+            <li key={m.id}>
+              <span className="avatar">{(m.full_name ?? '؟').trim().charAt(0)}</span>
+              <span className="ref-list-body">
+                <Link className="cell-strong" to={`/admin/members/${m.id}`} onClick={close}>{m.full_name}</Link>
+                <small>
+                  <span className="mono" dir="ltr">{m.member_label}</span>
+                  {[m.university, m.study_year, `انضم ${formatDate(m.joined_at)}`].filter(Boolean).map((v) => ` · ${v}`)}
+                </small>
+                {m.phone && (
+                  <small>
+                    <a href={`https://wa.me/${m.phone.replace(/^0/, '966').replace(/^\+/, '')}`} target="_blank" rel="noopener" dir="ltr">{m.phone}</a>
+                  </small>
+                )}
+              </span>
+              {m.is_trial && m.status === 'active' ? <Badge tone="gold">تجريبية</Badge> : <StatusBadge status={m.status as MembershipStatus} />}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Modal>
   );
 }
