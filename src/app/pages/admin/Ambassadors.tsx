@@ -15,7 +15,9 @@ import { Badge, StatusBadge } from '../../components/StatusBadge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States';
 import { Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
-import { formatDate, formatDateTime, type MembershipStatus } from '../../lib/format';
+import { formatDate, formatDateTime, isoDay, type MembershipStatus } from '../../lib/format';
+import { exportExcel } from '../../lib/excel';
+import { STATUS_LABELS } from './memberFilter';
 import type { Tables } from '../../types/database';
 
 type Application = Tables<'admin_ambassador_applications'>;
@@ -231,16 +233,18 @@ export default function Ambassadors() {
   );
 }
 
-// Everyone who signed up through one ambassador's link or code, newest first.
+// Everyone who signed up through one ambassador's link or code, newest first, with an Excel export.
 function ReferralsModal({ ambassador, onClose }: { ambassador: Ambassador | null; onClose: () => void }) {
+  const toast = useToast();
   const [q, setQ] = useState('');
+  const [exporting, setExporting] = useState(false);
   const list = useQuery({
     queryKey: ['admin', 'referrals', ambassador?.id],
     enabled: !!ambassador,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('admin_members')
-        .select('id, full_name, member_label, university, study_year, phone, joined_at, status, is_trial')
+        .select('id, full_name, member_label, email, university, study_year, phone, joined_at, expires_at, status, is_trial')
         .eq('referred_by', ambassador!.id)
         .order('joined_at', { ascending: false });
       if (error) throw error;
@@ -261,6 +265,37 @@ function ReferralsModal({ ambassador, onClose }: { ambassador: Ambassador | null
     onClose();
   };
 
+  // Always the whole list, whatever the search box shows.
+  const exportList = async () => {
+    if (!ambassador || !list.data?.length) return;
+    setExporting(true);
+    try {
+      await exportExcel(
+        `dasman-referrals-${ambassador.referral_code ?? ambassador.id}-${isoDay(new Date().toISOString())}`,
+        `دعوات ${ambassador.full_name}`,
+        list.data.map((m) => ({
+          'رقم العضوية': m.member_label,
+          الاسم: m.full_name,
+          'البريد الإلكتروني': m.email,
+          الهاتف: m.phone,
+          الجامعة: m.university,
+          'السنة الدراسية': m.study_year,
+          الحالة: STATUS_LABELS[m.status as MembershipStatus],
+          تجريبية: m.is_trial ? 'نعم' : 'لا',
+          'تاريخ التسجيل': isoDay(m.joined_at),
+          'تاريخ الانتهاء': isoDay(m.expires_at),
+          'دعاه السفير': ambassador.full_name,
+          'كود الدعوة': ambassador.referral_code ?? '',
+        })),
+      );
+      toast(`تم تصدير ${list.data.length} عضو.`);
+    } catch {
+      toast('تعذّر التصدير، حاول مرة أخرى.', 'error');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <Modal
       open={!!ambassador}
@@ -269,6 +304,15 @@ function ReferralsModal({ ambassador, onClose }: { ambassador: Ambassador | null
       title={`سجّلوا عن طريق ${ambassador?.full_name ?? ''}`}
       lead={<>{ambassador?.referrals} عضو · كود الدعوة <span className="mono" dir="ltr">{ambassador?.referral_code}</span></>}
       onClose={close}
+      footer={
+        <div className="ui-modal-actions">
+          <button type="button" className="btn btn-ghost" onClick={close}>إغلاق</button>
+          <button type="button" className="btn btn-primary" onClick={exportList} disabled={exporting || !list.data?.length}>
+            {exporting ? <Spinner small /> : <Icon name="download" />}
+            تصدير Excel
+          </button>
+        </div>
+      }
     >
       {(ambassador?.referrals ?? 0) > 6 && (
         <div className="toolbar-search">
