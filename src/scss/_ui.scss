@@ -307,6 +307,22 @@
   }
 }
 
+// Status mark in a read-only field (e.g. a verified invite code), not a button.
+.ui-control-end--static {
+  color: var(--success);
+  pointer-events: none;
+}
+
+.ui-input--locked {
+  border-style: dashed;
+  cursor: default;
+  letter-spacing: 0.08em;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
 .ui-field.has-error {
   .ui-input {
     border-color: var(--danger);

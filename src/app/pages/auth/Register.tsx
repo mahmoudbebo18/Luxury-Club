@@ -1,6 +1,6 @@
 // Sign-up in two short steps (account, then student details). The profile row is created from the
 // sign-up metadata by a database trigger; the account works after the emailed confirmation link.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,8 +22,7 @@ const STEP1 = ['full_name', 'email', 'password', 'confirm'] as const;
 
 // An ambassador's invite link (/register?ref=CODE) is remembered on this device for 30 days, so the
 // sign-up still counts if the visitor looks around the site first and comes back later. The code is
-// also an editable field, for an invite given by word of mouth, and is checked before sign-up so a
-// wrong or retired code is never dropped silently.
+// shown locked on the form and checked on arrival, so a wrong or retired code is never dropped silently.
 const REF_RE = /^[A-Z0-9]{4,12}$/;
 const REF_KEY = 'dasman-ref';
 function referralCode() {
@@ -48,6 +47,23 @@ export default function Register() {
   const [doneEmail, setDoneEmail] = useState<string | null>(null);
   const [status, setStatus] = useState<{ text: string; exists?: boolean } | null>(null);
   const [linkRef] = useState(referralCode);
+  // 'unknown' when the check itself failed: the code is still sent and the database trigger matches it.
+  const [refCheck, setRefCheck] = useState<'checking' | 'valid' | 'invalid' | 'unknown'>(linkRef ? 'checking' : 'valid');
+
+  useEffect(() => {
+    if (!linkRef) return;
+    supabase.rpc('check_referral_code', { p_code: linkRef }).then(({ data, error }) => {
+      if (error) return setRefCheck('unknown');
+      setRefCheck(data ? 'valid' : 'invalid');
+      if (!data) {
+        try {
+          localStorage.removeItem(REF_KEY);
+        } catch {
+          /* storage blocked */
+        }
+      }
+    });
+  }, [linkRef]);
 
   const req = z.string().trim().min(1, t('common.required'));
   const schema = z
@@ -61,19 +77,15 @@ export default function Register() {
       district: req,
       phone: req.refine((v) => PHONE_RE.test(cleanPhone(v)), t('reg.phoneInvalid')),
       notes: z.string().trim().max(500).optional(),
-      ref: z
-        .string()
-        .transform((v) => v.trim().toUpperCase())
-        .refine((v) => !v || REF_RE.test(v), t('reg.refFormat')),
       consent: z.boolean().refine((v) => v, t('reg.consentRequired')),
     })
     .refine((v) => v.password === v.confirm, { message: t('auth.passwordMismatch'), path: ['confirm'] });
   type Values = z.infer<typeof schema>;
 
-  const { register, handleSubmit, trigger, control, watch, formState, setFocus, setError } = useForm<z.input<typeof schema>, unknown, Values>({
+  const { register, handleSubmit, trigger, control, watch, formState, setFocus } = useForm<Values>({
     resolver: zodResolver(schema),
     mode: 'onTouched',
-    defaultValues: { full_name: '', email: '', password: '', confirm: '', university: '', study_year: '', district: '', phone: '', notes: '', ref: linkRef, consent: false },
+    defaultValues: { full_name: '', email: '', password: '', confirm: '', university: '', study_year: '', district: '', phone: '', notes: '', consent: false },
   });
   const password = watch('password');
 
@@ -94,14 +106,6 @@ export default function Register() {
 
   const onSubmit = async (v: Values) => {
     setStatus(null);
-    if (v.ref) {
-      // A failed check doesn't block the sign-up: the database trigger still matches the code.
-      const { data: valid, error } = await supabase.rpc('check_referral_code', { p_code: v.ref });
-      if (!error && !valid) {
-        setError('ref', { message: t('reg.refInvalid') }, { shouldFocus: true });
-        return;
-      }
-    }
     const email = v.email.trim().toLowerCase();
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -116,7 +120,7 @@ export default function Register() {
           phone: cleanPhone(v.phone),
           notes: v.notes?.trim() ?? '',
           lang,
-          ref: v.ref,
+          ref: refCheck === 'invalid' ? '' : linkRef,
         },
       },
     });
@@ -253,20 +257,21 @@ export default function Register() {
                   {...register('phone')}
                 />
               </div>
-              <TextField
-                label={t('reg.ref')}
-                optional={t('common.optional')}
-                icon="send"
-                dir="ltr"
-                autoCapitalize="characters"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={12}
-                placeholder={t('reg.refPh')}
-                hint={linkRef && watch('ref')?.trim().toUpperCase() === linkRef ? t('reg.refFromLink') : t('reg.refHint')}
-                error={e.ref?.message}
-                {...register('ref')}
-              />
+              {linkRef && (
+                <TextField
+                  label={t('reg.ref')}
+                  icon="send"
+                  dir="ltr"
+                  className="mono ui-input--locked"
+                  value={linkRef}
+                  readOnly
+                  aria-readonly="true"
+                  tabIndex={-1}
+                  end={refCheck === 'checking' || refCheck === 'valid' ? <span className="ui-control-end ui-control-end--static">{refCheck === 'checking' ? <Spinner small /> : <Icon name="check-circle" />}</span> : undefined}
+                  hint={refCheck === 'invalid' ? undefined : t('reg.refFromLink')}
+                  error={refCheck === 'invalid' ? t('reg.refInvalid') : undefined}
+                />
+              )}
               <TextArea label={t('reg.notes')} optional={t('common.optional')} rows={2} placeholder={t('reg.notesPh')} maxLength={500} {...register('notes')} />
               <Checkbox error={e.consent?.message} {...register('consent')}>
                 {t('reg.consent')}
