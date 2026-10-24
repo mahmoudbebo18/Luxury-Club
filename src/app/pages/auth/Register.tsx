@@ -21,9 +21,12 @@ import { CheckEmail } from './CheckEmail';
 const STEP1 = ['full_name', 'email', 'password', 'confirm'] as const;
 
 // An ambassador's invite link (/register?ref=CODE) is remembered on this device for 30 days, so the
-// sign-up still counts if the visitor looks around the site first and comes back later. The code is
-// shown locked on the form and checked on arrival, so a wrong or retired code is never dropped silently.
+// sign-up still counts if the visitor looks around the site first and comes back later. Without a link,
+// "I have an invite code" opens the field for a code given by word of mouth. Every code is checked:
+// a real one is locked, a wrong or retired one stays editable and blocks the step until it's fixed
+// or the box is unticked, so it's never dropped silently.
 const REF_RE = /^[A-Z0-9]{4,12}$/;
+type RefStatus = 'checking' | 'valid' | 'invalid' | 'unknown';
 const REF_KEY = 'dasman-ref';
 function referralCode() {
   const fromUrl = new URLSearchParams(location.search).get('ref')?.trim().toUpperCase();
@@ -47,23 +50,57 @@ export default function Register() {
   const [doneEmail, setDoneEmail] = useState<string | null>(null);
   const [status, setStatus] = useState<{ text: string; exists?: boolean } | null>(null);
   const [linkRef] = useState(referralCode);
-  // 'unknown' when the check itself failed: the code is still sent and the database trigger matches it.
-  const [refCheck, setRefCheck] = useState<'checking' | 'valid' | 'invalid' | 'unknown'>(linkRef ? 'checking' : 'valid');
+  const [hasRef, setHasRef] = useState(!!linkRef);
+  const [ref, setRef] = useState(linkRef);
+  const [refTouched, setRefTouched] = useState(!!linkRef);
+  // Result per code, so a late answer for an older code can't overwrite the current one. 'unknown' when
+  // the check itself failed: the code is still sent and the database trigger matches it.
+  const [refChecks, setRefChecks] = useState<Record<string, RefStatus>>({});
+  const refStatus: RefStatus | undefined = refChecks[ref];
+  const refFormatOk = REF_RE.test(ref);
+  const refLocked = hasRef && refStatus === 'valid';
 
-  useEffect(() => {
-    if (!linkRef) return;
-    supabase.rpc('check_referral_code', { p_code: linkRef }).then(({ data, error }) => {
-      if (error) return setRefCheck('unknown');
-      setRefCheck(data ? 'valid' : 'invalid');
-      if (!data) {
-        try {
-          localStorage.removeItem(REF_KEY);
-        } catch {
-          /* storage blocked */
-        }
+  const checkRef = async (code: string): Promise<RefStatus> => {
+    setRefChecks((c) => ({ ...c, [code]: 'checking' }));
+    const { data, error } = await supabase.rpc('check_referral_code', { p_code: code });
+    const result: RefStatus = error ? 'unknown' : data ? 'valid' : 'invalid';
+    setRefChecks((c) => ({ ...c, [code]: result }));
+    if (result === 'invalid' && code === linkRef) {
+      try {
+        localStorage.removeItem(REF_KEY);
+      } catch {
+        /* storage blocked */
       }
-    });
-  }, [linkRef]);
+    }
+    return result;
+  };
+
+  // The link's code right away, a typed one once the visitor pauses.
+  useEffect(() => {
+    if (!hasRef || !refFormatOk || refStatus) return;
+    const timer = setTimeout(() => checkRef(ref), ref === linkRef ? 0 : 600);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasRef, ref, refFormatOk, refStatus]);
+
+  const refError = !hasRef || !refTouched
+    ? undefined
+    : !ref
+      ? t('reg.refRequired')
+      : !refFormatOk
+        ? t('reg.refFormat')
+        : refStatus === 'invalid'
+          ? t('reg.refInvalid')
+          : undefined;
+
+  // Step 1 can't be left with a ticked box and a code that isn't confirmed (or uncheckable right now).
+  const refOk = async () => {
+    if (!hasRef) return true;
+    setRefTouched(true);
+    if (!refFormatOk) return false;
+    const status = refStatus && refStatus !== 'checking' ? refStatus : await checkRef(ref);
+    return status !== 'invalid';
+  };
 
   const req = z.string().trim().min(1, t('common.required'));
   const schema = z
@@ -94,6 +131,7 @@ export default function Register() {
 
   const goNext = async () => {
     if (!(await trigger([...STEP1], { shouldFocus: true }))) return;
+    if (!(await refOk())) return document.getElementById('reg-ref')?.focus();
     setDir(1);
     setStep(2);
     setTimeout(() => setFocus('university'), 320);
@@ -120,7 +158,7 @@ export default function Register() {
           phone: cleanPhone(v.phone),
           notes: v.notes?.trim() ?? '',
           lang,
-          ref: refCheck === 'invalid' ? '' : linkRef,
+          ref: hasRef && refStatus !== 'invalid' ? ref : '',
         },
       },
     });
@@ -154,6 +192,50 @@ export default function Register() {
     exit: (d: number) => ({ opacity: 0, x: -40 * d * (lang === 'ar' ? -1 : 1) }),
   };
 
+  // At the top of step 1 when it came from a link, otherwise a tick box just above "Next". A code
+  // confirmed from the link can't be unticked, so the ambassador keeps the referral.
+  const inviteField = (
+    <div className="ui-form ref-field">
+      <Checkbox
+        checked={hasRef}
+        disabled={refLocked && ref === linkRef}
+        onChange={(ev) => {
+          setHasRef(ev.target.checked);
+          if (!ev.target.checked) {
+            setRef('');
+            setRefTouched(false);
+          }
+        }}
+      >
+        {t('reg.hasRef')}
+      </Checkbox>
+      {hasRef && (
+        <TextField
+          id="reg-ref"
+          label={t('reg.ref')}
+          icon="send"
+          dir="ltr"
+          className={['mono', refLocked && 'ui-input--locked'].filter(Boolean).join(' ')}
+          value={ref}
+          onChange={(ev) => setRef(ev.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+          onBlur={() => ref && setRefTouched(true)}
+          readOnly={refLocked}
+          aria-readonly={refLocked || undefined}
+          tabIndex={refLocked ? -1 : undefined}
+          autoFocus={!linkRef}
+          autoCapitalize="characters"
+          autoComplete="off"
+          spellCheck={false}
+          maxLength={12}
+          placeholder={t('reg.refPh')}
+          end={refFormatOk && (refStatus === 'checking' || refStatus === 'valid') ? <span className="ui-control-end ui-control-end--static">{refStatus === 'checking' ? <Spinner small /> : <Icon name="check-circle" />}</span> : undefined}
+          hint={refLocked ? t(ref === linkRef ? 'reg.refFromLink' : 'reg.refValid') : t('reg.refHint')}
+          error={refError}
+        />
+      )}
+    </div>
+  );
+
   return (
     <>
       <AuthHead title={t('reg.title')} lead={t('reg.lead')} />
@@ -171,21 +253,7 @@ export default function Register() {
         <AnimatePresence mode="wait" custom={dir} initial={false}>
           {step === 1 ? (
             <motion.div key="s1" className="ui-form" custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
-              {linkRef && (
-                <TextField
-                  label={t('reg.ref')}
-                  icon="send"
-                  dir="ltr"
-                  className="mono ui-input--locked"
-                  value={linkRef}
-                  readOnly
-                  aria-readonly="true"
-                  tabIndex={-1}
-                  end={refCheck === 'checking' || refCheck === 'valid' ? <span className="ui-control-end ui-control-end--static">{refCheck === 'checking' ? <Spinner small /> : <Icon name="check-circle" />}</span> : undefined}
-                  hint={refCheck === 'invalid' ? undefined : t('reg.refFromLink')}
-                  error={refCheck === 'invalid' ? t('reg.refInvalid') : undefined}
-                />
-              )}
+              {linkRef && inviteField}
               <TextField label={t('reg.name')} icon="user" autoComplete="name" placeholder={t('reg.namePh')} error={e.full_name?.message} {...register('full_name')} />
               <TextField
                 label={t('common.email')}
@@ -222,6 +290,7 @@ export default function Register() {
                 error={e.confirm?.message}
                 {...register('confirm')}
               />
+              {!linkRef && inviteField}
               <button type="button" className="btn btn-primary btn-block btn-lg" onClick={goNext}>
                 {t('common.next')}
                 <Icon name="arrow" className="icon-flip" />
