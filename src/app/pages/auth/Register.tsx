@@ -171,6 +171,21 @@ export default function Register() {
         <AnimatePresence mode="wait" custom={dir} initial={false}>
           {step === 1 ? (
             <motion.div key="s1" className="ui-form" custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
+              {linkRef && (
+                <TextField
+                  label={t('reg.ref')}
+                  icon="send"
+                  dir="ltr"
+                  className="mono ui-input--locked"
+                  value={linkRef}
+                  readOnly
+                  aria-readonly="true"
+                  tabIndex={-1}
+                  end={refCheck === 'checking' || refCheck === 'valid' ? <span className="ui-control-end ui-control-end--static">{refCheck === 'checking' ? <Spinner small /> : <Icon name="check-circle" />}</span> : undefined}
+                  hint={refCheck === 'invalid' ? undefined : t('reg.refFromLink')}
+                  error={refCheck === 'invalid' ? t('reg.refInvalid') : undefined}
+                />
+              )}
               <TextField label={t('reg.name')} icon="user" autoComplete="name" placeholder={t('reg.namePh')} error={e.full_name?.message} {...register('full_name')} />
               <TextField
                 label={t('common.email')}
@@ -257,21 +272,6 @@ export default function Register() {
                   {...register('phone')}
                 />
               </div>
-              {linkRef && (
-                <TextField
-                  label={t('reg.ref')}
-                  icon="send"
-                  dir="ltr"
-                  className="mono ui-input--locked"
-                  value={linkRef}
-                  readOnly
-                  aria-readonly="true"
-                  tabIndex={-1}
-                  end={refCheck === 'checking' || refCheck === 'valid' ? <span className="ui-control-end ui-control-end--static">{refCheck === 'checking' ? <Spinner small /> : <Icon name="check-circle" />}</span> : undefined}
-                  hint={refCheck === 'invalid' ? undefined : t('reg.refFromLink')}
-                  error={refCheck === 'invalid' ? t('reg.refInvalid') : undefined}
-                />
-              )}
               <TextArea label={t('reg.notes')} optional={t('common.optional')} rows={2} placeholder={t('reg.notesPh')} maxLength={500} {...register('notes')} />
               <Checkbox error={e.consent?.message} {...register('consent')}>
                 {t('reg.consent')}
