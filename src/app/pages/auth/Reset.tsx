@@ -1,6 +1,6 @@
 // Landing page of the reset-password email (also "set your password" for imported members).
 // Only a recovery session may set a password here; signed-in members change it from their profile.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,7 +15,6 @@ import { PasswordStrength } from '../../components/PasswordStrength';
 import { PageLoader, Spinner } from '../../components/PageLoader';
 import { useToast } from '../../components/Toast';
 import { passwordChecks } from '../../lib/options';
-import { useAboveKeyboard } from '../../lib/useAboveKeyboard';
 import { AuthHead } from './AuthShell';
 
 export default function Reset() {
@@ -40,8 +39,6 @@ export default function Reset() {
     .refine((v) => v.password === v.confirm, { message: t('auth.passwordMismatch'), path: ['confirm'] });
   type Values = z.infer<typeof schema>;
   const { register, handleSubmit, formState, watch, trigger } = useForm<Values>({ resolver: zodResolver(schema), mode: 'onTouched' });
-  const submitRef = useRef<HTMLButtonElement>(null);
-  useAboveKeyboard(submitRef);
 
   const params = new URLSearchParams(location.hash.slice(1) || location.search);
   const linkError = params.get('error_description') ?? params.get('error');
@@ -112,7 +109,7 @@ export default function Reset() {
           {...register('confirm')}
         />
         <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
-        <button ref={submitRef} className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
+        <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
           {formState.isSubmitting ? <Spinner small /> : t('auth.resetBtn')}
         </button>
       </form>

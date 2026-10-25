@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,6 @@ import { useT } from '../../i18n';
 import { Alert, TextField } from '../../components/Field';
 import { Icon } from '../../components/Icon';
 import { Spinner } from '../../components/PageLoader';
-import { useAboveKeyboard } from '../../lib/useAboveKeyboard';
 import { AuthHead } from './AuthShell';
 import { CheckEmail } from './CheckEmail';
 
@@ -25,8 +24,6 @@ export default function Forgot() {
     mode: 'onTouched',
     defaultValues: { email: params.get('email') ?? '' },
   });
-  const submitRef = useRef<HTMLButtonElement>(null);
-  useAboveKeyboard(submitRef);
 
   if (sentTo) return <CheckEmail email={sentTo} kind="recovery" />;
 
@@ -58,7 +55,7 @@ export default function Forgot() {
           {...register('email')}
         />
         <AnimatePresence>{error && <Alert tone="error">{error}</Alert>}</AnimatePresence>
-        <button ref={submitRef} className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
+        <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
           {formState.isSubmitting ? <Spinner small /> : (
             <>
               <Icon name="send" />

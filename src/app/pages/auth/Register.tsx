@@ -1,6 +1,6 @@
 // Sign-up in two short steps (account, then student details). The profile row is created from the
 // sign-up metadata by a database trigger; the account works after the emailed confirmation link.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,7 +15,6 @@ import { Icon } from '../../components/Icon';
 import { PasswordStrength } from '../../components/PasswordStrength';
 import { Spinner } from '../../components/PageLoader';
 import { PHONE_RE, STUDY_YEARS, UNIVERSITIES, cleanPhone, passwordChecks } from '../../lib/options';
-import { useAboveKeyboard } from '../../lib/useAboveKeyboard';
 import { AuthHead, AuthSwitch } from './AuthShell';
 import { CheckEmail } from './CheckEmail';
 
@@ -126,9 +125,6 @@ export default function Register() {
     defaultValues: { full_name: '', email: '', password: '', confirm: '', university: '', study_year: '', district: '', phone: '', notes: '', consent: false },
   });
   const password = watch('password');
-  // One ref for the step's main button: "next" on step 1, "submit" on step 2.
-  const actionRef = useRef<HTMLButtonElement>(null);
-  useAboveKeyboard(actionRef);
 
   if (session && !doneEmail) return <Navigate to="/account" replace />;
   if (doneEmail) return <CheckEmail email={doneEmail} kind="signup" />;
@@ -295,7 +291,7 @@ export default function Register() {
                 {...register('confirm')}
               />
               {!linkRef && inviteField}
-              <button ref={actionRef} type="button" className="btn btn-primary btn-block btn-lg" onClick={goNext}>
+              <button type="button" className="btn btn-primary btn-block btn-lg" onClick={goNext}>
                 {t('common.next')}
                 <Icon name="arrow" className="icon-flip" />
               </button>
@@ -368,7 +364,7 @@ export default function Register() {
                   <Icon name="arrow" className="icon-back" />
                   {t('common.back')}
                 </button>
-                <button ref={actionRef} className="btn btn-primary btn-lg" type="submit" disabled={formState.isSubmitting}>
+                <button className="btn btn-primary btn-lg" type="submit" disabled={formState.isSubmitting}>
                   {formState.isSubmitting ? <Spinner small /> : (
                     <>
                       <Icon name="sparkle" />

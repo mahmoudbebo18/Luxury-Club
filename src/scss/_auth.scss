@@ -5,8 +5,6 @@
   display: grid;
   min-height: 100vh;
   min-height: 100dvh;
-  // Room to scroll the form above the on-screen keyboard (set by useAboveKeyboard).
-  padding-bottom: var(--kb-inset, 0px);
   background:
     radial-gradient(900px 500px at 100% 0%, rgba(201, 169, 110, 0.14), transparent 60%),
     radial-gradient(700px 500px at 0% 100%, rgba(110, 120, 72, 0.1), transparent 60%),
