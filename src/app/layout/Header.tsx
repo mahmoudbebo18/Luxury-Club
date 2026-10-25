@@ -33,7 +33,11 @@ export function Header({ showLang = true }: { showLang?: boolean }) {
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Also on unmount: logging out from the open drawer leaves this layout with the drawer still open.
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('no-scroll');
+    };
   }, [open]);
 
   const close = () => {

@@ -111,7 +111,11 @@ export function AdminLayout() {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Also on unmount: logging out from the open drawer leaves this layout with the drawer still open.
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('no-scroll');
+    };
   }, [open]);
 
   const search = (e: React.FormEvent) => {
