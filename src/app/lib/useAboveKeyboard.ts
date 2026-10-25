@@ -14,9 +14,13 @@ export function useAboveKeyboard(target: RefObject<HTMLButtonElement>) {
       const keyboard = Math.max(0, Math.round(window.innerHeight - vv.height));
       root.style.setProperty('--kb-inset', `${keyboard}px`);
       const el = target.current;
-      if (keyboard < 80 || !el || !el.form?.contains(document.activeElement)) return;
+      const field = document.activeElement;
+      if (keyboard < 80 || !el || !field || !el.form?.contains(field)) return;
       const overlap = el.getBoundingClientRect().bottom + 12 - (vv.offsetTop + vv.height);
-      if (overlap > 0) window.scrollBy({ top: overlap, behavior: 'smooth' });
+      // On long forms the button is far below: never scroll the field being typed in out of sight.
+      const room = field.getBoundingClientRect().top - 12 - vv.offsetTop;
+      const by = Math.min(overlap, room);
+      if (by > 0) window.scrollBy({ top: by, behavior: 'smooth' });
     };
     // Let the browser finish its own scroll-to-field before measuring.
     const later = () => {
