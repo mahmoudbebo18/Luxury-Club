@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { Alert, PasswordField, TextField } from '../../components/Field';
 import { Icon } from '../../components/Icon';
 import { Spinner } from '../../components/PageLoader';
 import { useCooldown } from '../../lib/useCooldown';
+import { useAboveKeyboard } from '../../lib/useAboveKeyboard';
 import { AuthHead, AuthSwitch } from './AuthShell';
 
 /** Only same-site paths are allowed after login (no open redirect). */
@@ -25,6 +26,8 @@ export default function Login() {
   const [params] = useSearchParams();
   const next = safeNext(params.get('next'));
   const cooldown = useCooldown();
+  const submitRef = useRef<HTMLButtonElement>(null);
+  useAboveKeyboard(submitRef);
   const [status, setStatus] = useState<{ tone: 'success' | 'error'; text: string; unconfirmed?: boolean } | null>(null);
 
   const schema = z.object({
@@ -107,7 +110,7 @@ export default function Login() {
             </Alert>
           )}
         </AnimatePresence>
-        <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
+        <button ref={submitRef} className="btn btn-primary btn-block btn-lg" type="submit" disabled={formState.isSubmitting}>
           {formState.isSubmitting ? <Spinner small /> : (
             <>
               {t('auth.loginBtn')}
