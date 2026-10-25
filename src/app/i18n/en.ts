@@ -59,7 +59,7 @@ export const en: Record<StringKey, string> = {
   'auth.register': 'Create one',
   'auth.loginLink': 'Log in',
   'auth.emailPh': 'name@gmail.com',
-  'auth.passwordPh': '••••••••',
+  'auth.passwordPh': 'Enter your password',
   'auth.badCredentials': 'Incorrect email or password.',
   'auth.notConfirmed': "Your account isn't activated yet. Open the activation link we emailed you.",
   'auth.resendConfirm': 'Resend activation link',

@@ -58,7 +58,7 @@ export const ar = {
   'auth.register': 'أنشئ حسابك',
   'auth.loginLink': 'سجّل الدخول',
   'auth.emailPh': 'name@gmail.com',
-  'auth.passwordPh': '••••••••',
+  'auth.passwordPh': 'أدخل كلمة المرور',
   'auth.badCredentials': 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
   'auth.notConfirmed': 'لم تفعّل حسابك بعد. افتح رابط التفعيل الذي أرسلناه إلى بريدك.',
   'auth.resendConfirm': 'إعادة إرسال رابط التفعيل',

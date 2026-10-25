@@ -72,7 +72,7 @@ export default function Login() {
           type="email"
           dir="ltr"
           inputMode="email"
-          autoComplete="email"
+          autoComplete="username"
           autoCapitalize="none"
           spellCheck={false}
           placeholder={t('auth.emailPh')}
