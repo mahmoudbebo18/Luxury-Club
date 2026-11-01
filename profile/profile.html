@@ -66,11 +66,11 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
 .dark p.en, .on-olive p.en { color: var(--sand-300); }
 .dark p.ar, .on-olive p.ar { color: var(--sand-100); }
 
-.pn { position: absolute; bottom: 40px; display: flex; align-items: center; gap: 16px; font-size: 15px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
-.pn b { color: var(--gold-500); font-size: 20px; letter-spacing: .05em; }
-.pn img { height: 36px; }
-.dark .pn, .pn.light { color: rgba(233,223,203,.7); }
-.dark .pn b, .pn.light b { color: var(--gold-400); }
+.pn { position: absolute; right: 80px; bottom: 36px; display: flex; align-items: center; gap: 14px; z-index: 5; }
+.pn i { width: 54px; height: 2px; background: var(--gold-500); }
+.pn b { font-size: 20px; font-weight: 700; letter-spacing: .06em; color: var(--gold-500); }
+.dark .pn i, .pn.light i { background: var(--gold-300); }
+.dark .pn b, .pn.light b { color: var(--gold-300); text-shadow: 0 2px 10px rgba(0,0,0,.45); }
 
 /* ---- phone mockup ---- */
 .phone { position: absolute; width: 400px; height: 820px; border-radius: 64px; padding: 15px; background: linear-gradient(145deg, #3a3a3a, #0d0d0d 40%, #1c1c1c); box-shadow: 0 60px 90px -40px rgba(0,0,0,.7), inset 0 0 0 2px #555; }
@@ -117,6 +117,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
 .about .badge .ar { font-size: 25px; font-weight: 700; text-align: left; direction: rtl; margin-top: 6px; }
 .about .badge .en { font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); }
 .about .txt { right: 110px; top: 96px; width: 900px; }
+.about .txt p.en { font-size: 20px; color: var(--text); }
 .about .txt .en-blk { margin-top: 26px; padding-top: 24px; border-top: 1px solid rgba(65,71,42,.18); }
 .about .pillars { right: 110px; top: 630px; width: 900px; display: flex; gap: 20px; direction: rtl; }
 .about .pill { flex: 1; display: flex; align-items: center; gap: 16px; direction: rtl; padding: 16px 22px; border-radius: 60px; background: rgba(255,255,255,.75); box-shadow: 0 18px 30px -24px rgba(27,30,18,.6); }
@@ -162,39 +163,85 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
 .ov .ar-list li small { color: var(--gold-300); }
 .ov .ar-list p.ar { font-size: 20px; margin-top: 4px; }
 
-/* =========================== 5-7. SERVICE PAIRS =========================== */
-.pair .tri-bl { left: 0; bottom: 0; width: 820px; height: 460px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-.pair .tri-tr { right: 0; top: 0; width: 640px; height: 330px; clip-path: polygon(0 0, 100% 0, 100% 100%); opacity: .5; }
-.pair .rib { left: 0; bottom: 0; width: 900px; height: 520px; clip-path: polygon(0 0, 1.8% 0, 100% 100%, 98.2% 100%); }
-.svc { position: absolute; top: 70px; width: 840px; height: 900px; border-radius: 26px; background: rgba(255,255,255,.82); box-shadow: 0 40px 70px -46px rgba(27,30,18,.7); overflow: hidden; }
-.svc.a { left: 90px; }
-.svc.b { right: 90px; }
-.svc .ph { position: relative; height: 400px; background-size: cover; background-position: center; clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); }
-.svc.b .ph { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 80%); }
-.svc .ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(27,30,18,.05), rgba(27,30,18,.6)); }
-.svc .ph .n { position: absolute; z-index: 1; right: 40px; top: 26px; font-size: 120px; font-weight: 700; line-height: 1; color: transparent; -webkit-text-stroke: 2px var(--gold-300); }
-.svc .ph .gl { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 100%; background: var(--gold-grad); clip-path: polygon(0 99%, 100% 79%, 100% 80.5%, 0 100.5%); }
-.svc.b .ph .gl { clip-path: polygon(0 79%, 100% 99%, 100% 100.5%, 0 80.5%); }
-.svc .ico { position: absolute; top: 330px; left: 44px; width: 96px; height: 96px; border-radius: 26px; background: var(--olive-grad); color: var(--gold-400); display: grid; place-items: center; font-size: 46px; box-shadow: 0 20px 34px -18px #000; z-index: 2; }
-.svc.b .ico { top: 252px; }
-.svc .cnt { padding: 22px 44px 0; }
-.svc .ttl { display: flex; flex-direction: column; align-items: flex-end; padding-left: 130px; }
-.svc .ttl .ar { font-size: 46px; font-weight: 700; color: var(--olive-700); line-height: 1.2; }
-.svc .ttl .en { font-size: 16px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-500); font-weight: 700; margin-top: 4px; }
-.svc .intro { margin-top: 14px; }
-.svc .intro .ar { font-size: 22px; line-height: 1.75; }
-.svc .intro .en { font-size: 17px; line-height: 1.6; color: var(--muted); margin-top: 6px; }
-.svc ul { list-style: none; margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; direction: rtl; }
-.svc li { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 16px; background: var(--sand-100); direction: rtl; }
-.svc li .ck { width: 34px; height: 34px; border-radius: 50%; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 16px; flex: none; }
-.svc li .ar { display: block; font-size: 20px; font-weight: 700; color: var(--olive-700); line-height: 1.4; }
-.svc li .en { display: block; font-size: 15px; color: var(--muted); line-height: 1.35; text-align: right; }
-.svc li .ds { display: block; font-size: 14px; color: var(--muted); line-height: 1.5; font-weight: 400; }
-.svc.short .ph { height: 360px; }
-.svc.short .ico { top: 290px; }
-.svc.short.b .ico { top: 220px; }
-.svc.wide ul { grid-template-columns: 1fr 1fr; }
-.pair .pn { left: 50%; transform: translateX(-50%); bottom: 34px; }
+/* =========================== shared: service heads & lists =========================== */
+.sh-row { display: flex; align-items: flex-end; gap: 22px; direction: rtl; }
+.sh-row.stack { flex-direction: column; align-items: flex-end; gap: 6px; }
+.sh .num { font-size: 110px; font-weight: 700; line-height: .85; color: transparent; -webkit-text-stroke: 2px var(--gold-400); }
+.sh .t { display: flex; flex-direction: column; align-items: flex-end; }
+.sh .t .ar { font-size: 50px; font-weight: 700; color: var(--olive-700); line-height: 1.15; }
+.sh .t .en { font-size: 16px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-500); font-weight: 700; margin-top: 8px; }
+.on-olive .t .ar, .dark .sh .t .ar { color: var(--sand-50); }
+.on-olive .t .en, .dark .sh .t .en { color: var(--gold-300); }
+.sh p.ar { font-size: 21px; line-height: 1.75; margin-top: 16px; }
+.sh p.en { font-size: 17px; line-height: 1.6; margin-top: 4px; }
+.dl { list-style: none; margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; direction: rtl; }
+.dl.one { grid-template-columns: 1fr; }
+.dl li { display: flex; gap: 14px; align-items: flex-start; direction: rtl; padding-bottom: 12px; border-bottom: 1px solid rgba(201,169,110,.4); }
+.dl li::before { content: ""; width: 11px; height: 11px; background: var(--gold-400); transform: rotate(45deg); margin-top: 13px; flex: none; }
+.dl li b { display: block; font-size: 20px; color: var(--olive-700); line-height: 1.45; }
+.dl li span { display: block; font-size: 15px; color: var(--muted); line-height: 1.4; text-align: right; direction: ltr; }
+.dl li.span2 { grid-column: span 2; }
+.on-olive .dl li b, .dark .dl li b { color: var(--sand-50); }
+.on-olive .dl li span, .dark .dl li span { color: var(--sand-300); }
+.badge-ic { position: absolute; width: 100px; height: 100px; border-radius: 50%; background: var(--olive-grad); border: 3px solid var(--gold-400); color: var(--gold-400); display: grid; place-items: center; font-size: 44px; box-shadow: 0 20px 34px -18px #000; z-index: 3; }
+
+/* =========================== 6. LEGAL + LOGISTICS (dark, Z layout) =========================== */
+.sA .ph1 { left: 0; top: 0; width: 900px; height: 520px; clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%); background-image: url(../public/imgs/pic1.jpeg); }
+.sA .rb1 { left: 0; top: 0; width: 960px; height: 520px; clip-path: polygon(95.3% 0, 98.4% 0, 77.8% 100%, 74.7% 100%); }
+.sA .ph2 { right: 0; bottom: 0; width: 900px; height: 520px; clip-path: polygon(22% 0, 100% 0, 100% 100%, 0 100%); background-image: url(../public/imgs/services/logistics.jpg); }
+.sA .rb2 { right: 0; bottom: 0; width: 960px; height: 520px; clip-path: polygon(22.2% 0, 25.3% 0, 4.7% 100%, 1.6% 100%); }
+.sA .lines { right: 0; top: 0; width: 520px; height: 300px; clip-path: polygon(0 0, 100% 0, 100% 100%); opacity: .3; }
+.sA .lines2 { left: 0; bottom: 0; width: 520px; height: 300px; clip-path: polygon(0 0, 100% 100%, 0 100%); opacity: .25; }
+.sA .t1 { right: 110px; top: 76px; width: 840px; }
+.sA .t2 { left: 110px; top: 584px; width: 840px; }
+
+/* =========================== 7. OFFERS + CONCIERGE (photo hero + diamond) =========================== */
+.sB .hero { left: 0; top: 0; width: 1920px; height: 640px; clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%); background-image: url(../public/imgs/services/offers.jpg); background-position: center 65%; }
+.sB .hero::after { background: linear-gradient(270deg, rgba(27,30,18,.94) 0%, rgba(27,30,18,.82) 38%, rgba(27,30,18,.2) 72%, rgba(27,30,18,.05) 100%); }
+.sB .hrib { left: 0; top: 0; width: 1920px; height: 660px; clip-path: polygon(0 97%, 100% 75.6%, 100% 77.4%, 0 98.8%); }
+.sB .t1 { right: 110px; top: 48px; width: 880px; }
+.sB .lines { left: 0; bottom: 0; width: 640px; height: 380px; clip-path: polygon(0 0, 100% 100%, 0 100%); opacity: .35; }
+.sB .dia-back { left: 150px; top: 520px; width: 520px; height: 520px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background: var(--gold-grad); }
+.sB .dia { left: 164px; top: 534px; width: 492px; height: 492px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background-image: url(../public/imgs/pic2.jpeg); background-position: center 40%; }
+.sB .t2 { right: 110px; top: 600px; width: 980px; }
+
+/* =========================== 8. WORKSHOPS + ROADSIDE (olive panel + arch) =========================== */
+.sC .panel { left: 0; top: 0; width: 940px; height: 1080px; clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%); }
+.sC .prib { left: 0; top: 0; width: 980px; height: 1080px; clip-path: polygon(96.9% 0, 99% 0, 81.7% 100%, 79.7% 100%); }
+.sC .tire { left: 0; top: 620px; width: 860px; height: 460px; clip-path: polygon(0 12%, 98% 0, 89.7% 100%, 0 100%); background-image: url(../public/imgs/pic.jpeg); background-position: center 35%; }
+.sC .tline { left: 0; top: 606px; width: 850px; height: 80px; clip-path: polygon(0 76.3%, 99.2% 7.5%, 99.2% 17.5%, 0 86.3%); }
+.sC .t1 { left: 110px; top: 70px; width: 680px; }
+.sC .f4 { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 30px; direction: rtl; }
+.sC .f4 > div { display: flex; gap: 14px; align-items: flex-start; direction: rtl; }
+.sC .f4 .ic { width: 50px; height: 50px; border-radius: 50%; background: var(--gold-grad); color: var(--olive-900); display: grid; place-items: center; font-size: 24px; flex: none; }
+.sC .f4 b { display: block; font-size: 21px; color: var(--sand-50); line-height: 1.4; }
+.sC .f4 small { display: block; font-size: 15px; line-height: 1.55; color: var(--sand-200); }
+.sC .f4 span { display: block; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-300); margin-top: 2px; }
+.sC .arch-back { left: 1010px; top: 110px; width: 440px; height: 620px; border-radius: 220px 220px 24px 24px; background: var(--gold-grad); }
+.sC .arch { left: 1024px; top: 124px; width: 412px; height: 592px; border-radius: 206px 206px 14px 14px; overflow: hidden; background-image: url(../public/imgs/services/workshops.jpg); background-position: center 30%; }
+.sC .t2 { right: 110px; top: 150px; width: 330px; }
+.sC .t2 .sh .t .ar { font-size: 46px; text-align: right; }
+.sC .wrow { left: 1010px; right: 110px; top: 800px; display: flex; gap: 30px; direction: rtl; }
+.sC .wrow > div { flex: 1; display: flex; align-items: center; gap: 18px; direction: rtl; padding: 22px 0; border-top: 2px solid var(--gold-400); border-bottom: 1px solid rgba(65,71,42,.18); }
+.sC .wrow .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--olive-grad); color: var(--gold-400); display: grid; place-items: center; font-size: 30px; flex: none; }
+.sC .wrow b { display: block; font-size: 25px; color: var(--olive-700); }
+.sC .wrow span { display: block; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-500); text-align: right; }
+
+/* =========================== 2. CONTENTS =========================== */
+.toc .lines { left: 0; top: 0; width: 760px; height: 420px; clip-path: polygon(0 0, 100% 0, 0 100%); opacity: .3; }
+.toc .rib { left: 0; top: 0; width: 1920px; height: 1080px; clip-path: polygon(0 52%, 0 48%, 22% 0, 23.2% 0); opacity: .9; }
+.toc .wm { position: absolute; left: -40px; bottom: -30px; width: 820px; opacity: .06; }
+.toc .brand { left: 110px; top: 470px; width: 520px; }
+.toc .brand img { width: 300px; }
+.toc .brand .lux { margin-top: 18px; font-size: 16px; letter-spacing: .45em; text-transform: uppercase; color: var(--gold-300); }
+.toc .brand p { margin-top: 26px; font-size: 22px; line-height: 1.7; color: var(--sand-200); direction: rtl; text-align: left; }
+.toc .head { right: 110px; top: 80px; text-align: right; }
+.toc .rows { right: 110px; top: 280px; width: 1060px; }
+.toc .row { display: flex; align-items: center; gap: 22px; height: 68px; border-bottom: 1px solid rgba(201,169,110,.28); direction: rtl; }
+.toc .row .n { font-size: 34px; font-weight: 700; color: var(--gold-400); width: 58px; }
+.toc .row .ar { font-size: 27px; font-weight: 700; color: var(--sand-50); }
+.toc .row .lead { flex: 1; height: 1px; border-bottom: 2px dotted rgba(201,169,110,.35); margin-top: 12px; }
+.toc .row .en { font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand-300); }
 
 /* =========================== 8. ACTIVITIES =========================== */
 .act .photo-back { right: 0; top: 0; width: 900px; height: 1080px; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); }
@@ -224,7 +271,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
 .priv .band { left: 0; bottom: 0; width: 1920px; height: 640px; clip-path: polygon(0 26%, 100% 0, 100% 100%, 0 100%); }
 .priv .rib { left: 0; bottom: 0; width: 1920px; height: 640px; clip-path: polygon(0 24.4%, 100% -1.6%, 100% 0, 0 26%); }
 .priv .ar-blk { right: 110px; top: 80px; width: 980px; }
-.priv .en-blk { left: 110px; top: 170px; width: 680px; }
+.priv .en-blk { left: 110px; top: 150px; width: 700px; }
 .priv .grid { left: 110px; right: 110px; top: 560px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; direction: rtl; }
 .priv .it { text-align: center; color: var(--sand-100); }
 .priv .circ { width: 190px; height: 190px; margin: 0 auto; border-radius: 50%; padding: 6px; background: var(--gold-grad); position: relative; }
@@ -234,8 +281,9 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
 .priv .it .en-t { font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-300); font-weight: 600; }
 .priv .it p.ar { text-align: center; font-size: 17px; line-height: 1.6; margin-top: 8px; color: var(--sand-200); }
 .priv .it p.en { text-align: center; font-size: 14px; line-height: 1.5; color: var(--sand-300); margin-top: 4px; }
-.priv .cta { left: 110px; right: 110px; bottom: 50px; display: flex; justify-content: space-between; align-items: center; font-size: 17px; color: var(--gold-300); }
-.priv .cta .ar { font-size: 20px; font-weight: 600; color: var(--sand-50); }
+.hl { display: inline-flex; align-items: center; gap: 12px; margin-top: 22px; padding: 12px 24px; border-radius: 40px; background: rgba(255,255,255,.7); border: 1px solid rgba(201,169,110,.6); color: var(--olive-700); font-weight: 600; font-size: 19px; box-shadow: 0 16px 30px -24px rgba(27,30,18,.7); }
+.hl.en { font-size: 16px; }
+.hl .icon { color: var(--gold-500); font-size: 22px; }
 
 /* =========================== 10. JOIN =========================== */
 .join .tri-a { left: 0; top: 0; width: 860px; height: 1080px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
@@ -319,6 +367,36 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
   <div class="abs kicker"><span class="en">Company Profile</span><i></i><span class="ar">الملف التعريفي</span><i></i><span class="yr">2026</span></div>
 </section>
 
+<!-- ============================ 2. CONTENTS ============================ -->
+<section class="page dark toc">
+  <div class="shape lines"></div>
+  <div class="shape rib ribbon"></div>
+  <img class="wm" src="../public/imgs/dasman-logo-light.png" alt="">
+  <div class="abs brand">
+    <img src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">The Luxury Club</div>
+    <p>عضوية حصرية تجمع الخدمات والمزايا والعروض الحصرية في منصة واحدة.</p>
+  </div>
+  <div class="abs head">
+    <span class="eyebrow">المحتويات</span>
+    <h2 class="ar">داخل الملف التعريفي</h2>
+    <span class="eyebrow en" style="margin-top:6px">Contents</span>
+  </div>
+  <div class="abs rows">
+    <div class="row" style="margin-right:0"><span class="n">03</span><span class="ar">نبذة عنا</span><i class="lead"></i><span class="en">About us</span></div>
+    <div class="row" style="margin-right:22px"><span class="n">04</span><span class="ar">رؤيتنا</span><i class="lead"></i><span class="en">Our vision</span></div>
+    <div class="row" style="margin-right:44px"><span class="n">05</span><span class="ar">خدمات دسمان</span><i class="lead"></i><span class="en">DASMAN services</span></div>
+    <div class="row" style="margin-right:66px"><span class="n">06</span><span class="ar">الخدمات القانونية واللوجستية</span><i class="lead"></i><span class="en">Legal &amp; logistics</span></div>
+    <div class="row" style="margin-right:88px"><span class="n">07</span><span class="ar">العروض والكونسيرج</span><i class="lead"></i><span class="en">Offers &amp; concierge</span></div>
+    <div class="row" style="margin-right:110px"><span class="n">08</span><span class="ar">الورش والمساعدة على الطريق</span><i class="lead"></i><span class="en">Workshops &amp; roadside</span></div>
+    <div class="row" style="margin-right:132px"><span class="n">09</span><span class="ar">الأنشطة وبرنامج السفراء</span><i class="lead"></i><span class="en">Activities &amp; ambassadors</span></div>
+    <div class="row" style="margin-right:154px"><span class="n">10</span><span class="ar">المزايا</span><i class="lead"></i><span class="en">Privileges</span></div>
+    <div class="row" style="margin-right:176px"><span class="n">11</span><span class="ar">انضم إلينا</span><i class="lead"></i><span class="en">Join us</span></div>
+    <div class="row" style="margin-right:198px"><span class="n">12</span><span class="ar">تواصل معنا</span><i class="lead"></i><span class="en">Contact us</span></div>
+  </div>
+  <div class="pn"><i></i><b>02</b></div>
+</section>
+
 <!-- ============================ 2. ABOUT ============================ -->
 <section class="page about">
   <div class="shape tri olive"></div>
@@ -344,7 +422,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
     <i></i>
     <div class="ar"><h3>رسالتنا</h3><p>توفير حلول وجودة عالية لتقديم أفضل العروض والخدمات للمشتركين.</p></div>
   </div>
-  <div class="pn light" style="right:auto;left:110px;bottom:24px"><b>02</b></div>
+  <div class="pn"><i></i><b>03</b></div>
 </section>
 
 <!-- ============================ 3. VISION ============================ -->
@@ -377,8 +455,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
     <div class="ar">العمل على توظيف أفضل الموظفين ذوي الخبرات العالية لتقديم أفضل الخدمات عالية الجودة للمشتركين.</div>
     <div class="en">Hiring highly skilled, experienced staff to provide members with the highest-quality services.</div>
   </div>
-  <div class="pn" style="left:110px;top:96px;bottom:auto"><img src="../public/imgs/dasman-logo-light.png" alt=""></div>
-  <div class="pn" style="right:110px"><b>03</b></div>
+  <div class="pn"><i></i><b>04</b></div>
 </section>
 
 <!-- ============================ 4. SERVICES OVERVIEW ============================ -->
@@ -428,149 +505,121 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
       <li><small>07</small><span class="ic"><svg class="icon"><use href="#i-trophy"/></svg></span>أنشطة ترفيهية دورية</li>
     </ul>
   </div>
-  <div class="pn" style="left:110px"><img src="../public/imgs/dasman-logo.png" alt=""><b>04</b></div>
+  <div class="pn light"><i></i><b>05</b></div>
 </section>
 
-<!-- ============================ 5. LEGAL + LOGISTICS ============================ -->
-<section class="page pair">
-  <div class="shape tri-bl olive"></div>
-  <div class="shape tri-tr lines"></div>
-  <div class="shape rib ribbon"></div>
+<!-- ============================ 6. LEGAL + LOGISTICS ============================ -->
+<section class="page dark sA">
+  <div class="shape lines"></div>
+  <div class="shape lines2"></div>
+  <div class="frame ph1"></div>
+  <div class="shape rb1 ribbon"></div>
+  <div class="frame ph2"></div>
+  <div class="shape rb2 ribbon"></div>
+  <span class="badge-ic" style="left:640px;top:380px"><svg class="icon"><use href="#i-legal"/></svg></span>
+  <span class="badge-ic" style="left:1136px;top:602px"><svg class="icon"><use href="#i-logistics"/></svg></span>
 
-  <article class="svc a">
-    <div class="ph" style="background-image:url(../public/imgs/pic1.jpeg)"><span class="n">01</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-legal"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Legal Services</span><span class="ar">خدمات قانونية</span></div>
-      <div class="intro">
-        <p class="ar">توفر عضوية دسمان فريقاً يضم نخبة من المحامين والمستشارين القانونيين هدفهم تلبية احتياجات الأعضاء القانونية ومتابعة شؤونهم الخاصة.</p>
-        <p class="en">DASMAN provides a team of lawyers and legal advisors whose purpose is to address members' legal needs and follow up on their private affairs.</p>
-      </div>
-      <ul>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">تقديم الاستشارات القانونية</b><span class="en">Legal consultations</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">كتابة العقود وتعديلها</b><span class="en">Writing and amending contracts</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">متابعة القضايا وصياغة صحف الدعوى</b><span class="en">Following up on cases and drafting lawsuits</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">التوجيه والإرشاد القانوني</b><span class="en">Legal guidance</span></span></li>
-      </ul>
-    </div>
-  </article>
+  <div class="abs t1 sh ar">
+    <div class="sh-row"><span class="num">01</span><div class="t"><span class="ar">خدمات قانونية</span><span class="en">Legal Services</span></div></div>
+    <p class="ar">توفر عضوية دسمان فريقاً يضم نخبة من المحامين والمستشارين القانونيين هدفهم تلبية احتياجات الأعضاء القانونية ومتابعة شؤونهم الخاصة.</p>
+    <p class="en" style="text-align:right">DASMAN provides a team of lawyers and legal advisors whose purpose is to address members' legal needs and follow up on their private affairs.</p>
+    <ul class="dl">
+      <li><div><b>تقديم الاستشارات القانونية</b><span>Legal consultations</span></div></li>
+      <li><div><b>كتابة العقود وتعديلها</b><span>Writing and amending contracts</span></div></li>
+      <li><div><b>متابعة القضايا وصياغة صحف الدعوى</b><span>Following up on cases and drafting lawsuits</span></div></li>
+      <li><div><b>التوجيه والإرشاد القانوني</b><span>Legal guidance</span></div></li>
+    </ul>
+  </div>
 
-  <article class="svc b">
-    <div class="ph" style="background-image:url(../public/imgs/services/logistics.jpg)"><span class="n">02</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-logistics"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Logistics Services</span><span class="ar">خدمات لوجستية</span></div>
-      <div class="intro">
-        <p class="ar">خدمات الشحن والتوصيل ونقل وتسليم الطلبات والمقتنيات، لتصل أغراضك إلى حيث تريد دون عناء.</p>
-        <p class="en">Shipping, delivery, and pickup and drop-off of orders and belongings, so your things get where they need to go without the hassle.</p>
-      </div>
-      <ul>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">خدمات المطار</b><span class="en">Airport services</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">توصيل الأغراض والطلبات</b><span class="en">Item and order delivery</span></span></li>
-        <li style="grid-column:span 2"><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">الشحن ونقل وتسليم المقتنيات</b><span class="en">Shipping and delivery of belongings</span></span></li>
-      </ul>
-    </div>
-  </article>
-  <div class="pn"><b>05</b></div>
+  <div class="abs t2 sh ar">
+    <div class="sh-row"><span class="num">02</span><div class="t"><span class="ar">خدمات لوجستية</span><span class="en">Logistics Services</span></div></div>
+    <p class="ar">خدمات الشحن والتوصيل ونقل وتسليم الطلبات والمقتنيات، لتصل أغراضك إلى حيث تريد دون عناء.</p>
+    <p class="en" style="text-align:right">Shipping, delivery, and pickup and drop-off of orders and belongings, so your things get where they need to go without the hassle.</p>
+    <ul class="dl">
+      <li><div><b>خدمات المطار</b><span>Airport services</span></div></li>
+      <li><div><b>توصيل الأغراض والطلبات</b><span>Item and order delivery</span></div></li>
+      <li class="span2"><div><b>الشحن ونقل وتسليم المقتنيات</b><span>Shipping and delivery of belongings</span></div></li>
+    </ul>
+  </div>
+  <div class="pn"><i></i><b>06</b></div>
 </section>
 
-<!-- ============================ 6. OFFERS + CONCIERGE ============================ -->
-<section class="page pair">
-  <div class="shape tri-bl olive"></div>
-  <div class="shape tri-tr lines"></div>
-  <div class="shape rib ribbon"></div>
-
-  <article class="svc a">
-    <div class="ph" style="background-image:url(../public/imgs/services/offers.jpg)"><span class="n">03</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-gift"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Offers &amp; Rewards</span><span class="ar">عروض ومكافآت</span></div>
-      <div class="intro">
-        <p class="ar">تمنحك عضويتك عروضاً ومكافآت وخصومات قيّمة طوال فترة الاشتراك لدى شركائنا، مع تحديث مستمر لقائمة الشركاء لتغطي احتياجات الأعضاء واهتماماتهم.</p>
-        <p class="en">Your membership gives you valuable offers, rewards and discounts throughout your subscription with our partners, with the partner list updated regularly.</p>
-      </div>
-      <ul>
-        <li style="grid-column:span 2"><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">خصومات وعروض خاصة لدى المتاجر والعلامات التجارية</b><span class="en">Special discounts and offers at stores and brands</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">عروض وتجارب حصرية لدى الفنادق والمطاعم</b><span class="en">Exclusive offers at hotels and restaurants</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">خصومات ومكافآت على الفعاليات</b><span class="en">Discounts and rewards on events</span></span></li>
-      </ul>
-    </div>
-  </article>
-
-  <article class="svc b">
-    <div class="ph" style="background-image:url(../public/imgs/pic2.jpeg)"><span class="n">04</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-concierge"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Concierge</span><span class="ar">كونسيرج</span></div>
-      <div class="intro">
-        <p class="ar">فريق كونسيرج يلبي طلبات الأعضاء واحتياجاتهم ويساعدهم في إنجاز مهامهم اليومية.</p>
-        <p class="en">A concierge team that takes care of members' requests and needs and helps them with their daily tasks.</p>
-      </div>
-      <ul>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">حجوزات المطاعم</b><span class="en">Restaurant bookings</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">حجوزات الفعاليات</b><span class="en">Event bookings</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">مساعد شخصي لإنجاز المهام اليومية</b><span class="en">A personal assistant for daily tasks</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">التوجيه والإرشاد إلى الخيارات والخدمات المناسبة</b><span class="en">Guidance toward the right options</span></span></li>
-      </ul>
-    </div>
-  </article>
-  <div class="pn"><b>06</b></div>
+<!-- ============================ 7. OFFERS + CONCIERGE ============================ -->
+<section class="page sB">
+  <div class="shape lines"></div>
+  <div class="frame hero"></div>
+  <div class="shape hrib ribbon"></div>
+  <div class="abs t1 sh ar on-olive">
+    <div class="sh-row"><span class="num">03</span><div class="t"><span class="ar">عروض ومكافآت</span><span class="en">Offers &amp; Rewards</span></div></div>
+    <p class="ar">تمنحك عضويتك عروضاً ومكافآت وخصومات قيّمة طوال فترة الاشتراك لدى شركائنا، مع تحديث مستمر لقائمة الشركاء لتغطي احتياجات الأعضاء واهتماماتهم.</p>
+    <p class="en" style="text-align:right">Valuable offers, rewards and discounts throughout your subscription with our partners, with the partner list updated regularly.</p>
+    <ul class="dl">
+      <li class="span2"><div><b>خصومات وعروض خاصة لدى المتاجر والعلامات التجارية</b><span>Special discounts and offers at stores and brands</span></div></li>
+      <li><div><b>عروض وتجارب حصرية لدى الفنادق والمطاعم</b><span>Exclusive offers at hotels and restaurants</span></div></li>
+      <li><div><b>خصومات ومكافآت على الفعاليات</b><span>Discounts and rewards on events</span></div></li>
+    </ul>
+  </div>
+  <div class="shape dia-back"></div>
+  <div class="frame dia"></div>
+  <span class="badge-ic" style="left:612px;top:730px"><svg class="icon"><use href="#i-concierge"/></svg></span>
+  <span class="badge-ic" style="left:1760px;top:440px;width:84px;height:84px;font-size:38px"><svg class="icon"><use href="#i-gift"/></svg></span>
+  <div class="abs t2 sh ar">
+    <div class="sh-row"><span class="num">04</span><div class="t"><span class="ar">كونسيرج</span><span class="en">Concierge</span></div></div>
+    <p class="ar">فريق كونسيرج يلبي طلبات الأعضاء واحتياجاتهم ويساعدهم في إنجاز مهامهم اليومية.</p>
+    <p class="en" style="text-align:right">A concierge team that takes care of members' requests and needs and helps them with their daily tasks.</p>
+    <ul class="dl">
+      <li><div><b>حجوزات المطاعم</b><span>Restaurant bookings</span></div></li>
+      <li><div><b>حجوزات الفعاليات</b><span>Event bookings</span></div></li>
+      <li><div><b>مساعد شخصي لإنجاز المهام اليومية</b><span>A personal assistant for daily tasks</span></div></li>
+      <li><div><b>التوجيه والإرشاد إلى الخيارات والخدمات المناسبة</b><span>Guidance toward the right options and services</span></div></li>
+    </ul>
+  </div>
+  <div class="pn"><i></i><b>07</b></div>
 </section>
 
-<!-- ============================ 7. WORKSHOPS + ROADSIDE ============================ -->
-<section class="page pair">
-  <div class="shape tri-bl olive"></div>
-  <div class="shape tri-tr lines"></div>
-  <div class="shape rib ribbon"></div>
-
-  <article class="svc a short">
-    <div class="ph" style="background-image:url(../public/imgs/services/workshops.jpg);background-position:center 30%"><span class="n">05</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-flask"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Scientific Workshops</span><span class="ar">ورش عمل علمية</span></div>
-      <div class="intro">
-        <p class="ar">ورش عمل دورية يقدمها مختصون لتطوير مهارات الأعضاء الأكاديمية والعملية.</p>
-        <p class="en">Regular workshops led by specialists to build members' academic and practical skills.</p>
-      </div>
-      <ul style="grid-template-columns:1fr">
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">ورش التصوير الطبي</b><span class="en">Medical photography workshops</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">ورش البحث العلمي</b><span class="en">Scientific research workshops</span></span></li>
-      </ul>
+<!-- ============================ 8. WORKSHOPS + ROADSIDE ============================ -->
+<section class="page sC">
+  <div class="shape panel olive"></div>
+  <div class="shape prib ribbon"></div>
+  <div class="frame tire"></div>
+  <div class="shape tline ribbon"></div>
+  <span class="badge-ic" style="left:700px;top:530px"><svg class="icon"><use href="#i-car"/></svg></span>
+  <div class="abs t1 sh ar on-olive">
+    <div class="sh-row"><span class="num">06</span><div class="t"><span class="ar">مساعدة على الطريق</span><span class="en">Roadside Assistance</span></div></div>
+    <p class="ar">خدمات المساعدة في حالات تعطل المركبات والحالات الطارئة على الطريق.</p>
+    <p class="en" style="text-align:right">Help when your vehicle breaks down or you face an emergency on the road.</p>
+    <div class="f4">
+      <div><span class="ic"><svg class="icon"><use href="#i-car"/></svg></span><div><b>سحب السيارة</b><small>يمكن للمشتركين اختيار نوع السطحة المطلوبة لتناسب جميع أنواع المركبات.</small><span dir="ltr" style="text-align:right">Towing</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-settings"/></svg></span><div><b>تغيير الإطارات</b><small>معالجة أعطال الإطارات بالإصلاح في موقع الطلب أو النقل إلى مركز مختص.</small><span dir="ltr" style="text-align:right">Tire change</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-bolt"/></svg></span><div><b>شحن البطارية</b><small>نقوم بشحن البطارية أو استبدالها ببطارية جديدة.</small><span dir="ltr" style="text-align:right">Battery charging</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-pin"/></svg></span><div><b>تزويد الوقود</b><small>توصيل البنزين أو الديزل داخل المدينة أو خارجها.</small><span dir="ltr" style="text-align:right">Fuel delivery</span></div></div>
     </div>
-  </article>
+  </div>
 
-  <article class="svc b short">
-    <div class="ph" style="background-image:url(../public/imgs/pic.jpeg);background-position:center 40%"><span class="n">06</span><span class="gl"></span></div>
-    <span class="ico"><svg class="icon"><use href="#i-car"/></svg></span>
-    <div class="cnt">
-      <div class="ttl"><span class="en">Roadside Assistance</span><span class="ar">مساعدة على الطريق</span></div>
-      <div class="intro">
-        <p class="ar">خدمات المساعدة في حالات تعطل المركبات والحالات الطارئة على الطريق.</p>
-        <p class="en">Help when your vehicle breaks down or you face an emergency on the road.</p>
-      </div>
-      <ul>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">سحب السيارة</b><span class="ds ar">اختيار نوع السطحة المناسبة لجميع أنواع المركبات.</span><span class="en">Towing</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">تغيير الإطارات</b><span class="ds ar">الإصلاح في موقع الطلب أو النقل إلى مركز مختص.</span><span class="en">Tire change</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">شحن البطارية</b><span class="ds ar">شحن البطارية أو استبدالها ببطارية جديدة.</span><span class="en">Battery charging</span></span></li>
-        <li><span class="ck"><svg class="icon"><use href="#i-check"/></svg></span><span><b class="ar">تزويد الوقود</b><span class="ds ar">توصيل البنزين أو الديزل داخل المدينة أو خارجها.</span><span class="en">Fuel delivery</span></span></li>
-      </ul>
-    </div>
-  </article>
-  <div class="pn"><b>07</b></div>
+  <div class="shape arch-back"></div>
+  <div class="frame arch"></div>
+  <div class="abs t2 sh ar">
+    <div class="sh-row stack"><span class="num">05</span><div class="t"><span class="ar">ورش عمل علمية</span><span class="en">Scientific Workshops</span></div></div>
+    <p class="ar">ورش عمل دورية يقدمها مختصون لتطوير مهارات الأعضاء الأكاديمية والعملية.</p>
+    <p class="en" style="text-align:right">Regular workshops led by specialists to build members' academic and practical skills.</p>
+  </div>
+  <div class="abs wrow">
+    <div><span class="ic"><svg class="icon"><use href="#i-eye"/></svg></span><div><b>ورش التصوير الطبي</b><span dir="ltr">Medical photography workshops</span></div></div>
+    <div><span class="ic"><svg class="icon"><use href="#i-search"/></svg></span><div><b>ورش البحث العلمي</b><span dir="ltr">Scientific research workshops</span></div></div>
+  </div>
+  <div class="pn"><i></i><b>08</b></div>
 </section>
 
 <!-- ============================ 8. ACTIVITIES + AMBASSADORS ============================ -->
 <section class="page dark act">
   <div class="shape photo-back ribbon"></div>
   <div class="frame photo"></div>
-  <div class="abs n">07</div>
   <div class="abs main">
-    <div class="ttl">
-      <div class="en"><span class="eyebrow en">Service 07</span><h2 class="en">Recreational Activities</h2></div>
-      <div class="ar"><span class="eyebrow">الخدمة 07</span><h2 class="ar">أنشطة ترفيهية دورية</h2></div>
+    <div class="sh ar">
+      <div class="sh-row"><span class="num">07</span><div class="t"><span class="ar">أنشطة ترفيهية دورية</span><span class="en">Recreational Activities</span></div></div>
+      <p class="ar">أنشطة وفعاليات ترفيهية تُقام بشكل دوري لتجمع أعضاء دسمان.</p>
+      <p class="en" style="text-align:right">Fun activities and events held regularly to bring DASMAN members together.</p>
     </div>
-    <p class="ar" style="margin-top:14px">أنشطة وفعاليات ترفيهية تُقام بشكل دوري لتجمع أعضاء دسمان.</p>
-    <p class="en">Fun activities and events held regularly to bring DASMAN members together.</p>
     <div class="chips">
       <div class="chip"><span class="ic"><svg class="icon"><use href="#i-trophy"/></svg></span><div><b class="ar">بطولات البادل</b><span class="en">Padel tournaments</span></div></div>
       <div class="chip"><span class="ic"><svg class="icon"><use href="#i-users"/></svg></span><div><b class="ar">بطولات كرة القدم</b><span class="en">Football tournaments</span></div></div>
@@ -587,7 +636,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
     <div class="en"><span class="tag">Ambassador programme</span><h3>Become a DASMAN ambassador</h3><p>Represent DASMAN at your university: invite classmates with your own link and help run activities and tournaments.</p></div>
     <div class="ar"><span class="tag">برنامج السفراء</span><h3>كن سفيرًا لدسمان</h3><p>مثّل دسمان في جامعتك: ادعُ زملاءك برابطك الخاص، وساعد في تنظيم الأنشطة والبطولات.</p></div>
   </div>
-  <div class="pn" style="left:110px;bottom:24px;color:var(--muted)"><b style="color:var(--gold-700)">08</b></div>
+  <div class="pn"><i></i><b>09</b></div>
 </section>
 
 <!-- ============================ 9. PRIVILEGES ============================ -->
@@ -598,11 +647,13 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
     <span class="eyebrow">المزايا</span>
     <h2 class="ar">عروض ومكافآت طوال فترة اشتراكك</h2>
     <p class="ar" style="font-size:21px;margin-top:8px">تمنحك عضويتنا إلى جانب الخدمات المقدمة من خلالها عروضاً ومكافآت وخصومات قيّمة لا محدودة طوال فترة الاشتراك لدى شركائنا التجاريين من خلال نقاط البيع الخاصة بهم، مع تحديث قائمة الشركاء أسبوعياً.</p>
+    <div class="hl"><svg class="icon"><use href="#i-check-circle"/></svg>أبرِز عضوية دسمان لدى شركائنا واستفد من المزايا طوال العام.</div>
   </div>
   <div class="abs en-blk en">
     <span class="eyebrow en">Privileges</span>
-    <h2 class="en" style="font-size:34px">Offers and rewards throughout your membership</h2>
-    <p class="en" style="font-size:16.5px;margin-top:6px">Valuable, unlimited offers, rewards and discounts with our partners at their points of sale, with the partner list updated weekly.</p>
+    <h2 class="en">Offers and rewards throughout your membership</h2>
+    <p class="en" style="margin-top:6px">Valuable, unlimited offers, rewards and discounts with our partners at their points of sale, with the partner list updated weekly.</p>
+    <div class="hl en"><svg class="icon"><use href="#i-check-circle"/></svg>Show your DASMAN membership at our partners and enjoy privileges all year round.</div>
   </div>
   <div class="abs grid">
     <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/hero-kafd.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-hotel"/></svg></span></div>
@@ -614,7 +665,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
     <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/services/activities.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-calendar"/></svg></span></div>
       <h3>الفعاليات</h3><div class="en-t">Events</div><p class="ar">خصومات ومكافآت على الفعاليات.</p><p class="en">Discounts and rewards on events.</p></div>
   </div>
-  <div class="abs cta"><span class="en">Show your DASMAN membership at our partners and enjoy privileges all year round.</span><span class="ar">أبرِز عضوية دسمان لدى شركائنا واستفد من المزايا طوال العام.</span></div>
+  <div class="pn light"><i></i><b>10</b></div>
 </section>
 
 <!-- ============================ 10. JOIN ============================ -->
@@ -652,7 +703,7 @@ p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
       <span><svg class="icon"><use href="#i-check-circle"/></svg>ورش عمل وأنشطة ترفيهية دورية</span>
     </div>
   </div>
-  <div class="pn" style="right:110px"><b>10</b></div>
+  <div class="pn"><i></i><b>11</b></div>
 </section>
 
 <!-- ============================ 11. BACK COVER ============================ -->
