@@ -6,3 +6,6 @@ dist/
 supabase/.temp/
 supabase/import/
 *.tsbuildinfo
+
+# Profile PNG previews (python3 profile/build.py --preview)
+profile/preview/

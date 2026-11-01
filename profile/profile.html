@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>DASMAN — Company Profile</title>
+<!--
+  DASMAN company profile (landscape, 16:9, bilingual AR/EN).
+  Edit the text here, then run:  python3 profile/build.py
+  Output: profile/dasman-profile.pdf
+-->
+<style>
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-Bold.ttf); font-weight: 700; }
+
+:root {
+  --olive-950: #1b1e12; --olive-900: #262a19; --olive-800: #333821; --olive-700: #41472a;
+  --olive-600: #545b37; --olive-500: #6e7848; --olive-100: #eceee3;
+  --sand-50: #fbf9f4; --sand-100: #f4efe4; --sand-200: #e9dfcb; --sand-300: #d8c7a6;
+  --gold-300: #dcc393; --gold-400: #c9a96e; --gold-500: #b8945a; --gold-700: #7c5e2e;
+  --ink: #1d2016; --text: #4b4e41; --muted: #6a6d60;
+  --najdi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 14L7 3l7 11zM14 14l7-11 7 11z' fill='%23c9a96e'/%3E%3C/svg%3E");
+}
+
+@page { size: 1920px 1080px; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #888; }
+body { font-family: "Cairo", sans-serif; color: var(--text); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.page {
+  width: 1920px; height: 1080px; position: relative; overflow: hidden;
+  break-after: page; page-break-after: always;
+  background: var(--sand-100) url(assets/facets-light.svg) center / 100% 100% no-repeat;
+}
+.page:last-child { break-after: auto; page-break-after: auto; }
+.page.dark { background: var(--olive-800) url(assets/facets-dark.svg) center / 100% 100% no-repeat; color: var(--sand-200); }
+@media screen { .page { margin: 0 auto 40px; box-shadow: 0 20px 60px rgba(0,0,0,.35); } body { padding: 40px 0; } }
+
+.ar { direction: rtl; text-align: right; font-feature-settings: normal; }
+.en { direction: ltr; text-align: left; }
+.icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+.eyebrow { display: inline-flex; align-items: center; gap: 14px; color: var(--gold-500); font-weight: 600; font-size: 22px; letter-spacing: .02em; }
+.en .eyebrow, .eyebrow.en { letter-spacing: .22em; text-transform: uppercase; font-size: 18px; }
+.eyebrow::before { content: ""; width: 42px; height: 2px; background: currentColor; }
+.dark .eyebrow { color: var(--gold-400); }
+h1, h2, h3 { color: var(--olive-700); font-weight: 700; line-height: 1.25; }
+.dark h1, .dark h2, .dark h3 { color: var(--sand-50); }
+h2 { font-size: 54px; margin-top: 10px; }
+h2.en { font-size: 48px; letter-spacing: -.01em; }
+.gold { color: var(--gold-500); }
+.nw { white-space: nowrap; font-weight: 700; }
+.dark .gold { color: var(--gold-400); }
+p { font-size: 22px; line-height: 1.8; }
+p.en { font-size: 20px; line-height: 1.75; }
+
+/* page footer */
+.pf {
+  position: absolute; left: 90px; right: 90px; bottom: 38px; height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 15px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+}
+.pf .num { font-weight: 700; color: var(--gold-500); letter-spacing: .08em; font-size: 18px; }
+.pf .mid { display: flex; align-items: center; gap: 18px; }
+.pf .mid::before, .pf .mid::after { content: ""; width: 60px; height: 1px; background: currentColor; opacity: .5; }
+.pf img { height: 34px; }
+.dark .pf { color: rgba(233,223,203,.6); }
+.dark .pf .num { color: var(--gold-400); }
+
+.najdi { height: 14px; background: var(--najdi) repeat-x left center / 28px 14px; opacity: .9; }
+
+/* ---------- 1. cover ---------- */
+.cover { background: var(--olive-900); }
+.cover .photo {
+  position: absolute; inset: 0 auto 0 0; width: 980px;
+  background: url(../public/imgs/hero-kafd.jpg) center 30% / cover;
+  clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+}
+.cover .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(27,30,18,.15), rgba(27,30,18,.55)); }
+.cover .band {
+  position: absolute; inset: 0 auto 0 0; width: 1010px; background: var(--gold-400);
+  clip-path: polygon(97% 0, 100% 0, 78.5% 100%, 75.5% 100%); opacity: .9;
+}
+.cover .facets { position: absolute; inset: 0; background: url(assets/facets-dark.svg) center / 100% 100%; }
+.cover .content { position: absolute; top: 0; bottom: 0; right: 120px; width: 820px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.cover .logo { width: 520px; }
+.cover .lux { margin-top: 26px; font-size: 22px; letter-spacing: .5em; color: var(--gold-300); text-transform: uppercase; }
+.cover .lux b { color: var(--gold-400); }
+.cover .rule { width: 520px; margin: 54px 0 46px; }
+.cover .tag-ar { font-size: 34px; font-weight: 600; color: var(--sand-50); line-height: 1.6; }
+.cover .tag-ar span { color: var(--gold-400); }
+.cover .tag-en { margin-top: 14px; font-size: 21px; color: var(--sand-300); line-height: 1.6; max-width: 680px; }
+.cover .kicker { position: absolute; bottom: 70px; right: 120px; width: 820px; display: flex; justify-content: center; gap: 28px; font-size: 18px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-300); }
+.cover .kicker i { width: 1px; background: rgba(220,195,147,.5); }
+.cover .kicker .ar { letter-spacing: 0; font-size: 20px; }
+
+/* ---------- shared bilingual blocks ---------- */
+.bi { display: grid; grid-template-columns: 1fr 1fr; column-gap: 80px; }
+.bi > .en { grid-column: 1; }
+.bi > .ar { grid-column: 2; }
+.divider-v { position: relative; }
+.divider-v::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 50%; width: 1px; background: linear-gradient(var(--gold-400), rgba(201,169,110,0)); }
+
+/* ---------- 2. about ---------- */
+.about .photo { position: absolute; inset: 0 auto 0 0; width: 640px; background: url(../public/imgs/about-diriyah.jpg) center / cover; }
+.about .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(38,42,25,.92), rgba(38,42,25,0) 60%); }
+.about .photo .cap { position: absolute; z-index: 1; left: 60px; right: 60px; bottom: 70px; color: var(--sand-50); }
+.about .photo .cap b { display: block; font-size: 150px; line-height: 1; color: var(--gold-400); }
+.about .photo .cap .ar { font-size: 30px; font-weight: 700; margin-top: 10px; text-align: left; direction: rtl; }
+.about .photo .cap .en { font-size: 18px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand-300); }
+.about .body { position: absolute; left: 740px; right: 100px; top: 100px; }
+.about .bi + .bi { margin-top: 44px; }
+.about h3 { font-size: 30px; margin-bottom: 8px; color: var(--olive-700); }
+.about .mission { padding: 30px 36px; background: rgba(255,255,255,.55); border-inline-start: 4px solid var(--gold-400); border-radius: 4px; }
+.about .mission.en { border-inline-start: 4px solid var(--gold-400); }
+.pillars { margin-top: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.pillar { display: flex; align-items: center; gap: 22px; padding: 24px 28px; background: var(--olive-700); color: var(--sand-100); border-radius: 18px; }
+.pillar .icon { font-size: 46px; color: var(--gold-400); }
+.pillar .ar { font-size: 26px; font-weight: 700; display: block; text-align: left; }
+.pillar .en { font-size: 16px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-300); display: block; }
+
+/* ---------- 3. vision ---------- */
+.vision .head { position: absolute; top: 110px; left: 100px; right: 100px; }
+.vision .head .ar, .vision .head .en { display: flex; flex-direction: column; }
+.vision .head .ar { align-items: flex-end; }
+.vision .grid { position: absolute; left: 100px; right: 100px; top: 430px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+.vcard { position: relative; padding: 46px 34px 36px; border: 1px solid rgba(201,169,110,.35); border-radius: 22px; background: rgba(27,30,18,.28); height: 470px; display: flex; flex-direction: column; }
+.vcard .n { font-size: 64px; font-weight: 700; color: var(--gold-400); line-height: 1; }
+.vcard .ar { margin-top: 26px; font-size: 24px; line-height: 1.75; color: var(--sand-50); font-weight: 600; }
+.vcard hr { border: 0; height: 1px; background: rgba(201,169,110,.35); margin: 22px 0; }
+.vcard .en { font-size: 18px; line-height: 1.7; color: var(--sand-300); }
+
+/* ---------- 4. services overview ---------- */
+.overview .head { position: absolute; top: 90px; left: 100px; right: 100px; }
+.overview .head .ar { display: flex; flex-direction: column; align-items: flex-end; }
+.overview .grid { position: absolute; left: 100px; right: 100px; top: 360px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+.tile { background: rgba(255,255,255,.7); border-radius: 22px; padding: 28px 30px; height: 300px; display: flex; flex-direction: column; box-shadow: 0 24px 50px -36px rgba(27,30,18,.6); }
+.tile .top { display: flex; align-items: center; justify-content: space-between; }
+.tile .ico { width: 70px; height: 70px; border-radius: 18px; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 36px; }
+.tile .n { font-size: 36px; font-weight: 700; color: var(--sand-300); }
+.tile h3.ar { font-size: 28px; margin-top: 18px; }
+.tile .en-t { font-size: 15px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-500); font-weight: 600; }
+.tile p.ar { font-size: 17px; line-height: 1.65; margin-top: 10px; color: var(--muted); }
+.tile.feature { background: var(--olive-700); color: var(--sand-200); justify-content: center; align-items: center; text-align: center; }
+.tile.feature b { font-size: 110px; line-height: 1; color: var(--gold-400); }
+.tile.feature .ar { text-align: center; font-size: 28px; font-weight: 700; color: var(--sand-50); }
+.tile.feature .en { text-align: center; font-size: 16px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); margin-top: 6px; }
+
+/* ---------- 5-11. service pages ---------- */
+.svc .media { position: absolute; top: 0; bottom: 0; left: 0; width: 720px; background-size: cover; background-position: center; }
+.svc .media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(27,30,18,0) 40%, rgba(27,30,18,.82)); }
+.svc .media .n { position: absolute; z-index: 1; left: 64px; bottom: 60px; font-size: 180px; font-weight: 700; line-height: .8; color: transparent; -webkit-text-stroke: 2px var(--gold-400); }
+.svc .media .ico { position: absolute; z-index: 1; right: 64px; bottom: 70px; width: 110px; height: 110px; border-radius: 28px; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 56px; box-shadow: 0 20px 40px -20px #000; }
+.svc .media .edge { position: absolute; top: 0; bottom: 0; right: 0; width: 10px; background: var(--gold-400); z-index: 1; }
+.svc .body { position: absolute; left: 820px; right: 100px; top: 80px; bottom: 110px; display: flex; flex-direction: column; justify-content: center; }
+.svc.flip .media { left: auto; right: 0; }
+.svc.flip .media .edge { right: auto; left: 0; }
+.svc.flip .body { left: 100px; right: 820px; }
+.svc .bi.headrow .ar { display: flex; flex-direction: column; align-items: flex-end; }
+.svc .intro { margin-top: 26px; }
+.svc .intro p.ar { font-size: 21px; }
+.svc .intro p.en { font-size: 19px; }
+
+.blist { list-style: none; margin-top: 34px; border-top: 1px solid rgba(65,71,42,.18); }
+.blist li { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(65,71,42,.18); }
+.blist li .mark { justify-self: center; width: 34px; height: 34px; border-radius: 50%; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 18px; }
+.blist li .ar { font-size: 22px; font-weight: 600; color: var(--olive-700); }
+.blist li .en { font-size: 19px; color: var(--text); }
+.blist li small { display: block; font-size: 16px; font-weight: 400; line-height: 1.55; color: var(--muted); margin-top: 2px; }
+.blist li .ar small { font-size: 17px; }
+.blist.tight li { padding: 12px 0; }
+.svc .note { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 80px; font-size: 18px; color: var(--gold-700); font-weight: 600; }
+
+/* ---------- 12. privileges ---------- */
+.priv .head { position: absolute; top: 96px; left: 100px; right: 100px; }
+.priv .head .ar { display: flex; flex-direction: column; align-items: flex-end; }
+.priv .intro { margin-top: 26px; }
+.priv .intro p.ar { color: var(--sand-100); font-size: 21px; }
+.priv .intro p.en { color: var(--sand-300); font-size: 19px; }
+.priv .grid { position: absolute; left: 100px; right: 100px; top: 470px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.pcard { border-radius: 22px; overflow: hidden; background: rgba(27,30,18,.35); border: 1px solid rgba(201,169,110,.3); }
+.pcard .ph { height: 130px; background-size: cover; background-position: center; position: relative; }
+.pcard .ph .ico { position: absolute; left: 26px; bottom: -32px; width: 68px; height: 68px; border-radius: 18px; background: var(--gold-400); color: var(--olive-900); display: grid; place-items: center; font-size: 34px; }
+.pcard .tx { padding: 46px 26px 26px; }
+.pcard .row { display: flex; justify-content: space-between; align-items: baseline; }
+.pcard .row .en { font-size: 15px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-300); font-weight: 600; }
+.pcard .row .ar { font-size: 27px; font-weight: 700; color: var(--sand-50); }
+.pcard p.ar { font-size: 17px; line-height: 1.6; color: var(--sand-200); margin-top: 6px; }
+.pcard p.en { font-size: 15px; line-height: 1.55; color: var(--sand-300); margin-top: 6px; }
+.priv .cta { position: absolute; left: 100px; right: 100px; bottom: 112px; display: flex; justify-content: space-between; color: var(--gold-300); font-size: 19px; }
+.priv .cta .ar { font-size: 21px; font-weight: 600; }
+
+/* ---------- 13. join ---------- */
+.join .left { position: absolute; left: 100px; top: 70px; width: 1000px; }
+.join h2 { font-size: 46px; }
+.join h2.en { font-size: 40px; }
+.join .bi.headrow .ar { display: flex; flex-direction: column; align-items: flex-end; }
+.steps { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; }
+.step { display: grid; grid-template-columns: 1fr 84px 1fr; align-items: center; padding: 14px 30px; background: rgba(255,255,255,.65); border-radius: 18px; }
+.step .k { justify-self: center; width: 62px; height: 62px; border-radius: 50%; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 28px; font-weight: 700; }
+.step .ar { font-size: 25px; font-weight: 700; color: var(--olive-700); }
+.step .en { font-size: 20px; font-weight: 600; color: var(--text); }
+.step small { display: block; font-size: 16px; font-weight: 400; color: var(--muted); }
+.amb { margin-top: 22px; padding: 24px 34px; border-radius: 20px; background: var(--olive-700); color: var(--sand-200); display: grid; grid-template-columns: 1fr 1fr; column-gap: 50px; }
+.amb .tag { font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-400); font-weight: 600; }
+.amb .ar .tag { letter-spacing: 0; font-size: 18px; }
+.amb h3 { font-size: 26px; color: var(--sand-50); margin: 4px 0 6px; }
+.amb p { font-size: 16px; line-height: 1.65; color: var(--sand-300); }
+.amb .ar p { font-size: 17px; }
+
+.join .right { position: absolute; right: 0; top: 0; bottom: 0; width: 720px; background: var(--olive-800) url(assets/facets-dark.svg) center / cover; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.join .right .edge { position: absolute; top: 0; bottom: 0; left: 0; width: 10px; background: var(--gold-400); }
+.card {
+  width: 520px; height: 320px; border-radius: 26px; position: relative; overflow: hidden; padding: 34px 38px;
+  background: linear-gradient(135deg, #545b37 0%, #333821 55%, #1b1e12 100%);
+  box-shadow: 0 50px 80px -40px #000, inset 0 0 0 1px rgba(220,195,147,.35);
+  transform: rotate(-6deg); color: var(--sand-100);
+}
+.card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.12) 50%, rgba(255,255,255,0) 60%); }
+.card .najdi { position: absolute; left: 0; right: 0; bottom: 26px; opacity: .55; }
+.card img { height: 74px; }
+.card .lbl { position: absolute; left: 38px; bottom: 64px; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-300); }
+.card .no { position: absolute; left: 38px; bottom: 86px; font-size: 34px; font-weight: 700; letter-spacing: .12em; color: var(--sand-50); }
+.card .qr { position: absolute; right: 36px; top: 34px; width: 70px; height: 70px; padding: 6px; background: var(--sand-50); border-radius: 10px; }
+.card .qr svg { width: 100%; height: 100%; display: block; }
+.card .tier { position: absolute; right: 38px; bottom: 64px; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-400); }
+.join .right .cap { margin-top: 90px; text-align: center; }
+.join .right .cap .ar { text-align: center; font-size: 28px; font-weight: 700; color: var(--sand-50); }
+.join .right .cap .en { text-align: center; font-size: 17px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-300); margin-top: 6px; }
+.join .right .cap p.sub { margin-top: 14px; font-size: 17px; line-height: 1.6; color: var(--sand-300); max-width: 480px; }
+
+/* ---------- 14. back cover ---------- */
+.back { background: var(--olive-900); }
+.back .facets { position: absolute; inset: 0; background: url(assets/facets-dark.svg) center / 100% 100%; }
+.back .center { position: absolute; left: 0; right: 0; top: 120px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.back .logo { width: 420px; }
+.back .lux { margin-top: 22px; font-size: 19px; letter-spacing: .5em; color: var(--gold-300); text-transform: uppercase; }
+.back .tag { margin-top: 30px; font-size: 26px; color: var(--sand-200); font-weight: 600; }
+.back .contacts { position: absolute; left: 160px; right: 160px; bottom: 150px; display: grid; grid-template-columns: 1fr 1fr 220px 1fr 1fr; gap: 30px; align-items: center; }
+.back .c { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--sand-100); font-size: 21px; text-align: center; }
+.back .c .icon { font-size: 40px; color: var(--gold-400); }
+.back .c span { font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-300); }
+.back .qrbox { justify-self: center; text-align: center; }
+.back .qrbox .q { width: 190px; height: 190px; padding: 14px; background: var(--sand-50); border-radius: 18px; }
+.back .qrbox .q svg { width: 100%; height: 100%; display: block; }
+.back .qrbox small { display: block; margin-top: 12px; font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); }
+.back .bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; display: flex; flex-direction: column; justify-content: center; }
+.back .bottom .najdi { opacity: .5; }
+.back .copy { position: absolute; left: 0; right: 0; bottom: 84px; text-align: center; font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: rgba(233,223,203,.55); }
+</style>
+</head>
+<body>
+<!--ICONS-->
+
+<!-- ===================== 1. COVER ===================== -->
+<section class="page cover">
+  <div class="facets"></div>
+  <div class="photo"></div>
+  <div class="band"></div>
+  <div class="content">
+    <img class="logo" src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">The <b>Luxury</b> Club</div>
+    <div class="najdi rule"></div>
+    <div class="tag-ar ar" style="text-align:center">دسمان… <span>مظلتك الأولى</span><br>لتجارب ترفيهية مميزة، وخدمات متكاملة<br>ومجتمع من الأعضاء</div>
+    <div class="tag-en">DASMAN… your first choice for exceptional entertainment experiences, integrated services and a community of members.</div>
+  </div>
+  <div class="kicker"><span>Company Profile</span><i></i><span class="ar">الملف التعريفي</span><i></i><span>2026</span></div>
+</section>
+
+<!-- ===================== 2. ABOUT ===================== -->
+<section class="page about">
+  <div class="photo">
+    <div class="cap">
+      <b>7</b>
+      <div class="ar">خدمات في عضوية واحدة</div>
+      <div class="en">Services · One membership</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="bi divider-v">
+      <div class="en"><span class="eyebrow">About us</span><h2 class="en">A complete experience in one platform</h2></div>
+      <div class="ar"><span class="eyebrow">نبذة عنا</span><h2>تجربة متكاملة في منصة واحدة</h2></div>
+    </div>
+    <div class="bi" style="margin-top:28px">
+      <p class="en">DASMAN is an exclusive membership for Kuwaiti students studying in Riyadh, Saudi Arabia, within <b class="gold">The Luxury Club</b>, designed to give its members a complete experience that brings services, privileges and exclusive offers together in one platform.</p>
+      <p class="ar">دسمان هي عضوية حصرية للطلبة الكويتيين الدارسين في الرياض - المملكة العربية السعودية، ضمن <bdi class="gold nw" dir="ltr">The Luxury Club</bdi>، صُممت لتمنح أعضائها تجربة متكاملة تجمع بين الخدمات والمزايا والعروض الحصرية في منصة واحدة.</p>
+    </div>
+    <div class="bi">
+      <div class="mission en"><h3>Our mission</h3><p class="en">Providing high-quality solutions to deliver the best offers and services to our members.</p></div>
+      <div class="mission ar"><h3>رسالتنا</h3><p class="ar">توفير حلول وجودة عالية لتقديم أفضل العروض والخدمات للمشتركين.</p></div>
+    </div>
+    <div class="pillars">
+      <div class="pillar"><svg class="icon"><use href="#i-clock"/></svg><div><b class="ar">توفير الوقت</b><span class="en">Save time</span></div></div>
+      <div class="pillar"><svg class="icon"><use href="#i-bolt"/></svg><div><b class="ar">توفير الجهد</b><span class="en">Save effort</span></div></div>
+      <div class="pillar"><svg class="icon"><use href="#i-wallet"/></svg><div><b class="ar">توفير المال</b><span class="en">Save money</span></div></div>
+    </div>
+  </div>
+  <footer class="pf"><span></span><span class="mid">DASMAN · The Luxury Club</span><span class="num">02</span></footer>
+</section>
+
+<!-- ===================== 3. VISION ===================== -->
+<section class="page dark vision">
+  <div class="head bi">
+    <div class="en"><span class="eyebrow">Our vision</span><h2 class="en">Aiming to be the <span class="gold">first choice</span></h2></div>
+    <div class="ar"><span class="eyebrow">رؤيتنا</span><h2>نطمح أن نكون <span class="gold">الاختيار الأول</span></h2></div>
+  </div>
+  <div class="grid">
+    <div class="vcard"><span class="n">01</span>
+      <div class="ar">العمل على زيادة الخدمات من خلال عقد اتفاقيات وشراكات مع مقدمي خدمة مميزين.</div><hr>
+      <div class="en">Growing our services by building agreements and partnerships with distinguished service providers.</div></div>
+    <div class="vcard"><span class="n">02</span>
+      <div class="ar">الوصول للريادة والقيادة وأن نصبح الاختيار الأول في المملكة العربية السعودية.</div><hr>
+      <div class="en">Reaching leadership and becoming the first choice in Saudi Arabia.</div></div>
+    <div class="vcard"><span class="n">03</span>
+      <div class="ar">العمل على جذب أفضل الشركات العالمية كشركاء من أجل تقديم أفضل العروض والمكافآت للمشتركين.</div><hr>
+      <div class="en">Attracting the best international companies as partners to offer members the best deals and rewards.</div></div>
+    <div class="vcard"><span class="n">04</span>
+      <div class="ar">العمل على توظيف أفضل الموظفين ذوي الخبرات العالية لتقديم أفضل الخدمات عالية الجودة للمشتركين.</div><hr>
+      <div class="en">Hiring highly skilled, experienced staff to provide members with the highest-quality services.</div></div>
+  </div>
+  <footer class="pf"><img src="../public/imgs/dasman-logo-light.png" alt=""><span class="mid">Company Profile</span><span class="num">03</span></footer>
+</section>
+
+<!-- ===================== 4. SERVICES OVERVIEW ===================== -->
+<section class="page overview">
+  <div class="head bi">
+    <div class="en"><span class="eyebrow">Our services</span><h2 class="en">DASMAN Services</h2><p class="en" style="margin-top:8px">An integrated set of services and exclusive privileges in one membership.</p></div>
+    <div class="ar"><span class="eyebrow">خدماتنا</span><h2>خدمات دسمان</h2><p class="ar" style="margin-top:8px">مجموعة متكاملة من الخدمات والمزايا الحصرية في عضوية واحدة.</p></div>
+  </div>
+  <div class="grid">
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-legal"/></svg></span><span class="n">01</span></div>
+      <h3 class="ar">خدمات قانونية</h3><span class="en-t">Legal Services</span>
+      <p class="ar">محامون وفريق قانوني لتقديم الاستشارات وصياغة العقود ومتابعة القضايا.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-logistics"/></svg></span><span class="n">02</span></div>
+      <h3 class="ar">خدمات لوجستية</h3><span class="en-t">Logistics Services</span>
+      <p class="ar">خدمات المطار وتوصيل الأغراض، والشحن ونقل وتسليم الطلبات والمقتنيات.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-gift"/></svg></span><span class="n">03</span></div>
+      <h3 class="ar">عروض ومكافآت</h3><span class="en-t">Offers &amp; Rewards</span>
+      <p class="ar">خصومات ومكافآت حصرية لدى المتاجر والفنادق والمطاعم والفعاليات المشاركة.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-concierge"/></svg></span><span class="n">04</span></div>
+      <h3 class="ar">كونسيرج</h3><span class="en-t">Concierge</span>
+      <p class="ar">حجوزات المطاعم والفعاليات، ومساعد شخصي لتلبية طلباتك وإنجاز مهامك اليومية.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-flask"/></svg></span><span class="n">05</span></div>
+      <h3 class="ar">ورش عمل علمية</h3><span class="en-t">Scientific Workshops</span>
+      <p class="ar">ورش عمل دورية في التصوير الطبي والبحث العلمي لتطوير مهاراتك الأكاديمية والعملية.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-car"/></svg></span><span class="n">06</span></div>
+      <h3 class="ar">مساعدة على الطريق</h3><span class="en-t">Roadside Assistance</span>
+      <p class="ar">سطحة وتغيير الإطارات وشحن البطارية وتزويد الوقود عند تعطل مركبتك.</p></div>
+    <div class="tile"><div class="top"><span class="ico"><svg class="icon"><use href="#i-trophy"/></svg></span><span class="n">07</span></div>
+      <h3 class="ar">أنشطة ترفيهية دورية</h3><span class="en-t">Recreational Activities</span>
+      <p class="ar">بطولات بادل وكرة قدم وأنشطة ترفيهية دورية تجمع أعضاء دسمان.</p></div>
+    <div class="tile feature"><b>7</b><div class="ar">خدمات في عضوية واحدة</div><div class="en">Services in one membership</div></div>
+  </div>
+  <footer class="pf"><img src="../public/imgs/dasman-logo.png" alt=""><span class="mid">Company Profile</span><span class="num">04</span></footer>
+</section>
+
+<!-- ===================== 5. LEGAL ===================== -->
+<section class="page svc">
+  <div class="media" style="background-image:url(../public/imgs/pic1.jpeg)"><span class="n">01</span><span class="ico"><svg class="icon"><use href="#i-legal"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 01</span><h2 class="en">Legal Services</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 01</span><h2>خدمات قانونية</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">DASMAN provides a team of lawyers and legal advisors whose purpose is to address members' legal needs and follow up on their private affairs.</p>
+      <p class="ar">توفر عضوية دسمان فريقاً يضم نخبة من المحامين والمستشارين القانونيين هدفهم تلبية احتياجات الأعضاء القانونية ومتابعة شؤونهم الخاصة.</p>
+    </div>
+    <ul class="blist">
+      <li><span class="en">Legal consultations</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">تقديم الاستشارات القانونية</span></li>
+      <li><span class="en">Writing and amending contracts</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">كتابة العقود وتعديلها</span></li>
+      <li><span class="en">Following up on cases and drafting lawsuits</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">متابعة القضايا وصياغة صحف الدعوى</span></li>
+      <li><span class="en">Legal guidance</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">التوجيه والإرشاد القانوني</span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="left:820px"><span></span><span class="mid">DASMAN Services</span><span class="num">05</span></footer>
+</section>
+
+<!-- ===================== 6. LOGISTICS ===================== -->
+<section class="page svc flip">
+  <div class="media" style="background-image:url(../public/imgs/services/logistics.jpg)"><span class="n">02</span><span class="ico"><svg class="icon"><use href="#i-logistics"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 02</span><h2 class="en">Logistics Services</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 02</span><h2>خدمات لوجستية</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Shipping, delivery, and pickup and drop-off of orders and belongings, so your things get where they need to go without the hassle.</p>
+      <p class="ar">خدمات الشحن والتوصيل ونقل وتسليم الطلبات والمقتنيات، لتصل أغراضك إلى حيث تريد دون عناء.</p>
+    </div>
+    <ul class="blist">
+      <li><span class="en">Airport services</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">خدمات المطار</span></li>
+      <li><span class="en">Item and order delivery</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">توصيل الأغراض والطلبات</span></li>
+      <li><span class="en">Shipping and delivery of belongings</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">الشحن ونقل وتسليم المقتنيات</span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="right:820px"><span class="num">06</span><span class="mid">DASMAN Services</span><span></span></footer>
+</section>
+
+<!-- ===================== 7. OFFERS ===================== -->
+<section class="page svc">
+  <div class="media" style="background-image:url(../public/imgs/services/offers.jpg)"><span class="n">03</span><span class="ico"><svg class="icon"><use href="#i-gift"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 03</span><h2 class="en">Offers &amp; Rewards</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 03</span><h2>عروض ومكافآت</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Your membership gives you valuable offers, rewards and discounts throughout your subscription with our partners, with the partner list updated regularly to cover members' needs and interests.</p>
+      <p class="ar">تمنحك عضويتك عروضاً ومكافآت وخصومات قيّمة طوال فترة الاشتراك لدى شركائنا، مع تحديث مستمر لقائمة الشركاء لتغطي احتياجات الأعضاء واهتماماتهم.</p>
+    </div>
+    <ul class="blist">
+      <li><span class="en">Special discounts and offers at stores and brands</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">خصومات وعروض خاصة لدى المتاجر والعلامات التجارية</span></li>
+      <li><span class="en">Exclusive offers and experiences at hotels and restaurants</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">عروض وتجارب حصرية لدى الفنادق والمطاعم</span></li>
+      <li><span class="en">Discounts and rewards on events</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">خصومات ومكافآت على الفعاليات</span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="left:820px"><span></span><span class="mid">DASMAN Services</span><span class="num">07</span></footer>
+</section>
+
+<!-- ===================== 8. CONCIERGE ===================== -->
+<section class="page svc flip">
+  <div class="media" style="background-image:url(../public/imgs/pic2.jpeg)"><span class="n">04</span><span class="ico"><svg class="icon"><use href="#i-concierge"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 04</span><h2 class="en">Concierge</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 04</span><h2>كونسيرج</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">A concierge team that takes care of members' requests and needs and helps them with their daily tasks.</p>
+      <p class="ar">فريق كونسيرج يلبي طلبات الأعضاء واحتياجاتهم ويساعدهم في إنجاز مهامهم اليومية.</p>
+    </div>
+    <ul class="blist">
+      <li><span class="en">Restaurant bookings</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">حجوزات المطاعم</span></li>
+      <li><span class="en">Event bookings</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">حجوزات الفعاليات</span></li>
+      <li><span class="en">A personal assistant for daily tasks</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">مساعد شخصي لإنجاز المهام اليومية</span></li>
+      <li><span class="en">Guidance toward the right options and services</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">التوجيه والإرشاد إلى الخيارات والخدمات المناسبة</span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="right:820px"><span class="num">08</span><span class="mid">DASMAN Services</span><span></span></footer>
+</section>
+
+<!-- ===================== 9. WORKSHOPS ===================== -->
+<section class="page svc">
+  <div class="media" style="background-image:url(../public/imgs/services/workshops.jpg)"><span class="n">05</span><span class="ico"><svg class="icon"><use href="#i-flask"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 05</span><h2 class="en">Scientific Workshops</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 05</span><h2>ورش عمل علمية</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Regular workshops led by specialists to build members' academic and practical skills.</p>
+      <p class="ar">ورش عمل دورية يقدمها مختصون لتطوير مهارات الأعضاء الأكاديمية والعملية.</p>
+    </div>
+    <ul class="blist">
+      <li><span class="en">Medical photography workshops</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">ورش التصوير الطبي</span></li>
+      <li><span class="en">Scientific research workshops</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">ورش البحث العلمي</span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="left:820px"><span></span><span class="mid">DASMAN Services</span><span class="num">09</span></footer>
+</section>
+
+<!-- ===================== 10. ROADSIDE ===================== -->
+<section class="page svc flip">
+  <div class="media" style="background-image:url(../public/imgs/pic.jpeg)"><span class="n">06</span><span class="ico"><svg class="icon"><use href="#i-car"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 06</span><h2 class="en">Roadside Assistance</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 06</span><h2>مساعدة على الطريق</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Help when your vehicle breaks down or you face an emergency on the road.</p>
+      <p class="ar">خدمات المساعدة في حالات تعطل المركبات والحالات الطارئة على الطريق.</p>
+    </div>
+    <ul class="blist tight">
+      <li><span class="en">Towing<small>Members can choose the type of tow truck needed to suit any vehicle.</small></span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">سحب السيارة<small>يمكن للمشتركين اختيار نوع السطحة المطلوبة لتناسب جميع أنواع المركبات.</small></span></li>
+      <li><span class="en">Tire change<small>Fixing tire problems on the spot or taking the tires to a specialized center.</small></span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">تغيير الإطارات<small>معالجة جميع أعطال الإطارات عبر الإصلاح في موقع الطلب أو نقلها إلى مركز مختص.</small></span></li>
+      <li><span class="en">Battery charging<small>We charge the battery or replace it with a new one.</small></span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">شحن البطارية<small>نقوم بشحن البطارية أو استبدالها ببطارية جديدة.</small></span></li>
+      <li><span class="en">Fuel delivery<small>Delivery of gasoline or diesel inside or outside the city.</small></span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">تزويد الوقود<small>توصيل البنزين أو الديزل داخل المدينة أو خارجها.</small></span></li>
+    </ul>
+  </div>
+  <footer class="pf" style="right:820px"><span class="num">10</span><span class="mid">DASMAN Services</span><span></span></footer>
+</section>
+
+<!-- ===================== 11. ACTIVITIES ===================== -->
+<section class="page svc">
+  <div class="media" style="background-image:url(../public/imgs/services/activities.jpg)"><span class="n">07</span><span class="ico"><svg class="icon"><use href="#i-trophy"/></svg></span><span class="edge"></span></div>
+  <div class="body">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Service 07</span><h2 class="en">Recreational Activities</h2></div>
+      <div class="ar"><span class="eyebrow">الخدمة 07</span><h2>أنشطة ترفيهية دورية</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Fun activities and events held regularly to bring DASMAN members together.</p>
+      <p class="ar">أنشطة وفعاليات ترفيهية تُقام بشكل دوري لتجمع أعضاء دسمان.</p>
+    </div>
+    <ul class="blist tight">
+      <li><span class="en">Padel tournaments</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">بطولات البادل</span></li>
+      <li><span class="en">Football tournaments</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">بطولات كرة القدم</span></li>
+      <li><span class="en">Exhibitions and conferences</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">معارض ومؤتمرات</span></li>
+      <li><span class="en">Scientific competitions</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">مسابقات علمية</span></li>
+      <li><span class="en">Ramadan ghabga gatherings</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">غبقات رمضانية</span></li>
+      <li><span class="en">National celebrations</span><span class="mark"><svg class="icon"><use href="#i-check"/></svg></span><span class="ar">احتفالات وطنية</span></li>
+    </ul>
+    <div class="note"><span class="en">And many other sports activities of all kinds.</span><span class="ar">وغيرها العديد من الأنشطة الرياضية المتعددة.</span></div>
+  </div>
+  <footer class="pf" style="left:820px"><span></span><span class="mid">DASMAN Services</span><span class="num">11</span></footer>
+</section>
+
+<!-- ===================== 12. PRIVILEGES ===================== -->
+<section class="page dark priv">
+  <div class="head">
+    <div class="bi">
+      <div class="en"><span class="eyebrow">Privileges</span><h2 class="en">Offers and rewards throughout your membership</h2></div>
+      <div class="ar"><span class="eyebrow">المزايا</span><h2>عروض ومكافآت طوال فترة اشتراكك</h2></div>
+    </div>
+    <div class="bi intro">
+      <p class="en">Alongside its services, your membership gives you valuable, unlimited offers, rewards and discounts throughout your subscription with our partners at their points of sale, with the partner list updated weekly to cover all members' needs and interests.</p>
+      <p class="ar">تمنحك عضويتنا إلى جانب الخدمات المقدمة من خلالها عروضاً ومكافآت وخصومات قيّمة لا محدودة طوال فترة الاشتراك لدى شركائنا التجاريين من خلال نقاط البيع الخاصة بهم، مع تحديث قائمة الشركاء أسبوعياً لتغطي جميع احتياجات المشتركين واهتماماتهم.</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="pcard"><div class="ph" style="background-image:url(../public/imgs/hero-kafd.jpg)"><span class="ico"><svg class="icon"><use href="#i-hotel"/></svg></span></div>
+      <div class="tx"><div class="row"><span class="en">Hotels</span><span class="ar">الفنادق</span></div>
+        <p class="ar">عروض وخصومات وتجارب حصرية لدى الفنادق المشاركة.</p><p class="en">Exclusive offers, discounts and experiences at participating hotels.</p></div></div>
+    <div class="pcard"><div class="ph" style="background-image:url(../public/imgs/about-diriyah.jpg)"><span class="ico"><svg class="icon"><use href="#i-dining"/></svg></span></div>
+      <div class="tx"><div class="row"><span class="en">Restaurants</span><span class="ar">المطاعم</span></div>
+        <p class="ar">عروض وتجارب خاصة لدى المطاعم والجهات المشاركة.</p><p class="en">Special offers and experiences at participating restaurants and venues.</p></div></div>
+    <div class="pcard"><div class="ph" style="background-image:url(../public/imgs/services/offers.jpg)"><span class="ico"><svg class="icon"><use href="#i-bag"/></svg></span></div>
+      <div class="tx"><div class="row"><span class="en">Stores</span><span class="ar">المتاجر</span></div>
+        <p class="ar">عروض وخصومات خاصة لدى مجموعة من المتاجر والعلامات التجارية.</p><p class="en">Special offers and discounts at a range of stores and brands.</p></div></div>
+    <div class="pcard"><div class="ph" style="background-image:url(../public/imgs/services/activities.jpg)"><span class="ico"><svg class="icon"><use href="#i-calendar"/></svg></span></div>
+      <div class="tx"><div class="row"><span class="en">Events</span><span class="ar">الفعاليات</span></div>
+        <p class="ar">خصومات ومكافآت على الفعاليات.</p><p class="en">Discounts and rewards on events.</p></div></div>
+  </div>
+  <div class="cta"><span>Show your DASMAN membership at our partners and enjoy privileges all year round.</span><span class="ar">أبرِز عضوية دسمان لدى شركائنا واستفد من المزايا طوال العام.</span></div>
+  <footer class="pf"><img src="../public/imgs/dasman-logo-light.png" alt=""><span class="mid">Company Profile</span><span class="num">12</span></footer>
+</section>
+
+<!-- ===================== 13. JOIN ===================== -->
+<section class="page join">
+  <div class="left">
+    <div class="bi headrow">
+      <div class="en"><span class="eyebrow">Join us</span><h2 class="en">Create your membership</h2></div>
+      <div class="ar"><span class="eyebrow">انضم إلينا</span><h2>أنشئ عضويتك الآن</h2></div>
+    </div>
+    <div class="bi intro" style="margin-top:18px">
+      <p class="en">Sign up in one minute and get your digital card and coupons right away.</p>
+      <p class="ar">سجّل في دقيقة واحدة، واحصل على بطاقتك الرقمية وكوبوناتك فورًا.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="en">Create your account<small>Register on the DASMAN website</small></span><span class="k">1</span><span class="ar">أنشئ حسابك<small>سجّل بياناتك عبر موقع دسمان</small></span></div>
+      <div class="step"><span class="en">Confirm your email<small>Activate your membership from your inbox</small></span><span class="k">2</span><span class="ar">فعّل بريدك<small>فعّل عضويتك من رسالة البريد الإلكتروني</small></span></div>
+      <div class="step"><span class="en">Use your card<small>Show it at partners and enjoy the privileges</small></span><span class="k">3</span><span class="ar">استخدم بطاقتك<small>أبرزها لدى الشركاء واستفد من المزايا</small></span></div>
+    </div>
+    <div class="amb">
+      <div class="en"><span class="tag">Ambassador programme</span><h3>Become a DASMAN ambassador</h3><p>Represent DASMAN at your university: invite classmates with your own link and help run activities and tournaments.</p></div>
+      <div class="ar"><span class="tag">برنامج السفراء</span><h3>كن سفيرًا لدسمان</h3><p>مثّل دسمان في جامعتك: ادعُ زملاءك برابطك الخاص، وساعد في تنظيم الأنشطة والبطولات.</p></div>
+    </div>
+  </div>
+  <div class="right">
+    <span class="edge"></span>
+    <div class="card">
+      <img src="../public/imgs/dasman-logo-light.png" alt="">
+      <div class="qr"><!--QR--></div>
+      <div class="no">DSM-0001</div>
+      <div class="lbl">Dasman Member</div>
+      <div class="tier">The Luxury Club</div>
+      <div class="najdi"></div>
+    </div>
+    <div class="cap">
+      <div class="ar">بطاقتك الرقمية</div>
+      <div class="en">Your digital membership card</div>
+      <p class="sub ar" style="text-align:center">7 خدمات في عضوية واحدة · عروض وخصومات حصرية لدى شركائنا · ورش عمل وأنشطة ترفيهية دورية</p>
+    </div>
+  </div>
+  <footer class="pf" style="right:820px"><img src="../public/imgs/dasman-logo.png" alt=""><span class="mid">Company Profile</span><span class="num">13</span></footer>
+</section>
+
+<!-- ===================== 14. BACK COVER ===================== -->
+<section class="page back">
+  <div class="facets"></div>
+  <div class="center">
+    <img class="logo" src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">By The Luxury Club</div>
+    <div class="tag ar" style="text-align:center">انضم إلى أعضاء دسمان · Join DASMAN members</div>
+  </div>
+  <div class="contacts">
+    <div class="c"><svg class="icon"><use href="#i-phone"/></svg><span>Phone · هاتف</span><div dir="ltr">+966 55 810 3228</div></div>
+    <div class="c"><svg class="icon"><use href="#i-mail"/></svg><span>Email · بريد</span><div>Dasman_sa@hotmail.com</div></div>
+    <div class="qrbox"><div class="q"><!--QR--></div><small>Scan to join</small></div>
+    <div class="c"><svg class="icon"><use href="#i-instagram"/></svg><span>Instagram</span><div>@dasman_sa</div></div>
+    <div class="c"><svg class="icon"><use href="#i-globe"/></svg><span>Website · الموقع</span><div>dasman.the-luxury-club.com</div></div>
+  </div>
+  <div class="copy">© 2026 DASMAN · The Luxury Club</div>
+  <div class="bottom"><div class="najdi"></div></div>
+</section>
+
+</body>
+</html>
