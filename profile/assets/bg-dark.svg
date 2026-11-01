@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a5130"/><stop offset=".5" stop-color="#363b23"/><stop offset="1" stop-color="#23271a"/></linearGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".10"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="k" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c9a96e" stop-opacity=".16"/><stop offset="1" stop-color="#c9a96e" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <polygon points="0,0 1000,0 0,720" fill="url(#w)"/>
+  <polygon points="1000,0 1500,0 1200,620" fill="url(#k)"/>
+  <polygon points="1500,0 1920,0 1920,520" fill="url(#w)"/>
+  <polygon points="1200,620 1920,520 1920,1080 1340,1080" fill="url(#k)"/>
+  <polygon points="0,720 1000,0 1200,620 660,1080 0,1080" fill="#fff" fill-opacity=".025"/>
+  <polygon points="660,1080 1200,620 1340,1080" fill="url(#g)"/>
+</svg>
