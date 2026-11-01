@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f5ec"/><stop offset=".55" stop-color="#eee8d8"/><stop offset="1" stop-color="#e3dbc4"/></linearGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="w2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="o" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#41472a" stop-opacity=".02"/><stop offset="1" stop-color="#41472a" stop-opacity=".13"/></linearGradient>
+    <linearGradient id="o2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41472a" stop-opacity=".10"/><stop offset="1" stop-color="#41472a" stop-opacity="0"/></linearGradient>
+    <linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c9a96e" stop-opacity=".18"/><stop offset="1" stop-color="#c9a96e" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <polygon points="0,0 1080,0 0,780" fill="url(#w)"/>
+  <polygon points="1080,0 1480,0 1240,560" fill="url(#o2)"/>
+  <polygon points="1480,0 1920,0 1920,460 1240,560" fill="url(#w2)"/>
+  <polygon points="0,780 1080,0 1240,560 640,1080 0,1080" fill="#fff" fill-opacity=".16"/>
+  <polygon points="1240,560 1920,460 1920,1080 1380,1080" fill="url(#o)"/>
+  <polygon points="640,1080 1240,560 1380,1080" fill="url(#g)"/>
+  <polygon points="0,780 300,1080 0,1080" fill="#41472a" fill-opacity=".05"/>
+  <polygon points="1480,0 1680,0 1600,230" fill="#fff" fill-opacity=".35"/>
+</svg>

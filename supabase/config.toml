@@ -1,0 +1,7 @@
+project_id = "klvepleypymiygytysds"
+
+[functions.process-email-queue]
+verify_jwt = false
+
+[functions.admin-users]
+verify_jwt = true

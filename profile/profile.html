@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>DASMAN — Company Profile</title>
+<!--
+  DASMAN company profile (landscape 16:9, bilingual AR/EN). All copy comes from the website.
+  Edit here, then run:  python3 profile/build.py   ->  profile/dasman-profile.pdf
+-->
+<style>
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "Cairo"; src: url(../public/fonts/Cairo-Bold.ttf); font-weight: 700; }
+
+:root {
+  --olive-950: #1b1e12; --olive-900: #262a19; --olive-800: #333821; --olive-700: #41472a;
+  --olive-600: #545b37; --olive-500: #6e7848;
+  --sand-50: #fbf9f4; --sand-100: #f4efe4; --sand-200: #e9dfcb; --sand-300: #d8c7a6;
+  --gold-300: #dcc393; --gold-400: #c9a96e; --gold-500: #b8945a; --gold-700: #7c5e2e;
+  --text: #4b4e41; --muted: #6a6d60;
+  --najdi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 14L7 3l7 11zM14 14l7-11 7 11z' fill='%23c9a96e'/%3E%3C/svg%3E");
+  --olive-grad: linear-gradient(135deg, #5b6239 0%, #41472a 45%, #2a2e1b 100%);
+  --gold-grad: linear-gradient(100deg, #9c7a43 0%, #dcc393 45%, #b8945a 70%, #e6d3a8 100%);
+  --hatch: repeating-linear-gradient(135deg, rgba(255,255,255,.075) 0 2px, transparent 2px 16px);
+}
+
+@page { size: 1920px 1080px; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #777; }
+body { font-family: "Cairo", sans-serif; color: var(--text); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 1920px; height: 1080px; position: relative; overflow: hidden; break-after: page; background: url(assets/bg-light.svg) center / 100% 100%; }
+.page:last-child { break-after: auto; }
+.page.dark { background: url(assets/bg-dark.svg) center / 100% 100%; color: var(--sand-200); }
+@media screen { body { padding: 40px 0; } .page { margin: 0 auto 40px; box-shadow: 0 20px 60px rgba(0,0,0,.4); } }
+
+.ar { direction: rtl; text-align: right; }
+.en { direction: ltr; text-align: left; }
+.abs { position: absolute; }
+.icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.gold { color: var(--gold-500); }
+.dark .gold, .on-olive .gold { color: var(--gold-400); }
+.nw { white-space: nowrap; }
+
+/* ---- decorative shapes ---- */
+.shape { position: absolute; }
+.olive { background: var(--hatch), var(--olive-grad); }
+.olive-plain { background: var(--olive-grad); }
+.sandshape { background: linear-gradient(135deg, #e9dfcb, #d8c7a6); }
+.ribbon { background: var(--gold-grad); }
+.lines { background: repeating-linear-gradient(135deg, rgba(201,169,110,.55) 0 1.5px, transparent 1.5px 22px); }
+.najdi { height: 14px; background: var(--najdi) repeat-x left center / 28px 14px; }
+.frame { position: absolute; background-size: cover; background-position: center; }
+.frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(27,30,18,0) 45%, rgba(27,30,18,.55)); }
+
+/* ---- type ---- */
+.eyebrow { display: inline-flex; align-items: center; gap: 14px; color: var(--gold-500); font-weight: 600; font-size: 22px; }
+.eyebrow.en { letter-spacing: .24em; text-transform: uppercase; font-size: 17px; }
+.eyebrow::before { content: ""; width: 44px; height: 2px; background: currentColor; }
+.dark .eyebrow, .on-olive .eyebrow { color: var(--gold-400); }
+h1, h2, h3 { color: var(--olive-700); font-weight: 700; line-height: 1.25; }
+.dark h1, .dark h2, .dark h3, .on-olive h2, .on-olive h3 { color: var(--sand-50); }
+h2.ar { font-size: 58px; margin-top: 6px; }
+h2.en { font-size: 40px; margin-top: 6px; letter-spacing: -.005em; }
+p.ar { font-size: 23px; line-height: 1.85; }
+p.en { font-size: 19px; line-height: 1.75; color: var(--muted); }
+.dark p.en, .on-olive p.en { color: var(--sand-300); }
+.dark p.ar, .on-olive p.ar { color: var(--sand-100); }
+
+.pn { position: absolute; right: 80px; bottom: 36px; display: flex; align-items: center; gap: 14px; z-index: 5; }
+.pn i { width: 54px; height: 2px; background: var(--gold-500); }
+.pn b { font-size: 20px; font-weight: 700; letter-spacing: .06em; color: var(--gold-500); }
+.dark .pn i, .pn.light i { background: var(--gold-300); }
+.dark .pn b, .pn.light b { color: var(--gold-300); text-shadow: 0 2px 10px rgba(0,0,0,.45); }
+
+/* ---- phone mockup ---- */
+.phone { position: absolute; width: 400px; height: 820px; border-radius: 64px; padding: 15px; background: linear-gradient(145deg, #3a3a3a, #0d0d0d 40%, #1c1c1c); box-shadow: 0 60px 90px -40px rgba(0,0,0,.7), inset 0 0 0 2px #555; }
+.phone::before { content: ""; position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 130px; height: 34px; border-radius: 20px; background: #0b0b0b; z-index: 3; }
+.phone .screen { position: relative; height: 100%; border-radius: 50px; overflow: hidden; background: linear-gradient(165deg, #5b6239 0%, #41472a 50%, #2a2e1b 100%); }
+.phone .screen::before { content: ""; position: absolute; inset: 0; background: var(--hatch); opacity: .6; }
+.phone .wave { position: absolute; left: 0; right: 0; bottom: 0; height: 110px; }
+.phone .slogo { position: relative; display: block; margin: 92px auto 30px; width: 170px; }
+.pbtn { position: relative; margin: 0 34px 13px; height: 56px; border-radius: 30px; background: var(--sand-200); display: flex; align-items: center; gap: 12px; padding: 0 18px; direction: rtl; color: var(--olive-700); font-weight: 700; font-size: 18px; box-shadow: 0 6px 14px -8px rgba(0,0,0,.6); }
+.pbtn .icon { font-size: 22px; color: var(--gold-500); }
+.pbtn .chev { margin-right: auto; font-size: 18px; color: var(--olive-600); transform: rotate(90deg); }
+
+/* =========================== 1. COVER =========================== */
+.cover { background: linear-gradient(160deg, #ffffff 0%, #f6f2e8 55%, #e9e1cd 100%); }
+.cover .tri-tl { left: 0; top: 0; width: 1100px; height: 1080px; clip-path: polygon(0 0, 62% 0, 0 58%); background: linear-gradient(135deg, #e9dfcb, rgba(233,223,203,0)); }
+.cover .tri-br { right: 0; bottom: 0; width: 1200px; height: 520px; clip-path: polygon(100% 0, 100% 100%, 8% 100%); background: linear-gradient(200deg, #e2d8bf, #efe9da); }
+.cover .band { right: 0; top: 230px; width: 1060px; height: 560px; clip-path: polygon(17% 0, 100% 0, 100% 100%, 0 100%); }
+.cover .rib1 { left: 800px; top: 140px; width: 260px; height: 660px; clip-path: polygon(78% 0, 100% 0, 22% 100%, 0 100%); }
+.cover .cover .photo-back { left: 0; top: 262px; width: 1030px; height: 496px; clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); background: #fff; }
+.cover .photo { left: 0; top: 278px; width: 1000px; height: 464px; clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); background-image: url(../public/imgs/hero-kafd.jpg); background-position: center 35%; }
+.cover .logo-wrap { right: 120px; top: 230px; height: 560px; width: 620px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cover .logo-wrap img { width: 470px; }
+.cover .logo-wrap .lux { margin-top: 26px; font-size: 21px; letter-spacing: .55em; color: var(--gold-300); text-transform: uppercase; }
+.cover .logo-wrap .lux b { color: var(--gold-400); }
+.cover .top { right: 120px; top: 92px; font-size: 22px; letter-spacing: .3em; text-transform: uppercase; color: var(--olive-600); }
+.cover .top b { color: var(--gold-500); }
+.cover .tag { left: 110px; bottom: 80px; width: 820px; }
+.cover .tag .ar { font-size: 34px; font-weight: 700; color: var(--olive-700); line-height: 1.55; text-align: left; }
+.cover .tag .ar span { color: var(--gold-500); }
+.cover .tag .en { font-size: 19px; color: var(--muted); margin-top: 6px; }
+.cover .kicker { right: 120px; bottom: 96px; display: flex; align-items: center; gap: 24px; color: var(--olive-700); }
+.cover .kicker .ar { font-size: 30px; font-weight: 700; }
+.cover .kicker .en { font-size: 17px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-500); }
+.cover .kicker i { width: 2px; height: 46px; background: var(--gold-400); }
+.cover .kicker .yr { font-size: 30px; font-weight: 700; color: var(--gold-500); }
+
+/* =========================== 2. ABOUT =========================== */
+.about .tri { left: 0; bottom: 0; width: 900px; height: 560px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.about .rib { left: 140px; top: 0; width: 760px; height: 1080px; clip-path: polygon(96% 0, 100% 0, 4% 100%, 0 100%); }
+.about .fback { left: 96px; top: 110px; width: 690px; height: 760px; clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%); background: var(--gold-grad); }
+.about .photo { left: 110px; top: 124px; width: 662px; height: 732px; clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%); background-image: url(../public/imgs/about-diriyah.jpg); }
+.about .badge { left: 90px; top: 700px; width: 390px; padding: 26px 30px; border-radius: 24px; background: var(--olive-grad); color: var(--sand-100); box-shadow: 0 30px 50px -30px #000; z-index: 2; }
+.about .badge b { display: block; font-size: 96px; line-height: .9; color: var(--gold-400); }
+.about .badge .ar { font-size: 25px; font-weight: 700; text-align: left; direction: rtl; margin-top: 6px; }
+.about .badge .en { font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); }
+.about .txt { right: 110px; top: 96px; width: 900px; }
+.about .txt p.en { font-size: 20px; color: var(--text); }
+.about .txt .en-blk { margin-top: 26px; padding-top: 24px; border-top: 1px solid rgba(65,71,42,.18); }
+.about .pillars { right: 110px; top: 630px; width: 900px; display: flex; gap: 20px; direction: rtl; }
+.about .pill { flex: 1; display: flex; align-items: center; gap: 16px; direction: rtl; padding: 16px 22px; border-radius: 60px; background: rgba(255,255,255,.75); box-shadow: 0 18px 30px -24px rgba(27,30,18,.6); }
+.about .pill .ic { width: 54px; height: 54px; border-radius: 50%; background: var(--olive-700); color: var(--gold-400); display: grid; place-items: center; font-size: 26px; flex: none; }
+.about .pill .ar { font-size: 22px; font-weight: 700; color: var(--olive-700); display: block; }
+.about .pill .en { font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-500); display: block; text-align: right; direction: ltr; }
+.about .mission { right: 0; bottom: 70px; width: 1080px; height: 170px; clip-path: polygon(7% 0, 100% 0, 100% 100%, 0 100%); }
+.about .mission-in { right: 110px; bottom: 70px; width: 880px; height: 170px; display: flex; align-items: center; gap: 50px; color: var(--sand-100); }
+.about .mission-in .ar { flex: 1.15; }
+.about .mission-in .en { flex: 1; }
+.about .mission-in h3 { font-size: 26px; color: var(--gold-400); }
+.about .mission-in .ar p { font-size: 22px; line-height: 1.6; color: var(--sand-50); }
+.about .mission-in .en p { font-size: 17px; line-height: 1.6; color: var(--sand-300); }
+.about .mission-in i { width: 1px; align-self: stretch; margin: 30px 0; background: rgba(201,169,110,.5); }
+
+/* =========================== 3. VISION =========================== */
+.vision .sand { right: 0; bottom: 0; width: 1300px; height: 640px; clip-path: polygon(100% 0, 100% 100%, 0 100%); background: linear-gradient(200deg, rgba(233,223,203,.16), rgba(233,223,203,.03)); }
+.vision .lines { left: 0; top: 0; width: 700px; height: 380px; clip-path: polygon(0 0, 100% 0, 0 100%); opacity: .35; }
+.vision .rib { left: 0; top: 0; width: 1920px; height: 1080px; clip-path: polygon(0 59.5%, 100% 27.9%, 100% 28.45%, 0 60.05%); }
+.vision .head { right: 110px; top: 90px; text-align: right; }
+.vision .head .en { text-align: right; }
+.vision .vc { position: absolute; width: 400px; }
+.vision .dia { width: 108px; height: 108px; transform: rotate(45deg); border-radius: 22px; background: var(--gold-grad); display: grid; place-items: center; box-shadow: 0 20px 40px -20px #000; margin: 0 0 40px 20px; }
+.vision .dia span { transform: rotate(-45deg); font-size: 38px; font-weight: 700; color: var(--olive-900); }
+.vision .vc .ar { font-size: 23px; font-weight: 600; line-height: 1.7; color: var(--sand-50); }
+.vision .vc .en { font-size: 16.5px; line-height: 1.6; color: var(--sand-300); margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(201,169,110,.35); }
+
+/* =========================== 4. SERVICES OVERVIEW =========================== */
+.ov .tri-r { right: 0; top: 0; width: 1180px; height: 1080px; clip-path: polygon(56% 0, 100% 0, 100% 100%, 22% 100%); }
+.ov .tri-l { left: 0; top: 0; width: 760px; height: 1080px; clip-path: polygon(0 34%, 70% 100%, 0 100%); background: linear-gradient(160deg, #c9b98f, #a99c72); opacity: .55; }
+.ov .rib { right: 0; top: 0; width: 1180px; height: 1080px; clip-path: polygon(54.5% 0, 56% 0, 22% 100%, 20.5% 100%); }
+.ov .phone { left: 760px; top: 130px; }
+.ov .en-list { left: 110px; top: 110px; width: 560px; }
+.ov .ar-list { right: 110px; top: 110px; width: 470px; }
+.ov ul { list-style: none; margin-top: 26px; }
+.ov li { display: flex; align-items: center; gap: 16px; padding: 9px 0; }
+.ov .en-list li { font-size: 22px; font-weight: 600; color: var(--olive-700); }
+.ov .ar-list li { font-size: 27px; font-weight: 700; color: var(--sand-50); direction: rtl; }
+.ov li .ic { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; flex: none; }
+.ov .en-list .ic { background: var(--olive-700); color: var(--gold-400); }
+.ov .ar-list .ic { background: rgba(201,169,110,.18); color: var(--gold-400); border: 1px solid rgba(201,169,110,.45); }
+.ov li small { font-size: 15px; color: var(--gold-500); font-weight: 700; letter-spacing: .1em; width: 26px; }
+.ov .ar-list li small { color: var(--gold-300); }
+.ov .ar-list p.ar { font-size: 20px; margin-top: 4px; }
+
+/* =========================== shared: service heads & lists =========================== */
+.sh-row { display: flex; align-items: flex-end; gap: 22px; direction: rtl; }
+.sh-row.stack { flex-direction: column; align-items: flex-end; gap: 6px; }
+.sh .num { font-size: 110px; font-weight: 700; line-height: .85; color: transparent; -webkit-text-stroke: 2px var(--gold-400); }
+.sh .t { display: flex; flex-direction: column; align-items: flex-end; }
+.sh .t .ar { font-size: 50px; font-weight: 700; color: var(--olive-700); line-height: 1.15; }
+.sh .t .en { font-size: 16px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-500); font-weight: 700; margin-top: 8px; }
+.on-olive .t .ar, .dark .sh .t .ar { color: var(--sand-50); }
+.on-olive .t .en, .dark .sh .t .en { color: var(--gold-300); }
+.sh p.ar { font-size: 21px; line-height: 1.75; margin-top: 16px; }
+.sh p.en { font-size: 17px; line-height: 1.6; margin-top: 4px; }
+.dl { list-style: none; margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; direction: rtl; }
+.dl.one { grid-template-columns: 1fr; }
+.dl li { display: flex; gap: 14px; align-items: flex-start; direction: rtl; padding-bottom: 12px; border-bottom: 1px solid rgba(201,169,110,.4); }
+.dl li::before { content: ""; width: 11px; height: 11px; background: var(--gold-400); transform: rotate(45deg); margin-top: 13px; flex: none; }
+.dl li b { display: block; font-size: 20px; color: var(--olive-700); line-height: 1.45; }
+.dl li span { display: block; font-size: 15px; color: var(--muted); line-height: 1.4; text-align: right; direction: ltr; }
+.dl li.span2 { grid-column: span 2; }
+.on-olive .dl li b, .dark .dl li b { color: var(--sand-50); }
+.on-olive .dl li span, .dark .dl li span { color: var(--sand-300); }
+.badge-ic { position: absolute; width: 100px; height: 100px; border-radius: 50%; background: var(--olive-grad); border: 3px solid var(--gold-400); color: var(--gold-400); display: grid; place-items: center; font-size: 44px; box-shadow: 0 20px 34px -18px #000; z-index: 3; }
+
+/* =========================== 6. LEGAL + LOGISTICS (dark, Z layout) =========================== */
+.sA .ph1 { left: 0; top: 0; width: 900px; height: 520px; clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%); background-image: url(../public/imgs/pic1.jpeg); }
+.sA .rb1 { left: 0; top: 0; width: 960px; height: 520px; clip-path: polygon(95.3% 0, 98.4% 0, 77.8% 100%, 74.7% 100%); }
+.sA .ph2 { right: 0; bottom: 0; width: 900px; height: 520px; clip-path: polygon(22% 0, 100% 0, 100% 100%, 0 100%); background-image: url(../public/imgs/services/logistics.jpg); }
+.sA .rb2 { right: 0; bottom: 0; width: 960px; height: 520px; clip-path: polygon(22.2% 0, 25.3% 0, 4.7% 100%, 1.6% 100%); }
+.sA .lines { right: 0; top: 0; width: 520px; height: 300px; clip-path: polygon(0 0, 100% 0, 100% 100%); opacity: .3; }
+.sA .lines2 { left: 0; bottom: 0; width: 520px; height: 300px; clip-path: polygon(0 0, 100% 100%, 0 100%); opacity: .25; }
+.sA .t1 { right: 110px; top: 76px; width: 840px; }
+.sA .t2 { left: 110px; top: 584px; width: 840px; }
+
+/* =========================== 7. OFFERS + CONCIERGE (photo hero + diamond) =========================== */
+.sB .hero { left: 0; top: 0; width: 1920px; height: 640px; clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%); background-image: url(../public/imgs/services/offers.jpg); background-position: center 65%; }
+.sB .hero::after { background: linear-gradient(270deg, rgba(27,30,18,.94) 0%, rgba(27,30,18,.82) 38%, rgba(27,30,18,.2) 72%, rgba(27,30,18,.05) 100%); }
+.sB .hrib { left: 0; top: 0; width: 1920px; height: 660px; clip-path: polygon(0 97%, 100% 75.6%, 100% 77.4%, 0 98.8%); }
+.sB .t1 { right: 110px; top: 48px; width: 880px; }
+.sB .lines { left: 0; bottom: 0; width: 640px; height: 380px; clip-path: polygon(0 0, 100% 100%, 0 100%); opacity: .35; }
+.sB .dia-back { left: 150px; top: 520px; width: 520px; height: 520px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background: var(--gold-grad); }
+.sB .dia { left: 164px; top: 534px; width: 492px; height: 492px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background-image: url(../public/imgs/pic2.jpeg); background-position: center 40%; }
+.sB .t2 { right: 110px; top: 600px; width: 980px; }
+
+/* =========================== 8. WORKSHOPS + ROADSIDE (olive panel + arch) =========================== */
+.sC .panel { left: 0; top: 0; width: 940px; height: 1080px; clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%); }
+.sC .prib { left: 0; top: 0; width: 980px; height: 1080px; clip-path: polygon(96.9% 0, 99% 0, 81.7% 100%, 79.7% 100%); }
+.sC .tire { left: 0; top: 620px; width: 860px; height: 460px; clip-path: polygon(0 12%, 98% 0, 89.7% 100%, 0 100%); background-image: url(../public/imgs/pic.jpeg); background-position: center 35%; }
+.sC .tline { left: 0; top: 606px; width: 850px; height: 80px; clip-path: polygon(0 76.3%, 99.2% 7.5%, 99.2% 17.5%, 0 86.3%); }
+.sC .t1 { left: 110px; top: 70px; width: 680px; }
+.sC .f4 { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 30px; direction: rtl; }
+.sC .f4 > div { display: flex; gap: 14px; align-items: flex-start; direction: rtl; }
+.sC .f4 .ic { width: 50px; height: 50px; border-radius: 50%; background: var(--gold-grad); color: var(--olive-900); display: grid; place-items: center; font-size: 24px; flex: none; }
+.sC .f4 b { display: block; font-size: 21px; color: var(--sand-50); line-height: 1.4; }
+.sC .f4 small { display: block; font-size: 15px; line-height: 1.55; color: var(--sand-200); }
+.sC .f4 span { display: block; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-300); margin-top: 2px; }
+.sC .arch-back { left: 1010px; top: 110px; width: 440px; height: 620px; border-radius: 220px 220px 24px 24px; background: var(--gold-grad); }
+.sC .arch { left: 1024px; top: 124px; width: 412px; height: 592px; border-radius: 206px 206px 14px 14px; overflow: hidden; background-image: url(../public/imgs/services/workshops.jpg); background-position: center 30%; }
+.sC .t2 { right: 110px; top: 150px; width: 330px; }
+.sC .t2 .sh .t .ar { font-size: 46px; text-align: right; }
+.sC .wrow { left: 1010px; right: 110px; top: 800px; display: flex; gap: 30px; direction: rtl; }
+.sC .wrow > div { flex: 1; display: flex; align-items: center; gap: 18px; direction: rtl; padding: 22px 0; border-top: 2px solid var(--gold-400); border-bottom: 1px solid rgba(65,71,42,.18); }
+.sC .wrow .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--olive-grad); color: var(--gold-400); display: grid; place-items: center; font-size: 30px; flex: none; }
+.sC .wrow b { display: block; font-size: 25px; color: var(--olive-700); }
+.sC .wrow span { display: block; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-500); text-align: right; }
+
+/* =========================== 2. CONTENTS =========================== */
+.toc .lines { left: 0; top: 0; width: 760px; height: 420px; clip-path: polygon(0 0, 100% 0, 0 100%); opacity: .3; }
+.toc .rib { left: 0; top: 0; width: 1920px; height: 1080px; clip-path: polygon(0 52%, 0 48%, 22% 0, 23.2% 0); opacity: .9; }
+.toc .wm { position: absolute; left: -40px; bottom: -30px; width: 820px; opacity: .06; }
+.toc .brand { left: 110px; top: 470px; width: 520px; }
+.toc .brand img { width: 300px; }
+.toc .brand .lux { margin-top: 18px; font-size: 16px; letter-spacing: .45em; text-transform: uppercase; color: var(--gold-300); }
+.toc .brand p { margin-top: 26px; font-size: 22px; line-height: 1.7; color: var(--sand-200); direction: rtl; text-align: left; }
+.toc .head { right: 110px; top: 80px; text-align: right; }
+.toc .rows { right: 110px; top: 280px; width: 1060px; }
+.toc .row { display: flex; align-items: center; gap: 22px; height: 68px; border-bottom: 1px solid rgba(201,169,110,.28); direction: rtl; }
+.toc .row .n { font-size: 34px; font-weight: 700; color: var(--gold-400); width: 58px; }
+.toc .row .ar { font-size: 27px; font-weight: 700; color: var(--sand-50); }
+.toc .row .lead { flex: 1; height: 1px; border-bottom: 2px dotted rgba(201,169,110,.35); margin-top: 12px; }
+.toc .row .en { font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand-300); }
+
+/* =========================== 8. ACTIVITIES =========================== */
+.act .photo-back { right: 0; top: 0; width: 900px; height: 1080px; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); }
+.act .photo { right: 0; top: 0; width: 880px; height: 1080px; clip-path: polygon(31% 0, 100% 0, 100% 100%, 1.5% 100%); background-image: url(../public/imgs/services/activities.jpg); background-position: 60% center; }
+.act .photo::after { background: linear-gradient(90deg, rgba(27,30,18,.5), rgba(27,30,18,.05) 50%); }
+.act .n { right: 70px; top: 60px; font-size: 150px; font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--gold-300); line-height: 1; z-index: 2; }
+.act .main { left: 110px; top: 120px; width: 1020px; }
+.act .ttl { display: flex; justify-content: space-between; align-items: flex-end; }
+.act .chips { margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; direction: rtl; }
+.act .chip { padding: 28px 22px; border-radius: 20px; background: rgba(27,30,18,.35); border: 1px solid rgba(201,169,110,.35); direction: rtl; display: flex; gap: 14px; align-items: center; }
+.act .chip .ic { width: 52px; height: 52px; border-radius: 16px; background: var(--gold-grad); color: var(--olive-900); display: grid; place-items: center; font-size: 26px; flex: none; }
+.act .chip .ar { display: block; font-size: 21px; font-weight: 700; color: var(--sand-50); }
+.act .chip .en { display: block; font-size: 14px; color: var(--sand-300); text-align: right; }
+.act .more { margin-top: 16px; display: flex; justify-content: space-between; color: var(--gold-300); font-size: 18px; }
+.act .amb { left: 0; bottom: 70px; width: 1230px; height: 200px; clip-path: polygon(0 0, 100% 0, 93% 100%, 0 100%); background: linear-gradient(135deg, #efe7d4, #d8c7a6); }
+.act .amb-in { left: 110px; bottom: 70px; width: 1000px; height: 200px; display: flex; align-items: center; gap: 40px; }
+.act .amb-in .k { width: 90px; height: 90px; border-radius: 50%; background: var(--olive-grad); color: var(--gold-400); display: grid; place-items: center; font-size: 44px; flex: none; }
+.act .amb-in .en { flex: 1; }
+.act .amb-in .ar { flex: 1.1; }
+.act .amb-in .tag { font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-700); font-weight: 700; }
+.act .amb-in .ar .tag { letter-spacing: 0; font-size: 17px; }
+.act .amb-in h3 { font-size: 26px; color: var(--olive-700); }
+.act .amb-in p { font-size: 15.5px; line-height: 1.6; color: var(--text); }
+.act .amb-in .ar p { font-size: 17px; }
+
+/* =========================== 9. PRIVILEGES =========================== */
+.priv .band { left: 0; bottom: 0; width: 1920px; height: 640px; clip-path: polygon(0 26%, 100% 0, 100% 100%, 0 100%); }
+.priv .rib { left: 0; bottom: 0; width: 1920px; height: 640px; clip-path: polygon(0 24.4%, 100% -1.6%, 100% 0, 0 26%); }
+.priv .ar-blk { right: 110px; top: 80px; width: 980px; }
+.priv .en-blk { left: 110px; top: 150px; width: 700px; }
+.priv .grid { left: 110px; right: 110px; top: 560px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; direction: rtl; }
+.priv .it { text-align: center; color: var(--sand-100); }
+.priv .circ { width: 190px; height: 190px; margin: 0 auto; border-radius: 50%; padding: 6px; background: var(--gold-grad); position: relative; }
+.priv .circ div { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 5px solid var(--olive-800); }
+.priv .circ .ic { position: absolute; right: 0; bottom: 6px; width: 60px; height: 60px; border-radius: 50%; background: var(--olive-grad); border: 3px solid var(--gold-400); color: var(--gold-400); display: grid; place-items: center; font-size: 28px; }
+.priv .it h3 { margin-top: 18px; font-size: 30px; color: var(--sand-50); }
+.priv .it .en-t { font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-300); font-weight: 600; }
+.priv .it p.ar { text-align: center; font-size: 17px; line-height: 1.6; margin-top: 8px; color: var(--sand-200); }
+.priv .it p.en { text-align: center; font-size: 14px; line-height: 1.5; color: var(--sand-300); margin-top: 4px; }
+.hl { display: inline-flex; align-items: center; gap: 12px; margin-top: 22px; padding: 12px 24px; border-radius: 40px; background: rgba(255,255,255,.7); border: 1px solid rgba(201,169,110,.6); color: var(--olive-700); font-weight: 600; font-size: 19px; box-shadow: 0 16px 30px -24px rgba(27,30,18,.7); }
+.hl.en { font-size: 16px; }
+.hl .icon { color: var(--gold-500); font-size: 22px; }
+
+/* =========================== 10. JOIN =========================== */
+.join .tri-a { left: 0; top: 0; width: 860px; height: 1080px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.join .tri-b { left: 0; top: 0; width: 1000px; height: 1080px; clip-path: polygon(0 0, 22% 0, 100% 50%, 22% 100%, 0 100%); background: linear-gradient(135deg, rgba(65,71,42,.10), rgba(65,71,42,.02)); }
+.join .rib { left: 0; top: 0; width: 860px; height: 1080px; clip-path: polygon(100% 50%, 98% 51%, 0 2%, 0 0); opacity: .9; }
+.join .phone { left: 210px; top: 130px; }
+.join .screen .hd { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 84px 30px 0; direction: rtl; color: var(--sand-100); font-weight: 700; font-size: 18px; }
+.join .screen .hd img { height: 40px; }
+.join .mcard { position: relative; margin: 26px 24px 0; height: 210px; border-radius: 22px; padding: 22px 24px; background: linear-gradient(135deg, #e9dfcb, #c9a96e); color: var(--olive-800); box-shadow: 0 20px 30px -18px #000; overflow: hidden; }
+.join .mcard img { height: 52px; }
+.join .mcard .no { position: absolute; left: 24px; bottom: 48px; font-size: 27px; font-weight: 700; letter-spacing: .1em; }
+.join .mcard .lb { position: absolute; left: 24px; bottom: 24px; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-700); }
+.join .mcard .qr { position: absolute; right: 22px; top: 22px; width: 74px; height: 74px; padding: 6px; background: #fff; border-radius: 10px; }
+.join .mcard .qr svg { width: 100%; height: 100%; display: block; }
+.join .screen .sec { position: relative; margin: 26px 28px 12px; direction: rtl; color: var(--gold-300); font-weight: 700; font-size: 17px; }
+.join .cp { position: relative; margin: 0 24px 12px; height: 74px; border-radius: 18px; background: rgba(233,223,203,.13); border: 1px dashed rgba(201,169,110,.55); display: flex; align-items: center; gap: 14px; padding: 0 18px; direction: rtl; color: var(--sand-100); }
+.join .cp .ic { width: 42px; height: 42px; border-radius: 12px; background: var(--gold-400); color: var(--olive-900); display: grid; place-items: center; font-size: 22px; }
+.join .cp b { font-size: 16px; display: block; }
+.join .cp small { font-size: 12px; color: var(--sand-300); }
+.join .main { right: 110px; top: 96px; width: 900px; }
+.join .main .en-h { margin-top: 10px; }
+.join .rows { margin-top: 40px; }
+.join .row { display: flex; align-items: center; gap: 30px; padding: 22px 0; border-bottom: 1px solid rgba(65,71,42,.16); }
+.join .row:first-child { border-top: 1px solid rgba(65,71,42,.16); }
+.join .row .k { width: 76px; height: 76px; flex: none; border-radius: 22px; transform: rotate(45deg); background: var(--olive-grad); display: grid; place-items: center; box-shadow: 0 16px 26px -16px #000; margin: 0 10px; }
+.join .row .k span { transform: rotate(-45deg); font-size: 30px; font-weight: 700; color: var(--gold-400); }
+.join .row .en { flex: 1; }
+.join .row .ar { flex: 1; }
+.join .row .ar b { font-size: 28px; color: var(--olive-700); display: block; }
+.join .row .ar small { font-size: 18px; color: var(--muted); }
+.join .row .en b { font-size: 21px; color: var(--olive-700); display: block; }
+.join .row .en small { font-size: 15px; color: var(--muted); }
+.join .feat { margin-top: 34px; display: flex; gap: 14px; direction: rtl; flex-wrap: wrap; }
+.join .feat span { padding: 10px 20px; border-radius: 30px; background: rgba(255,255,255,.75); color: var(--olive-700); font-weight: 600; font-size: 17px; display: inline-flex; align-items: center; gap: 10px; }
+.join .feat .icon { color: var(--gold-500); font-size: 20px; }
+
+/* =========================== 11. BACK =========================== */
+.back { background: linear-gradient(180deg, #ffffff, #f4efe4); }
+.back .tri-t { right: 0; top: 0; width: 1100px; height: 300px; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); }
+.back .tri-t2 { right: 0; top: 0; width: 1400px; height: 300px; clip-path: polygon(52% 0, 56% 0, 30% 100%, 26% 100%); }
+.back .band { left: 0; top: 300px; width: 1920px; height: 420px; }
+.back .band-logo { left: 0; right: 0; top: 300px; height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.back .band-logo img { width: 400px; }
+.back .band-logo .lux { margin-top: 22px; font-size: 19px; letter-spacing: .5em; color: var(--gold-300); text-transform: uppercase; }
+.back .tri-b { left: 0; bottom: 0; width: 900px; height: 360px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.back .top-t { left: 110px; top: 110px; }
+.back .top-t .ar { font-size: 40px; font-weight: 700; color: var(--olive-700); text-align: left; }
+.back .top-t .en { font-size: 18px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-500); }
+.back .contacts { left: 0; right: 0; top: 760px; display: flex; justify-content: center; align-items: center; gap: 64px; }
+.back .c { display: flex; align-items: center; gap: 16px; color: var(--olive-700); }
+.back .c .ic { width: 58px; height: 58px; border-radius: 50%; background: var(--olive-grad); color: var(--gold-400); display: grid; place-items: center; font-size: 26px; }
+.back .c b { display: block; font-size: 20px; }
+.back .c small { display: block; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-500); }
+.back .qrbox { right: 110px; top: 470px; transform: translateY(-50%); text-align: center; }
+.back .qrbox .q { width: 210px; height: 210px; padding: 16px; background: #fff; border-radius: 20px; box-shadow: 0 30px 50px -30px #000; }
+.back .qrbox .q svg { width: 100%; height: 100%; display: block; }
+.back .qrbox small { display: block; margin-top: 12px; font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-300); }
+.back .copy { left: 0; right: 0; bottom: 50px; text-align: center; font-size: 15px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+</style>
+</head>
+<body>
+<!--ICONS-->
+
+<!-- ============================ 1. COVER ============================ -->
+<section class="page cover">
+  <div class="shape tri-tl"></div>
+  <div class="shape tri-br"></div>
+  <div class="shape band olive"></div>
+  <div class="shape photo-back"></div>
+  <div class="frame photo"></div>
+  <div class="shape rib1 ribbon"></div>
+  <div class="abs top"><b>Dasman</b> · The Luxury Club</div>
+  <div class="abs logo-wrap">
+    <img src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">The <b>Luxury</b> Club</div>
+  </div>
+  <div class="abs tag">
+    <div class="ar">دسمان… <span>مظلتك الأولى</span> لتجارب ترفيهية مميزة،<br>وخدمات متكاملة، ومجتمع من الأعضاء</div>
+    <div class="en">DASMAN… your first choice for exceptional entertainment experiences, integrated services and a community of members.</div>
+  </div>
+  <div class="abs kicker"><span class="en">Company Profile</span><i></i><span class="ar">الملف التعريفي</span><i></i><span class="yr">2026</span></div>
+</section>
+
+<!-- ============================ 2. CONTENTS ============================ -->
+<section class="page dark toc">
+  <div class="shape lines"></div>
+  <div class="shape rib ribbon"></div>
+  <img class="wm" src="../public/imgs/dasman-logo-light.png" alt="">
+  <div class="abs brand">
+    <img src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">The Luxury Club</div>
+    <p>عضوية حصرية تجمع الخدمات والمزايا والعروض الحصرية في منصة واحدة.</p>
+  </div>
+  <div class="abs head">
+    <span class="eyebrow">المحتويات</span>
+    <h2 class="ar">داخل الملف التعريفي</h2>
+    <span class="eyebrow en" style="margin-top:6px">Contents</span>
+  </div>
+  <div class="abs rows">
+    <div class="row" style="margin-right:0"><span class="n">03</span><span class="ar">نبذة عنا</span><i class="lead"></i><span class="en">About us</span></div>
+    <div class="row" style="margin-right:22px"><span class="n">04</span><span class="ar">رؤيتنا</span><i class="lead"></i><span class="en">Our vision</span></div>
+    <div class="row" style="margin-right:44px"><span class="n">05</span><span class="ar">خدمات دسمان</span><i class="lead"></i><span class="en">DASMAN services</span></div>
+    <div class="row" style="margin-right:66px"><span class="n">06</span><span class="ar">الخدمات القانونية واللوجستية</span><i class="lead"></i><span class="en">Legal &amp; logistics</span></div>
+    <div class="row" style="margin-right:88px"><span class="n">07</span><span class="ar">العروض والكونسيرج</span><i class="lead"></i><span class="en">Offers &amp; concierge</span></div>
+    <div class="row" style="margin-right:110px"><span class="n">08</span><span class="ar">الورش والمساعدة على الطريق</span><i class="lead"></i><span class="en">Workshops &amp; roadside</span></div>
+    <div class="row" style="margin-right:132px"><span class="n">09</span><span class="ar">الأنشطة وبرنامج السفراء</span><i class="lead"></i><span class="en">Activities &amp; ambassadors</span></div>
+    <div class="row" style="margin-right:154px"><span class="n">10</span><span class="ar">المزايا</span><i class="lead"></i><span class="en">Privileges</span></div>
+    <div class="row" style="margin-right:176px"><span class="n">11</span><span class="ar">انضم إلينا</span><i class="lead"></i><span class="en">Join us</span></div>
+    <div class="row" style="margin-right:198px"><span class="n">12</span><span class="ar">تواصل معنا</span><i class="lead"></i><span class="en">Contact us</span></div>
+  </div>
+  <div class="pn"><i></i><b>02</b></div>
+</section>
+
+<!-- ============================ 2. ABOUT ============================ -->
+<section class="page about">
+  <div class="shape tri olive"></div>
+  <div class="shape rib ribbon" style="opacity:.5"></div>
+  <div class="shape fback"></div>
+  <div class="frame photo"></div>
+  <div class="abs badge"><b>7</b><div class="ar">خدمات في عضوية واحدة</div><div class="en">Services · One membership</div></div>
+
+  <div class="abs txt">
+    <div class="ar"><span class="eyebrow">نبذة عنا</span><h2 class="ar">تجربة متكاملة في منصة واحدة</h2>
+      <p class="ar" style="margin-top:12px">دسمان هي عضوية حصرية للطلبة الكويتيين الدارسين في الرياض - المملكة العربية السعودية، ضمن <bdi class="gold nw" dir="ltr" style="font-weight:700">The Luxury Club</bdi>، صُممت لتمنح أعضائها تجربة متكاملة تجمع بين الخدمات والمزايا والعروض الحصرية في منصة واحدة.</p></div>
+    <div class="en en-blk"><span class="eyebrow en">About us</span>
+      <p class="en" style="margin-top:8px">DASMAN is an exclusive membership for Kuwaiti students studying in Riyadh, Saudi Arabia, within <b class="gold">The Luxury Club</b>, designed to give its members a complete experience that brings services, privileges and exclusive offers together in one platform.</p></div>
+  </div>
+  <div class="abs pillars">
+    <div class="pill"><span class="ic"><svg class="icon"><use href="#i-clock"/></svg></span><div><b class="ar">توفير الوقت</b><span class="en">Save time</span></div></div>
+    <div class="pill"><span class="ic"><svg class="icon"><use href="#i-bolt"/></svg></span><div><b class="ar">توفير الجهد</b><span class="en">Save effort</span></div></div>
+    <div class="pill"><span class="ic"><svg class="icon"><use href="#i-wallet"/></svg></span><div><b class="ar">توفير المال</b><span class="en">Save money</span></div></div>
+  </div>
+  <div class="shape mission olive"></div>
+  <div class="abs mission-in">
+    <div class="en"><h3>Our mission</h3><p>Providing high-quality solutions to deliver the best offers and services to our members.</p></div>
+    <i></i>
+    <div class="ar"><h3>رسالتنا</h3><p>توفير حلول وجودة عالية لتقديم أفضل العروض والخدمات للمشتركين.</p></div>
+  </div>
+  <div class="pn"><i></i><b>03</b></div>
+</section>
+
+<!-- ============================ 3. VISION ============================ -->
+<section class="page dark vision">
+  <div class="shape sand"></div>
+  <div class="shape lines"></div>
+  <div class="shape rib ribbon"></div>
+  <div class="abs head">
+    <span class="eyebrow">رؤيتنا</span>
+    <h2 class="ar">نطمح أن نكون <span class="gold">الاختيار الأول</span></h2>
+    <div class="en" style="margin-top:4px"><span class="eyebrow en">Our vision</span> <span style="font-size:24px;color:var(--sand-300);margin-left:14px">Aiming to be the first choice</span></div>
+  </div>
+  <div class="vc" style="left:110px;top:560px">
+    <div class="dia"><span>01</span></div>
+    <div class="ar">العمل على زيادة الخدمات من خلال عقد اتفاقيات وشراكات مع مقدمي خدمة مميزين.</div>
+    <div class="en">Growing our services by building agreements and partnerships with distinguished service providers.</div>
+  </div>
+  <div class="vc" style="left:560px;top:480px">
+    <div class="dia"><span>02</span></div>
+    <div class="ar">الوصول للريادة والقيادة وأن نصبح الاختيار الأول في المملكة العربية السعودية.</div>
+    <div class="en">Reaching leadership and becoming the first choice in Saudi Arabia.</div>
+  </div>
+  <div class="vc" style="left:1010px;top:400px">
+    <div class="dia"><span>03</span></div>
+    <div class="ar">العمل على جذب أفضل الشركات العالمية كشركاء من أجل تقديم أفضل العروض والمكافآت للمشتركين.</div>
+    <div class="en">Attracting the best international companies as partners to offer members the best deals and rewards.</div>
+  </div>
+  <div class="vc" style="left:1460px;top:320px">
+    <div class="dia"><span>04</span></div>
+    <div class="ar">العمل على توظيف أفضل الموظفين ذوي الخبرات العالية لتقديم أفضل الخدمات عالية الجودة للمشتركين.</div>
+    <div class="en">Hiring highly skilled, experienced staff to provide members with the highest-quality services.</div>
+  </div>
+  <div class="pn"><i></i><b>04</b></div>
+</section>
+
+<!-- ============================ 4. SERVICES OVERVIEW ============================ -->
+<section class="page ov">
+  <div class="shape tri-l"></div>
+  <div class="shape tri-r olive"></div>
+  <div class="shape rib ribbon"></div>
+
+  <div class="abs en-list">
+    <span class="eyebrow en">Our services</span>
+    <h2 class="en">DASMAN Services</h2>
+    <p class="en" style="margin-top:4px">An integrated set of services and exclusive privileges in one membership.</p>
+    <ul>
+      <li><small>01</small><span class="ic"><svg class="icon"><use href="#i-legal"/></svg></span>Legal Services</li>
+      <li><small>02</small><span class="ic"><svg class="icon"><use href="#i-logistics"/></svg></span>Logistics Services</li>
+      <li><small>03</small><span class="ic"><svg class="icon"><use href="#i-gift"/></svg></span>Offers &amp; Rewards</li>
+      <li><small>04</small><span class="ic"><svg class="icon"><use href="#i-concierge"/></svg></span>Concierge</li>
+      <li><small>05</small><span class="ic"><svg class="icon"><use href="#i-flask"/></svg></span>Scientific Workshops</li>
+      <li><small>06</small><span class="ic"><svg class="icon"><use href="#i-car"/></svg></span>Roadside Assistance</li>
+      <li><small>07</small><span class="ic"><svg class="icon"><use href="#i-trophy"/></svg></span>Recreational Activities</li>
+    </ul>
+  </div>
+
+  <div class="phone"><div class="screen">
+    <img class="slogo" src="../public/imgs/dasman-logo-light.png" alt="">
+    <div class="pbtn"><svg class="icon"><use href="#i-legal"/></svg>خدمات قانونية<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-logistics"/></svg>خدمات لوجستية<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-gift"/></svg>عروض ومكافآت<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-concierge"/></svg>كونسيرج<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-flask"/></svg>ورش عمل علمية<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-car"/></svg>مساعدة على الطريق<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <div class="pbtn"><svg class="icon"><use href="#i-trophy"/></svg>أنشطة ترفيهية دورية<svg class="icon chev"><use href="#i-chevron"/></svg></div>
+    <svg class="wave" viewBox="0 0 370 110" preserveAspectRatio="none"><path d="M0 60 C80 20 140 80 220 50 S330 20 370 40 V110 H0Z" fill="#e9dfcb"/></svg>
+  </div></div>
+
+  <div class="abs ar-list on-olive">
+    <span class="eyebrow">خدماتنا</span>
+    <h2 class="ar">خدمات دسمان</h2>
+    <p class="ar">مجموعة متكاملة من الخدمات والمزايا الحصرية في عضوية واحدة.</p>
+    <ul>
+      <li><small>01</small><span class="ic"><svg class="icon"><use href="#i-legal"/></svg></span>خدمات قانونية</li>
+      <li><small>02</small><span class="ic"><svg class="icon"><use href="#i-logistics"/></svg></span>خدمات لوجستية</li>
+      <li><small>03</small><span class="ic"><svg class="icon"><use href="#i-gift"/></svg></span>عروض ومكافآت</li>
+      <li><small>04</small><span class="ic"><svg class="icon"><use href="#i-concierge"/></svg></span>كونسيرج</li>
+      <li><small>05</small><span class="ic"><svg class="icon"><use href="#i-flask"/></svg></span>ورش عمل علمية</li>
+      <li><small>06</small><span class="ic"><svg class="icon"><use href="#i-car"/></svg></span>مساعدة على الطريق</li>
+      <li><small>07</small><span class="ic"><svg class="icon"><use href="#i-trophy"/></svg></span>أنشطة ترفيهية دورية</li>
+    </ul>
+  </div>
+  <div class="pn light"><i></i><b>05</b></div>
+</section>
+
+<!-- ============================ 6. LEGAL + LOGISTICS ============================ -->
+<section class="page dark sA">
+  <div class="shape lines"></div>
+  <div class="shape lines2"></div>
+  <div class="frame ph1"></div>
+  <div class="shape rb1 ribbon"></div>
+  <div class="frame ph2"></div>
+  <div class="shape rb2 ribbon"></div>
+  <span class="badge-ic" style="left:640px;top:380px"><svg class="icon"><use href="#i-legal"/></svg></span>
+  <span class="badge-ic" style="left:1136px;top:602px"><svg class="icon"><use href="#i-logistics"/></svg></span>
+
+  <div class="abs t1 sh ar">
+    <div class="sh-row"><span class="num">01</span><div class="t"><span class="ar">خدمات قانونية</span><span class="en">Legal Services</span></div></div>
+    <p class="ar">توفر عضوية دسمان فريقاً يضم نخبة من المحامين والمستشارين القانونيين هدفهم تلبية احتياجات الأعضاء القانونية ومتابعة شؤونهم الخاصة.</p>
+    <p class="en" style="text-align:right">DASMAN provides a team of lawyers and legal advisors whose purpose is to address members' legal needs and follow up on their private affairs.</p>
+    <ul class="dl">
+      <li><div><b>تقديم الاستشارات القانونية</b><span>Legal consultations</span></div></li>
+      <li><div><b>كتابة العقود وتعديلها</b><span>Writing and amending contracts</span></div></li>
+      <li><div><b>متابعة القضايا وصياغة صحف الدعوى</b><span>Following up on cases and drafting lawsuits</span></div></li>
+      <li><div><b>التوجيه والإرشاد القانوني</b><span>Legal guidance</span></div></li>
+    </ul>
+  </div>
+
+  <div class="abs t2 sh ar">
+    <div class="sh-row"><span class="num">02</span><div class="t"><span class="ar">خدمات لوجستية</span><span class="en">Logistics Services</span></div></div>
+    <p class="ar">خدمات الشحن والتوصيل ونقل وتسليم الطلبات والمقتنيات، لتصل أغراضك إلى حيث تريد دون عناء.</p>
+    <p class="en" style="text-align:right">Shipping, delivery, and pickup and drop-off of orders and belongings, so your things get where they need to go without the hassle.</p>
+    <ul class="dl">
+      <li><div><b>خدمات المطار</b><span>Airport services</span></div></li>
+      <li><div><b>توصيل الأغراض والطلبات</b><span>Item and order delivery</span></div></li>
+      <li class="span2"><div><b>الشحن ونقل وتسليم المقتنيات</b><span>Shipping and delivery of belongings</span></div></li>
+    </ul>
+  </div>
+  <div class="pn"><i></i><b>06</b></div>
+</section>
+
+<!-- ============================ 7. OFFERS + CONCIERGE ============================ -->
+<section class="page sB">
+  <div class="shape lines"></div>
+  <div class="frame hero"></div>
+  <div class="shape hrib ribbon"></div>
+  <div class="abs t1 sh ar on-olive">
+    <div class="sh-row"><span class="num">03</span><div class="t"><span class="ar">عروض ومكافآت</span><span class="en">Offers &amp; Rewards</span></div></div>
+    <p class="ar">تمنحك عضويتك عروضاً ومكافآت وخصومات قيّمة طوال فترة الاشتراك لدى شركائنا، مع تحديث مستمر لقائمة الشركاء لتغطي احتياجات الأعضاء واهتماماتهم.</p>
+    <p class="en" style="text-align:right">Valuable offers, rewards and discounts throughout your subscription with our partners, with the partner list updated regularly.</p>
+    <ul class="dl">
+      <li class="span2"><div><b>خصومات وعروض خاصة لدى المتاجر والعلامات التجارية</b><span>Special discounts and offers at stores and brands</span></div></li>
+      <li><div><b>عروض وتجارب حصرية لدى الفنادق والمطاعم</b><span>Exclusive offers at hotels and restaurants</span></div></li>
+      <li><div><b>خصومات ومكافآت على الفعاليات</b><span>Discounts and rewards on events</span></div></li>
+    </ul>
+  </div>
+  <div class="shape dia-back"></div>
+  <div class="frame dia"></div>
+  <span class="badge-ic" style="left:612px;top:730px"><svg class="icon"><use href="#i-concierge"/></svg></span>
+  <span class="badge-ic" style="left:1760px;top:440px;width:84px;height:84px;font-size:38px"><svg class="icon"><use href="#i-gift"/></svg></span>
+  <div class="abs t2 sh ar">
+    <div class="sh-row"><span class="num">04</span><div class="t"><span class="ar">كونسيرج</span><span class="en">Concierge</span></div></div>
+    <p class="ar">فريق كونسيرج يلبي طلبات الأعضاء واحتياجاتهم ويساعدهم في إنجاز مهامهم اليومية.</p>
+    <p class="en" style="text-align:right">A concierge team that takes care of members' requests and needs and helps them with their daily tasks.</p>
+    <ul class="dl">
+      <li><div><b>حجوزات المطاعم</b><span>Restaurant bookings</span></div></li>
+      <li><div><b>حجوزات الفعاليات</b><span>Event bookings</span></div></li>
+      <li><div><b>مساعد شخصي لإنجاز المهام اليومية</b><span>A personal assistant for daily tasks</span></div></li>
+      <li><div><b>التوجيه والإرشاد إلى الخيارات والخدمات المناسبة</b><span>Guidance toward the right options and services</span></div></li>
+    </ul>
+  </div>
+  <div class="pn"><i></i><b>07</b></div>
+</section>
+
+<!-- ============================ 8. WORKSHOPS + ROADSIDE ============================ -->
+<section class="page sC">
+  <div class="shape panel olive"></div>
+  <div class="shape prib ribbon"></div>
+  <div class="frame tire"></div>
+  <div class="shape tline ribbon"></div>
+  <span class="badge-ic" style="left:700px;top:530px"><svg class="icon"><use href="#i-car"/></svg></span>
+  <div class="abs t1 sh ar on-olive">
+    <div class="sh-row"><span class="num">06</span><div class="t"><span class="ar">مساعدة على الطريق</span><span class="en">Roadside Assistance</span></div></div>
+    <p class="ar">خدمات المساعدة في حالات تعطل المركبات والحالات الطارئة على الطريق.</p>
+    <p class="en" style="text-align:right">Help when your vehicle breaks down or you face an emergency on the road.</p>
+    <div class="f4">
+      <div><span class="ic"><svg class="icon"><use href="#i-car"/></svg></span><div><b>سحب السيارة</b><small>يمكن للمشتركين اختيار نوع السطحة المطلوبة لتناسب جميع أنواع المركبات.</small><span dir="ltr" style="text-align:right">Towing</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-settings"/></svg></span><div><b>تغيير الإطارات</b><small>معالجة أعطال الإطارات بالإصلاح في موقع الطلب أو النقل إلى مركز مختص.</small><span dir="ltr" style="text-align:right">Tire change</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-bolt"/></svg></span><div><b>شحن البطارية</b><small>نقوم بشحن البطارية أو استبدالها ببطارية جديدة.</small><span dir="ltr" style="text-align:right">Battery charging</span></div></div>
+      <div><span class="ic"><svg class="icon"><use href="#i-pin"/></svg></span><div><b>تزويد الوقود</b><small>توصيل البنزين أو الديزل داخل المدينة أو خارجها.</small><span dir="ltr" style="text-align:right">Fuel delivery</span></div></div>
+    </div>
+  </div>
+
+  <div class="shape arch-back"></div>
+  <div class="frame arch"></div>
+  <div class="abs t2 sh ar">
+    <div class="sh-row stack"><span class="num">05</span><div class="t"><span class="ar">ورش عمل علمية</span><span class="en">Scientific Workshops</span></div></div>
+    <p class="ar">ورش عمل دورية يقدمها مختصون لتطوير مهارات الأعضاء الأكاديمية والعملية.</p>
+    <p class="en" style="text-align:right">Regular workshops led by specialists to build members' academic and practical skills.</p>
+  </div>
+  <div class="abs wrow">
+    <div><span class="ic"><svg class="icon"><use href="#i-eye"/></svg></span><div><b>ورش التصوير الطبي</b><span dir="ltr">Medical photography workshops</span></div></div>
+    <div><span class="ic"><svg class="icon"><use href="#i-search"/></svg></span><div><b>ورش البحث العلمي</b><span dir="ltr">Scientific research workshops</span></div></div>
+  </div>
+  <div class="pn"><i></i><b>08</b></div>
+</section>
+
+<!-- ============================ 8. ACTIVITIES + AMBASSADORS ============================ -->
+<section class="page dark act">
+  <div class="shape photo-back ribbon"></div>
+  <div class="frame photo"></div>
+  <div class="abs main">
+    <div class="sh ar">
+      <div class="sh-row"><span class="num">07</span><div class="t"><span class="ar">أنشطة ترفيهية دورية</span><span class="en">Recreational Activities</span></div></div>
+      <p class="ar">أنشطة وفعاليات ترفيهية تُقام بشكل دوري لتجمع أعضاء دسمان.</p>
+      <p class="en" style="text-align:right">Fun activities and events held regularly to bring DASMAN members together.</p>
+    </div>
+    <div class="chips">
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-trophy"/></svg></span><div><b class="ar">بطولات البادل</b><span class="en">Padel tournaments</span></div></div>
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-users"/></svg></span><div><b class="ar">بطولات كرة القدم</b><span class="en">Football tournaments</span></div></div>
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-calendar"/></svg></span><div><b class="ar">معارض ومؤتمرات</b><span class="en">Exhibitions &amp; conferences</span></div></div>
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-flask"/></svg></span><div><b class="ar">مسابقات علمية</b><span class="en">Scientific competitions</span></div></div>
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-dining"/></svg></span><div><b class="ar">غبقات رمضانية</b><span class="en">Ramadan ghabga gatherings</span></div></div>
+      <div class="chip"><span class="ic"><svg class="icon"><use href="#i-sparkle"/></svg></span><div><b class="ar">احتفالات وطنية</b><span class="en">National celebrations</span></div></div>
+    </div>
+    <div class="more"><span class="en">And many other sports activities of all kinds.</span><span class="ar">وغيرها العديد من الأنشطة الرياضية المتعددة.</span></div>
+  </div>
+  <div class="shape amb"></div>
+  <div class="abs amb-in">
+    <span class="k"><svg class="icon"><use href="#i-cap"/></svg></span>
+    <div class="en"><span class="tag">Ambassador programme</span><h3>Become a DASMAN ambassador</h3><p>Represent DASMAN at your university: invite classmates with your own link and help run activities and tournaments.</p></div>
+    <div class="ar"><span class="tag">برنامج السفراء</span><h3>كن سفيرًا لدسمان</h3><p>مثّل دسمان في جامعتك: ادعُ زملاءك برابطك الخاص، وساعد في تنظيم الأنشطة والبطولات.</p></div>
+  </div>
+  <div class="pn"><i></i><b>09</b></div>
+</section>
+
+<!-- ============================ 9. PRIVILEGES ============================ -->
+<section class="page priv">
+  <div class="shape band olive"></div>
+  <div class="shape rib ribbon"></div>
+  <div class="abs ar-blk ar">
+    <span class="eyebrow">المزايا</span>
+    <h2 class="ar">عروض ومكافآت طوال فترة اشتراكك</h2>
+    <p class="ar" style="font-size:21px;margin-top:8px">تمنحك عضويتنا إلى جانب الخدمات المقدمة من خلالها عروضاً ومكافآت وخصومات قيّمة لا محدودة طوال فترة الاشتراك لدى شركائنا التجاريين من خلال نقاط البيع الخاصة بهم، مع تحديث قائمة الشركاء أسبوعياً.</p>
+    <div class="hl"><svg class="icon"><use href="#i-check-circle"/></svg>أبرِز عضوية دسمان لدى شركائنا واستفد من المزايا طوال العام.</div>
+  </div>
+  <div class="abs en-blk en">
+    <span class="eyebrow en">Privileges</span>
+    <h2 class="en">Offers and rewards throughout your membership</h2>
+    <p class="en" style="margin-top:6px">Valuable, unlimited offers, rewards and discounts with our partners at their points of sale, with the partner list updated weekly.</p>
+    <div class="hl en"><svg class="icon"><use href="#i-check-circle"/></svg>Show your DASMAN membership at our partners and enjoy privileges all year round.</div>
+  </div>
+  <div class="abs grid">
+    <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/hero-kafd.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-hotel"/></svg></span></div>
+      <h3>الفنادق</h3><div class="en-t">Hotels</div><p class="ar">عروض وخصومات وتجارب حصرية لدى الفنادق المشاركة.</p><p class="en">Exclusive offers, discounts and experiences at participating hotels.</p></div>
+    <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/about-diriyah.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-dining"/></svg></span></div>
+      <h3>المطاعم</h3><div class="en-t">Restaurants</div><p class="ar">عروض وتجارب خاصة لدى المطاعم والجهات المشاركة.</p><p class="en">Special offers and experiences at participating restaurants and venues.</p></div>
+    <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/services/offers.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-bag"/></svg></span></div>
+      <h3>المتاجر</h3><div class="en-t">Stores &amp; brands</div><p class="ar">عروض وخصومات خاصة لدى مجموعة من المتاجر والعلامات التجارية.</p><p class="en">Special offers and discounts at a range of stores and brands.</p></div>
+    <div class="it"><div class="circ"><div style="background-image:url(../public/imgs/services/activities.jpg)"></div><span class="ic"><svg class="icon"><use href="#i-calendar"/></svg></span></div>
+      <h3>الفعاليات</h3><div class="en-t">Events</div><p class="ar">خصومات ومكافآت على الفعاليات.</p><p class="en">Discounts and rewards on events.</p></div>
+  </div>
+  <div class="pn light"><i></i><b>10</b></div>
+</section>
+
+<!-- ============================ 10. JOIN ============================ -->
+<section class="page join">
+  <div class="shape tri-b"></div>
+  <div class="shape tri-a olive"></div>
+  <div class="shape rib ribbon"></div>
+  <div class="phone"><div class="screen">
+    <div class="hd"><span>بطاقتي</span><img src="../public/imgs/dasman-logo-light.png" alt=""></div>
+    <div class="mcard">
+      <img src="../public/imgs/dasman-logo.png" alt="">
+      <div class="qr"><!--QR--></div>
+      <div class="no">DSM-0001</div>
+      <div class="lb">Dasman Member · The Luxury Club</div>
+    </div>
+    <div class="sec">كوبوناتي</div>
+    <div class="cp"><span class="ic"><svg class="icon"><use href="#i-ticket"/></svg></span><div><b>عروض الفنادق</b><small>لدى الفنادق المشاركة</small></div></div>
+    <div class="cp"><span class="ic"><svg class="icon"><use href="#i-dining"/></svg></span><div><b>عروض المطاعم</b><small>لدى المطاعم المشاركة</small></div></div>
+    <div class="cp"><span class="ic"><svg class="icon"><use href="#i-bag"/></svg></span><div><b>المتاجر والعلامات</b><small>خصومات خاصة</small></div></div>
+    <svg class="wave" viewBox="0 0 370 110" preserveAspectRatio="none"><path d="M0 70 C80 30 140 90 220 60 S330 30 370 50 V110 H0Z" fill="#e9dfcb"/></svg>
+  </div></div>
+
+  <div class="abs main">
+    <div class="ar"><span class="eyebrow">انضم إلينا</span><h2 class="ar">أنشئ عضويتك الآن</h2>
+      <p class="ar" style="font-size:21px">سجّل في دقيقة واحدة، واحصل على بطاقتك الرقمية وكوبوناتك فورًا.</p></div>
+    <div class="en en-h"><span class="eyebrow en">Join us</span> <span style="font-size:19px;color:var(--muted);margin-left:12px">Sign up in one minute and get your digital card and coupons right away.</span></div>
+    <div class="rows">
+      <div class="row"><div class="en"><b>Create your account</b><small>Register on the DASMAN website</small></div><span class="k"><span>1</span></span><div class="ar"><b>أنشئ حسابك</b><small>سجّل بياناتك عبر موقع دسمان</small></div></div>
+      <div class="row"><div class="en"><b>Confirm your email</b><small>Activate your membership from your inbox</small></div><span class="k"><span>2</span></span><div class="ar"><b>فعّل بريدك</b><small>فعّل عضويتك من رسالة البريد الإلكتروني</small></div></div>
+      <div class="row"><div class="en"><b>Use your card</b><small>Show it at partners and enjoy the privileges</small></div><span class="k"><span>3</span></span><div class="ar"><b>استخدم بطاقتك</b><small>أبرزها لدى الشركاء واستفد من المزايا</small></div></div>
+    </div>
+    <div class="feat">
+      <span><svg class="icon"><use href="#i-check-circle"/></svg>7 خدمات في عضوية واحدة</span>
+      <span><svg class="icon"><use href="#i-check-circle"/></svg>عروض وخصومات حصرية لدى شركائنا</span>
+      <span><svg class="icon"><use href="#i-check-circle"/></svg>ورش عمل وأنشطة ترفيهية دورية</span>
+    </div>
+  </div>
+  <div class="pn"><i></i><b>11</b></div>
+</section>
+
+<!-- ============================ 11. BACK COVER ============================ -->
+<section class="page back">
+  <div class="shape tri-t sandshape"></div>
+  <div class="shape tri-t2 ribbon" style="opacity:.8"></div>
+  <div class="abs top-t"><div class="ar">انضم إلى أعضاء دسمان</div><div class="en">Join DASMAN members</div></div>
+  <div class="shape band olive"></div>
+  <div class="najdi abs" style="left:0;right:0;top:690px;opacity:.6"></div>
+  <div class="abs band-logo">
+    <img src="../public/imgs/dasman-logo-light.png" alt="DASMAN">
+    <div class="lux">By The Luxury Club</div>
+  </div>
+  <div class="abs qrbox"><div class="q"><!--QR--></div><small>Scan to join</small></div>
+  <div class="shape tri-b sandshape"></div>
+  <div class="abs contacts">
+    <div class="c"><span class="ic"><svg class="icon"><use href="#i-phone"/></svg></span><div><small>Phone · هاتف</small><b dir="ltr">+966 55 810 3228</b></div></div>
+    <div class="c"><span class="ic"><svg class="icon"><use href="#i-mail"/></svg></span><div><small>Email · البريد</small><b>Dasman_sa@hotmail.com</b></div></div>
+    <div class="c"><span class="ic"><svg class="icon"><use href="#i-instagram"/></svg></span><div><small>Instagram</small><b>@dasman_sa</b></div></div>
+    <div class="c"><span class="ic"><svg class="icon"><use href="#i-globe"/></svg></span><div><small>Website · الموقع</small><b>dasman.the-luxury-club.com</b></div></div>
+  </div>
+  <div class="abs copy">© 2026 DASMAN · The Luxury Club</div>
+</section>
+
+</body>
+</html>

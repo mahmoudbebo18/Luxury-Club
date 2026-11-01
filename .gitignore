@@ -1,0 +1,11 @@
+# Secrets (API tokens) live in .env.local. The committed .env holds public keys only.
+*.local
+node_modules/
+dist/
+.wrangler/
+supabase/.temp/
+supabase/import/
+*.tsbuildinfo
+
+# Profile PNG previews (python3 profile/build.py --preview)
+profile/preview/
