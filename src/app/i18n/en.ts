@@ -74,6 +74,8 @@ export const en: Record<StringKey, string> = {
   'auth.backToLogin': 'Back to login',
   'auth.resetTitle': 'New password',
   'auth.resetLead': "Choose a strong password you haven't used before.",
+  'auth.activateLead': "Continue to create the password for your account on the new DASMAN platform.",
+  'auth.activateBtn': "Continue",
   'auth.setTitle': 'Set your password',
   'auth.newPassword': 'New password',
   'auth.confirmPassword': 'Confirm password',

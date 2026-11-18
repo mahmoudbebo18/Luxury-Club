@@ -73,6 +73,8 @@ export const ar = {
   'auth.backToLogin': 'العودة لتسجيل الدخول',
   'auth.resetTitle': 'كلمة مرور جديدة',
   'auth.resetLead': 'اختر كلمة مرور قوية لم تستخدمها من قبل.',
+  'auth.activateLead': "اضغط للمتابعة وإنشاء كلمة المرور لحسابك في منصة دسمان الجديدة.",
+  'auth.activateBtn': "متابعة",
   'auth.setTitle': 'عيّن كلمة المرور',
   'auth.newPassword': 'كلمة المرور الجديدة',
   'auth.confirmPassword': 'تأكيد كلمة المرور',

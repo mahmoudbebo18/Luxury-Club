@@ -24,6 +24,8 @@ export default function Reset() {
   const toast = useToast();
   const [error, setError] = useState<string | null>(null);
   const [waited, setWaited] = useState(false);
+  const [opening, setOpening] = useState(false);
+  const [linkFailed, setLinkFailed] = useState(false);
 
   // The recovery link signs the user in from the URL; give supabase-js a moment to finish.
   useEffect(() => {
@@ -43,7 +45,32 @@ export default function Reset() {
   const params = new URLSearchParams(location.hash.slice(1) || location.search);
   const linkError = params.get('error_description') ?? params.get('error');
 
-  if (!ready || (!recovery && !waited && !linkError)) return <PageLoader />;
+  // Emailed activation links carry a token that is used only on this click, so mail scanners
+  // that pre-open links can't spend it.
+  const tokenHash = new URLSearchParams(location.search).get('token_hash');
+  const openLink = async () => {
+    setOpening(true);
+    const { error: err } = await supabase.auth.verifyOtp({ token_hash: tokenHash!, type: 'recovery' });
+    if (err) {
+      setLinkFailed(true);
+      setOpening(false);
+      return;
+    }
+    history.replaceState(null, '', location.pathname);
+  };
+
+  if (ready && tokenHash && !recovery && !linkFailed) {
+    return (
+      <>
+        <AuthHead icon="key" title={t('auth.setTitle')} lead={t('auth.activateLead')} />
+        <button className="btn btn-primary btn-block btn-lg" type="button" onClick={openLink} disabled={opening}>
+          {opening ? <Spinner small /> : t('auth.activateBtn')}
+        </button>
+      </>
+    );
+  }
+
+  if (!ready || (!recovery && !waited && !linkError && !linkFailed)) return <PageLoader />;
 
   if (session && !recovery) return <Navigate to="/account/profile#security" replace />;
 
