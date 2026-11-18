@@ -2651,3 +2651,40 @@ ol {
   background-color: var(--gold-400);
   color: var(--olive-950);
 }
+
+// Legal pages and their footer links
+.legal-content {
+  max-width: 780px;
+
+  h2 {
+    margin-top: 32px;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 1.3rem;
+  }
+
+  h2:first-child {
+    margin-top: 0;
+  }
+
+  p {
+    color: var(--text);
+    line-height: 1.9;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.legal-updated {
+  margin-top: 32px;
+  font-size: 0.88rem;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}

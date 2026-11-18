@@ -20,4 +20,34 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/services" />
     <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/services-en" />
   </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/terms</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/terms-en" />
+  </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/terms-en</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/terms-en" />
+  </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/privacy-en" />
+  </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/privacy-en</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/privacy-en" />
+  </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/refund</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/refund" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/refund-en" />
+  </url>
+  <url>
+    <loc>https://dasman.the-luxury-club.com/refund-en</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://dasman.the-luxury-club.com/refund" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://dasman.the-luxury-club.com/refund-en" />
+  </url>
 </urlset>

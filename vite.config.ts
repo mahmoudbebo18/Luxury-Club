@@ -2,12 +2,12 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
 
-const pages = ['index', 'index-en', 'services', 'services-en', 'app'];
+const pages = ['index', 'index-en', 'services', 'services-en', 'terms', 'terms-en', 'privacy', 'privacy-en', 'refund', 'refund-en', 'app'];
 
 // Dev-server mirror of Cloudflare Pages: platform routes are served by app.html (public/_redirects),
 // and pages are reachable without ".html" like in production.
 const appRoutes = /^\/(login|register|forgot|reset|account|m|admin)(\/|$|\?)/;
-const prettyPages = /^\/(index-en|services|services-en)(?=$|[?#])/;
+const prettyPages = /^\/(index-en|services|services-en|terms|terms-en|privacy|privacy-en|refund|refund-en)(?=$|[?#])/;
 function spaFallback(): Plugin {
   const rewrite = (req: { url?: string }, _res: unknown, next: () => void) => {
     if (req.url && appRoutes.test(req.url)) req.url = '/app.html';
